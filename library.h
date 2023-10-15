@@ -1,0 +1,6 @@
+#ifndef UNTITLED_LIBRARY_H
+#define UNTITLED_LIBRARY_H
+
+int f();
+
+#endif //UNTITLED_LIBRARY_H
