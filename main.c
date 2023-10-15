@@ -43,6 +43,6 @@ int sum(int count, ...){
 
 int main() {
 
-    printf("%it is test 2", is_it_prime(143));
+    printf("%it is test 2 ", is_it_prime(143));
 }
 
