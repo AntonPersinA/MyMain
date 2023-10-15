@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "homework.h"
-#include "library.h"
 #include <time.h>
 #include <stdarg.h>
 
@@ -43,6 +42,6 @@ int sum(int count, ...){
 
 int main() {
 
-    printf("%it is test 2 ", is_it_prime(143));
+    printf("%d,     it is test 2\n", is_it_prime(143));
 }
 

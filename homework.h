@@ -42,8 +42,11 @@ void *selection_sort(int * mas, int len, char if1down);
 
 void fill_mas_rand(int*mas, int len, int limit);
 
-void sort_depend_first(int
-                       void in_2_copy_1(int *mas1,int * mas2, int len);
+void sort_depend_first(int *mas, int len);
+
+void q_sort(int *mas, int len);
+
+void in_2_copy_1(int *mas1,int * mas2, int len);
 
 char is_sort(int *mas, int len, int if1down);
 
@@ -53,6 +56,4 @@ void matching_elements(int *masn, size_t len_masn,
                        int *mask, size_t len_mask,
                        int *mas_new, size_t len_mas_new);
 
-#endif *mas, int len);
-
-void q_sort(int *mas, int len);
+#endif
