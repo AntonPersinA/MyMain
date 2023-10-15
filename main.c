@@ -40,6 +40,7 @@ int sum(int count, ...){
 
 #define size 10
 
+
 int main() {
 
     printf("%d,     it is test 2\n", is_it_prime(143));
