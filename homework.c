@@ -439,3 +439,5 @@ int more_meet_el(int *mas, size_t len_mas){
     free(help_mas);
     return g;
 }
+
+// Test for git
