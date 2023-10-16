@@ -5,6 +5,7 @@
 #include <time.h>
 #include <string.h>
 
+
 //Функция принимает в себя и число1 и число2, она возвращает, есть ли значащий бит на месте числа2 в числе1
 int value_num_byte(int start_value, int count) {
     int help_number = 1, i;
@@ -18,6 +19,7 @@ int value_num_byte(int start_value, int count) {
     return help_number;
 }
 
+
 //Задание первое(1) //В вводе ставить ссылку на переменные --- &
 void swap_value_or(int *number1, int *number2) {
     if (number1!=number2) {
@@ -27,6 +29,7 @@ void swap_value_or(int *number1, int *number2) {
     }
 }
 
+
 //Задание первое(1) //В вводе ставить ссылку на переменные --- &
 void swap_value_math(int *num1, int *num2) {
     if (num1!=num2) {
@@ -35,6 +38,7 @@ void swap_value_math(int *num1, int *num2) {
         *num1 = *num2 - *num1;
     }
 }
+
 
 //Задание второе(2)
 int array_zero(int *mas) {
@@ -46,6 +50,7 @@ int array_zero(int *mas) {
     }
     return count_zero;
 }
+
 
 //Задание третье(3)
 int remainder1(int divider, int denominator) {
@@ -61,6 +66,7 @@ int remainder1(int divider, int denominator) {
     }
 }
 
+
 int len_num(int num) {
     int i = 10, count = 1;
     num = abs(num);
@@ -70,6 +76,7 @@ int len_num(int num) {
     }
     return count;
 }
+
 
 int sum_num(int num) {
     int count = 0;
@@ -81,6 +88,7 @@ int sum_num(int num) {
     return count;
 }
 
+
 //Задание четыре(4)
 int luck_ticket() {
     int mas[27] = {0}, i, count = 0;
@@ -91,6 +99,8 @@ int luck_ticket() {
         count += mas[i] * mas[i];
     return count * 2;
 }
+
+
 //Задание пять(5)
 int parenthesis_rule(char *stroka) {
     int answer = 1, skobe = 0, i = 0;
@@ -111,6 +121,7 @@ int parenthesis_rule(char *stroka) {
     return 1;
 }
 
+
 int is_it_prime(int num){
     num = abs(num);
     if (num <=1)
@@ -124,6 +135,8 @@ int is_it_prime(int num){
     }
     return 1;
 }
+
+
 //Задание шесть(6)
 void print_prime_before(int num_before){
     num_before = abs(num_before);
@@ -135,6 +148,8 @@ void print_prime_before(int num_before){
     }
     printf("\b\b}");
 }
+
+
 //Задание семь(7)
 int str_in_str(char *stroka1, char *stroka2){
     if (strlen(stroka1)> strlen(stroka2) || (*stroka2 == *"") || (*stroka1 == *""))
@@ -155,6 +170,7 @@ int str_in_str(char *stroka1, char *stroka2){
     return count;
 }
 
+
 void print_array(int *mas, int length){
     printf("{");
     for (int i = 0; i<length; i++){
@@ -162,6 +178,7 @@ void print_array(int *mas, int length){
     }
     printf("\b\b}\n");
 }
+
 
 //Задание восемь(8)                 На вход массив и по индексам та его часть которую надо перевернуть
 int *array_reverse(int *mas, int a, int b){
@@ -175,6 +192,8 @@ int *array_reverse(int *mas, int a, int b){
     }
     return mas;
 }
+
+
 //Д\З два(2). Задание 1:После 40 числа рекурсия работает как минимум на сукунду дольше цикла
 long long fibonachi_def(int n){
     if (n==1 || n == 2)
@@ -187,6 +206,7 @@ long long fibonachi_def(int n){
     return fibonachi_def(n-1)+ fibonachi_def(n-2);
 }
 
+
 long long fibonachi_for(int n){
     long long s_1 = 1, s_2 = 1, help;
     for (int i = 3; i <= n; i++){
@@ -196,6 +216,8 @@ long long fibonachi_for(int n){
     }
     return s_2;
 }
+
+
 //Д/З два(2). Задание 2.
 long long int_pow_n(long long m, long long n){
     long long ans = 1;
@@ -203,6 +225,7 @@ long long int_pow_n(long long m, long long n){
         ans*=m;
     return ans;
 }
+
 
 long long int_pow_logn(long long m, long long n){
     long long otv = 1;
@@ -220,6 +243,8 @@ long long int_pow_logn(long long m, long long n){
     }
     return otv*m;
 }
+
+
 //Д/З два(2). Задание 3. На массиве из 100'000 элементов рабоает 18.5/19.7/20.4 секунды
 void *buble_sort(int *mas, int len, char if1down){
     if (if1down) {
@@ -241,6 +266,8 @@ void *buble_sort(int *mas, int len, char if1down){
         }
     }
 }
+
+
 //Д/З два(2). Задание 3. На массиве из 100'000 элементов рабоает 12.1/12.3/12.1 секунд
 void *selection_sort(int * mas, int len, char if1down){
     int lower_i;
@@ -267,6 +294,7 @@ void *selection_sort(int * mas, int len, char if1down){
         }
     }
 }
+
 
 void fill_mas_rand(int*mas, int len, int limit){
     srand(clock());
@@ -303,6 +331,7 @@ void sort_depend_first(int *mas, int len){
     }
 
 }
+
 
 void q_sort(int *mas, int len){
     if (len>3){                                     //Оптимальное значение тут 3
@@ -353,11 +382,13 @@ void q_sort(int *mas, int len){
     }
 }
 
+
 void in_2_copy_1(int *mas1,int * mas2, int len){
     for (int i = 0; i < len; ++i){
         *(mas2+i) = *(mas1+i);
     }
 }
+
 
 char is_sort(int *mas, int len, int if1down){
     if(!if1down){
@@ -380,6 +411,7 @@ char is_sort(int *mas, int len, int if1down){
     }
 }
 
+
 char el_in_sort_mas(int *mas, size_t len_mas, int element){
 
     if ( len_mas < 4){
@@ -395,6 +427,7 @@ char el_in_sort_mas(int *mas, size_t len_mas, int element){
     }
     return el_in_sort_mas(mas + len_mas/2, len_mas - len_mas/2, element);
 }
+
 
 void matching_elements(int *masn, size_t len_masn,
                        int *mask, size_t len_mask,
@@ -415,6 +448,7 @@ void matching_elements(int *masn, size_t len_masn,
         return;
     }
 }
+
 
 int more_meet_el(int *mas, size_t len_mas){
     if (len_mas == 1)return *mas;
