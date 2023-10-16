@@ -56,4 +56,6 @@ void matching_elements(int *masn, size_t len_masn,
                        int *mask, size_t len_mask,
                        int *mas_new, size_t len_mas_new);
 
+int more_meet_el(int *mas, size_t len_mas);
+
 #endif

@@ -42,7 +42,10 @@ int sum(int count, ...){
 
 
 int main() {
-
-    printf("%d,     it is test 2\n", is_it_prime(143));
+    int *mas = malloc(sizeof(int)*size);
+    fill_mas_rand(mas, size, 100);
+    print_array(mas, size);
+    int g = more_meet_el(mas,size);
+    printf("%d\n", g);
 }
 

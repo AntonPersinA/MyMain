@@ -415,3 +415,27 @@ void matching_elements(int *masn, size_t len_masn,
         return;
     }
 }
+
+int more_meet_el(int *mas, size_t len_mas){
+    if (len_mas == 1)return *mas;
+    int *help_mas = malloc(len_mas*sizeof(int));
+    for (int i = 0; i < len_mas; ++i){
+        help_mas[i] = mas[i];
+    }
+    q_sort(help_mas, len_mas);
+    print_array(help_mas, len_mas);
+    int kolv_el_max = 1, kolv_el_now = 1, ind_max_el = 0;
+    for (int i = 1; i < len_mas; ++i){
+        if (*(help_mas+i)==*(help_mas+i-1)){
+            kolv_el_now++;
+            ind_max_el = kolv_el_max>kolv_el_now?ind_max_el:i-1;
+            kolv_el_max = kolv_el_max>kolv_el_now?kolv_el_max:kolv_el_now;
+        }
+        else{
+            kolv_el_now =1;
+        }
+    }
+    int g = *(help_mas + ind_max_el);
+    free(help_mas);
+    return g;
+}
