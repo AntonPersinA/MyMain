@@ -19,9 +19,9 @@ int value_num_byte(int start_value, int count) {
     return help_number;
 }
 
-int min(int *a, int *b){
-    if (*a>*b)return *b;
-    return *a;
+int min(int a, int b){
+    if (a>b)return b;
+    return a;
 }
 
 //Задание первое(1) //В вводе ставить ссылку на переменные --- &

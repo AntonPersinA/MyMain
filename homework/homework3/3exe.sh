@@ -1,3 +1,3 @@
 clear
-gcc 3ex1.c -lm
+gcc 3ex2.c -lm
 ./a.out
