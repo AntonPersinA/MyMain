@@ -23,7 +23,8 @@ int luck_ticket() {
 }
 
 
-void main(){
+int main(){
     int answer = luck_ticket();
     printf("answer = %d\n", answer);
+    return 0;
 }

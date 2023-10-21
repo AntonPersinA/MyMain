@@ -21,9 +21,10 @@ int str_in_str(char *stroka1, char *stroka2){
 }
 
 
-void main(){
+int main(){
     char* strint1 = "hello";
     char* strint2 = "hello, hello";
     int answer = str_in_str(strint1, strint2);
     printf("%d\n", answer);
+    return 0;
 }

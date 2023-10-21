@@ -19,6 +19,10 @@ int value_num_byte(int start_value, int count) {
     return help_number;
 }
 
+int min(int *a, int *b){
+    if (*a>*b)return *b;
+    return *a;
+}
 
 //Задание первое(1) //В вводе ставить ссылку на переменные --- &
 void swap_value_or(int *number1, int *number2) {
@@ -41,9 +45,9 @@ void swap_value_math(int *num1, int *num2) {
 
 
 //Задание второе(2)
-int array_zero(int *mas) {
-    int i, count_zero = 0, h;
-    for (i = 0; i < sizeof(mas) / sizeof(mas[0]); i++) {
+int array_zero(int *mas, size_t len) {
+    int i, count_zero = 0;
+    for (i = 0; i < len; i++) {
         if (mas[i] == 0) {
             count_zero++;
         }
@@ -457,7 +461,6 @@ int more_meet_el(int *mas, size_t len_mas){
         help_mas[i] = mas[i];
     }
     q_sort(help_mas, len_mas);
-    print_array(help_mas, len_mas);
     int kolv_el_max = 1, kolv_el_now = 1, ind_max_el = 0;
     for (int i = 1; i < len_mas; ++i){
         if (*(help_mas+i)==*(help_mas+i-1)){
@@ -474,4 +477,70 @@ int more_meet_el(int *mas, size_t len_mas){
     return g;
 }
 
-// Test for git
+
+void insertion_sort(int *mas, int len_mas){
+    for (int i = 1; i < len_mas; ++i) {
+        for (int j = i; j>0;--j){
+            if (*(mas + j) < *(mas + j - 1)){
+                swap_value_or(mas+j, mas + j - 1);
+            }
+        }
+    }
+}
+
+//2
+void counting_sort(int *mas, size_t len_mas){
+    int min_el = 0, max_el = 0;
+    for (int i = 0; i < len_mas; ++i){
+        if (*(mas + i) > max_el)max_el = *(mas + i);
+        if (*(mas + i) < min_el)min_el = *(mas + i);
+    }
+
+    if (min_el >= 0) {
+        int *help_plus = calloc(max_el+1, sizeof(int));
+        if (help_plus == NULL){printf("error malloc");return;}
+        for (int i = 0; i < len_mas; ++i) {
+            *(help_plus + *(mas + i)) += 1;
+        }
+        int mas_now = 0;
+        for (int i = 0; i <= max_el; ++i){
+            for (int g = 0; g < *(help_plus + i); ++g) {
+                *(mas + mas_now) = i;
+                mas_now++;
+            }
+        }
+        free(help_plus);
+    }
+    else{
+        int *help_plus = calloc(max_el+1, sizeof(int));
+        int *help_minus = calloc(-min_el+1, sizeof(int));
+        if (help_plus == NULL){printf("error help_plus malloc");return;}
+        if (help_minus == NULL){printf("error help_minus malloc");return;}
+        for (int i = 0; i < len_mas; ++i) {
+            if (*(mas + i) >= 0) {
+                *(help_plus + *(mas + i)) += 1;
+            }
+            else{
+                *(help_minus - *(mas + i)) += 1;
+            }
+        }
+        int mas_now = 0;
+        print_array(help_minus, -min_el+1);
+        for (int i = -min_el; i >= 1; +--i){
+            for (int g = 0; g < *(help_minus+i); ++g) {
+                *(mas + mas_now) = -i;
+                mas_now++;
+                printf("mas_now = %d\n", mas_now);
+            }
+        }
+        printf("mas_now = %d\n ", mas_now);
+        for (int i = 1; i <= max_el; ++i){
+            for (int g = 0; g < *(help_plus + i); ++g) {
+                *(mas + mas_now) = i;
+                mas_now++;
+            }
+        }
+        free(help_plus);
+        free(help_minus);
+    }
+}

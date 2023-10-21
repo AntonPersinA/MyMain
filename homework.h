@@ -1,61 +1,69 @@
-#ifndef __HOME_WORK__
-#define  __HOME_WORK__
-int value_num_byte(int start_value, int count);
+//#ifndef __HOME_WORK__
+//#define  __HOME_WORK__
+#pragma once
 
-void swap_value_or(int *number1, int *number2);
+int value_num_byte(int start_value, int count); //Возвращает будет 1 на месте count в двоичной СС
 
-void swap_value_math(int *num1, int *num2);
+void swap_value_or(int *number1, int *number2); //Меняет значения переменных через ^
 
-int array_zero(int *mas);
+void swap_value_math(int *num1, int *num2); //Меняет значения переменных через +/-
 
-int remainder1(int divider, int denominator);
+int array_zero(int *mas, int len); //Возвращает колчество нулевых элементов в массиве
 
-int len_num(int num);
+int remainder1(int divider, int denominator); //Остаток от деления
 
-int sum_num(int num);
+int len_num(int num); //Длина числа
 
-int luck_ticket();
+int sum_num(int num); //Сумма цифр числа
 
-int parenthesis_rule(char *stroka);
+int luck_ticket(); //Кол-во счастливых билетов
 
-int is_it_prime(int num);
+int parenthesis_rule(char *stroka); //Правильно ли закрыты скобки
 
-void print_prime_before(int num_before);
+int is_it_prime(int num); //Простое ли число
 
-int str_in_str(char *stroka1, char *stroka2);
+void print_prime_before(int num_before); //Простые числа до числа начиная с 2
 
-void print_array(int *mas, int length);
+int str_in_str(char *stroka1, char *stroka2); //Сколько раз строка 1 есть в строке 2
 
-int *array_reverse(int *mas, int a, int b);
+void print_array(int *mas, int length); //Выводит массив
 
-long long fibonachi_def(int n);
+int *array_reverse(int *mas, int a, int b); //Переворачиваает массив по индексам, все включительно
 
-long long fibonachi_for(int n);
+long long fibonachi_def(int n); //n-ое число фибоначи рекурсией
 
-long long int_pow_n(long long m, long long n);
+long long fibonachi_for(int n); //n-ое число фибоначи циклом for
 
-long long int_pow_logn(long long m, long long n);
+long long int_pow_n(long long m, long long n); //Возвращает результат возведения числа m в степень n за О(n)
 
-void *buble_sort(int *mas, int len, char if1down);
+long long int_pow_logn(long long m, long long n); //Возвращает результат возведения числа m в степень n за О(logn)
 
-void *selection_sort(int * mas, int len, char if1down);
+void *buble_sort(int *mas, int len, char if1down); //Сортировка пузырьком сложности O(n^2)
 
-void fill_mas_rand(int*mas, int len, int limit);
+void *selection_sort(int * mas, int len, char if1down); //Сортировка выбором сложности O(n^2)
 
-void sort_depend_first(int *mas, int len);
+void fill_mas_rand(int*mas, int len, int limit); //Заполняет массив рандомными значениями
 
-void q_sort(int *mas, int len);
+void sort_depend_first(int *mas, int len); //Сортирует массив, относительно первого элемента, все что меньше слева, все что больше справа
 
-void in_2_copy_1(int *mas1,int * mas2, int len);
+void q_sort(int *mas, int len); //Быстра сортировка сложности O(logn)
 
-char is_sort(int *mas, int len, int if1down);
+void in_2_copy_1(int *mas1,int * mas2, int len); //В массив 2 копирует массив 1
 
-char el_in_sort_mas(int *mas, size_t len_mas, int element);
+char is_sort(int *mas, int len, int if1down); //Проверяет отсортирован ли массив
+
+char el_in_sort_mas(int *mas, size_t len_mas, int element); //В отсортированном массиве проверяет наличие элемента
 
 void matching_elements(int *masn, size_t len_masn,
                        int *mask, size_t len_mask,
-                       int *mas_new, size_t len_mas_new);
+                       int *mas_new, size_t len_mas_new); //В третий массив записывает элементы, находящиеся как в 1, так и во 2 массивах
 
-int more_meet_el(int *mas, size_t len_mas);
+int more_meet_el(int *mas, size_t len_mas); //Возвращает какой элемент встречается чаще всего в массиве
 
-#endif
+void insertion_sort(int *mas, int len_mas); //Сортировка вставкой сложности O(n^2)
+
+void counting_sort(int *mas, size_t len_mas); //Сортировка подсчетом сложности O(n+k)
+
+//#endif
+
+//-O3 -march=native

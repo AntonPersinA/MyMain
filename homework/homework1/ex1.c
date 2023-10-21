@@ -9,9 +9,10 @@ void swap_value(int *number1, int *number2) {
 }
 
 
-void main(){
+int main(){
     int x = 10, y = 5;
     printf("x = %d, y = %d\n", x, y);
     swap_value(&x, &y);
     printf("x = %d, y = %d\n", x, y);
+    return 0;
 }

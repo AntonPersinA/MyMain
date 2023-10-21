@@ -17,8 +17,9 @@ int parenthesis_rule(char *stroka) {
 }
 
 
-void main(){
+int main(){
     char *string = "(Hello)(world)";
     int answer = parenthesis_rule(string);
     printf("answer = %d\n", answer);
+    return 0;
 }

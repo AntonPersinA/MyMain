@@ -3,8 +3,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include "homework.h"
+#include "homework.h"
 #include <time.h>
 #include <stdarg.h>
+#include <limits.h>
 
 #define sq(A, B) "sq of rectangle ("#A") * ("#B")\n"
 #define test(gg) x##gg
@@ -27,25 +29,31 @@
 
 //int printf(const char * __format, ...);
 
-int sum(int count, ...){
-    int s = 0;
-    va_list arg1;
-    va_start(arg1, count);
-    for (int i =0; i < count; i++){
-        s+=va_arg(arg1, int);
-    }
-    va_end(arg1);
-    return s;
-}
+//int sum(int count, ...){
+//    int s = 0;
+//    va_list arg1;
+//    va_start(arg1, count);
+//    for (int i =0; i < count; i++){
+//        s+=va_arg(arg1, int);
+//    }
+//    va_end(arg1);
+//    return s;
+//}
 
-#define size 10
+#define size 500000
 
 
-int main() {
+
+int main(){
     int *mas = malloc(sizeof(int)*size);
-    fill_mas_rand(mas, size, 100);
-    print_array(mas, size);
-    int g = more_meet_el(mas,size);
-    printf("%d\n", g);
-}
+    fill_mas_rand(mas, size, 100000000);
+//    q_sort(mas, size);
 
+//    print_array(mas, size);
+
+    counting_sort(mas, size);
+
+//    print_array(mas, size);
+    free(mas);
+    return 0;
+}

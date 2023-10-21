@@ -27,6 +27,7 @@ void print_prime_before(int num_before){
 }
 
 
-void main(){
+int main(){
     print_prime_before(30);
+    return 0;
 }
