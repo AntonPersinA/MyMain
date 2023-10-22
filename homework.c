@@ -6,6 +6,16 @@
 #include <string.h>
 
 
+
+
+int compare_array(int *mas1, int *mas2, int len){
+    for (int i = 0; i < len; ++i){
+        if (*(mas1 + i) != *(mas2 + i))return 0;
+    }
+    return 1;
+}
+
+
 //Функция принимает в себя и число1 и число2, она возвращает, есть ли значащий бит на месте числа2 в числе1
 int value_num_byte(int start_value, int count) {
     int help_number = 1, i;

@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define size    10
 
 int array_zero(int *mas, size_t len_mas) {
     int i, count_zero = 0;
@@ -14,11 +13,29 @@ int array_zero(int *mas, size_t len_mas) {
 }
 
 
-int main(){
-    int *mas = malloc(sizeof(int)*size);
-    int answer = array_zero(mas, size);
-    printf("answer = %d\n", answer);
+int test_zero() {
+    FILE *fr = fopen("1test1.txt", "r");
 
+    int a, count_zero_ans, len_mas;
+
+    fscanf(fr, "%d %d", &count_zero_ans, &len_mas);
+    int *mas = malloc(sizeof(int)*len_mas);
+    for (int i = 0; i < len_mas; ++i) {
+        fscanf(fr, "%d", &a);
+
+        mas[i] = a;
+    }
+
+    if (array_zero(mas, len_mas) == count_zero_ans){
+        free(mas);
+        return 1;
+    }
     free(mas);
+    return 0;
+}
+
+
+int main() {
+    printf("%d\n", test_zero());
     return 0;
 }

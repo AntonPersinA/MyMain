@@ -1,4 +1,8 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+
 
 void swap_value(int *number1, int *number2) {
     if (number1!=number2) {
@@ -9,10 +13,25 @@ void swap_value(int *number1, int *number2) {
 }
 
 
+int test_swap(){
+    FILE *fr = fopen("1test1.txt", "r");
+
+    int a_test, b_test;
+    fscanf(fr, "%d %d", &a_test, &b_test);
+    int a = a_test, b = b_test;
+
+    fscanf(fr, "%d %d", &a_test, &b_test);
+    swap_value(&a, &b);
+
+    if (a == a_test && b == b_test){
+        return 1;
+    }
+    return 0;
+}
+
+
+
 int main(){
-    int x = 10, y = 5;
-    printf("x = %d, y = %d\n", x, y);
-    swap_value(&x, &y);
-    printf("x = %d, y = %d\n", x, y);
+    printf("%d\n", test_swap());
     return 0;
 }

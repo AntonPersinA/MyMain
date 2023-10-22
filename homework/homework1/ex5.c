@@ -17,9 +17,28 @@ int parenthesis_rule(char *stroka) {
 }
 
 
+int test_scobe_rule() {
+    FILE *fr = fopen("1test1.txt", "r");
+
+    int count_test, flag;
+    char *str;
+    fscanf(fr, "%d", &count_test);
+
+    for (int i = 0; i < count_test; ++i) {
+        fscanf(fr, "%d %s", &flag, str);
+
+        if (parenthesis_rule(str) != flag){
+            printf("%s", str);
+            fclose(fr);
+            return 0;
+        }
+    }
+    fclose(fr);
+    return 1;
+}
+
+
 int main(){
-    char *string = "(Hello)(world)";
-    int answer = parenthesis_rule(string);
-    printf("answer = %d\n", answer);
+    printf("%d\n", test_scobe_rule());
     return 0;
 }
