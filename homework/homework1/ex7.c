@@ -38,14 +38,14 @@ int test_str_in_str() {
     fscanf(fr, "%d", &str1_len);
 
     str1 = malloc(str1_len);
-    if (str1 == NULL) { return -2; }
+    if (str1 == NULL){fclose(fr);return -2;}
     fscanf(fr, "%s", str1);
 
 
     fscanf(fr, "%d", &str2_len);
 
     str2 = malloc(str2_len);
-    if (str1 == NULL) { return -2; }
+    if (str1 == NULL) {fclose(fr);return -2;}
     fscanf(fr, "%s", str2);
 
     fscanf(fr, "%d", &answering);

@@ -50,6 +50,7 @@ int test_prime_before(){
     int count;
     fscanf(fr, " %d", &count);
     int *mas = malloc(sizeof(int)*count);
+    if(mas == NULL){fclose(fr);return 0;}
     for(int i = 0; i<count; ++i){
         fscanf(fr, "%d", (mas + i));
     }

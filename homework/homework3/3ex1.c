@@ -117,9 +117,9 @@ int test_q_sort(){
     fscanf(fr, "%d", &len);
 
     int *test_mas = malloc(sizeof (int)*len);
-    if(test_mas == NULL){return 0;}
+    if(test_mas == NULL){fclose(fr);return 0;}
     int *ans_mas = malloc(sizeof (int)*len);
-    if(ans_mas == NULL){return 0;}
+    if(ans_mas == NULL){fclose(fr);return 0;}
 
     for(int i = 0; i<len;++i){
         fscanf(fr, "%d", test_mas+i);
@@ -130,8 +130,10 @@ int test_q_sort(){
 
     q_sort(test_mas, len);
     if(compare_array(test_mas, ans_mas, len)){
+        fclose(fr);
         return 1;
     }
+    fclose(fr);
     return 0;
 }
 

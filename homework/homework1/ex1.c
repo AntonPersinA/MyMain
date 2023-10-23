@@ -27,7 +27,7 @@ int test_swap(){
 
     fscanf(fr, "%d %d", &a_test, &b_test);
     swap_value(&a, &b);
-
+    fclose(fr);
     if (a == a_test && b == b_test){
         return 1;
     }

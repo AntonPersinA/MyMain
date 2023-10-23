@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 
 int parenthesis_rule(char *stroka) {
@@ -26,8 +27,10 @@ int test_scobe_rule() {
         return 0;
     }
 
-    int count_test, flag;
-    char *str;
+    int count_test, flag,str_leen;
+    fscanf(fr, "%d", &str_leen);
+    char *str = malloc(str_leen);
+    if(str == NULL){fclose(fr); return 0;}
     fscanf(fr, "%d", &count_test);
 
     for (int i = 0; i < count_test; ++i) {

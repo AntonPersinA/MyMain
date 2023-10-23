@@ -171,7 +171,6 @@ int compare_array(int *mas1, int *mas2, int len){
 
 int test_matching_elements(){
     FILE *fr = fopen("3test1.txt", "r");
-
     if (fr == NULL){
         perror("3test1.txt");
         return 0;
@@ -180,7 +179,10 @@ int test_matching_elements(){
     fscanf(fr, "%d", &len1);
 
     int *test_mas1 = malloc(sizeof (int)*len1);
-    if(test_mas1 == NULL){return 0;}
+    if(test_mas1 == NULL){
+        fclose(fr);
+        return 0;
+    }
 
 
     for(int i = 0; i<len1;++i){
@@ -189,14 +191,14 @@ int test_matching_elements(){
 
     fscanf(fr, "%d", &len2);
     int *test_mas2 = malloc(sizeof (int)*len2);
-    if(test_mas2 == NULL){return 0;}
+    if(test_mas2 == NULL){
+        fclose(fr);
+        return 0;
+    }
 
     for(int i = 0; i<len2;++i){
         fscanf(fr, "%d", test_mas2+i);
     }
-
-
-
 
     int len_ans;
     fscanf(fr, "%d", &len_ans);
@@ -207,9 +209,10 @@ int test_matching_elements(){
         fscanf(fr, "%d", mas_ans+i);
     }
 
-    int *mas_help = malloc(sizeof (int)*min(len1, len2));
-    int len_mas_help = matching_elements(test_mas1, len1,test_mas2, len2, mas_help, min(len1, len2));
+    int *mas_help = malloc(sizeof (int)*(len1+len2-min(len1, len2)));
+    int len_mas_help = matching_elements(test_mas1, len1,test_mas2, len2, mas_help, len1+len2-min(len1, len2));
     q_sort(mas_help, len_mas_help);
+
     if (len_mas_help == len_ans && compare_array(mas_ans,mas_help,len_ans)){
         fclose(fr);
         free(mas_ans);
@@ -229,32 +232,36 @@ int test_matching_elements(){
 int main() {
     printf("%d\n", test_matching_elements());
 
-    int n,k;
-    printf("Enter one number(for n): ");
-    scanf("%d", &n);
-    printf("Enter one number(for k): ");
-    scanf("%d", &k);
-
-    int len_answer = min(n,k);
-    int *mas_n = malloc(sizeof(int) * n);
-    fill_mas_rand(mas_n, n, 10);
-    int *mas_k = malloc(sizeof(int) * k);
-    fill_mas_rand(mas_k, k, 10);
-
-    int *mas_answer = malloc(sizeof(int) * len_answer);
-
-    printf("mas_n = ");
-    print_array(mas_n, n);
-    printf("mas_k = ");
-    print_array(mas_k, k);
-
-    int flag = matching_elements(mas_n, n, mas_k, k, mas_answer, len_answer);
-
-    if(flag){
-        printf("mas_answer = ");
-        print_array(mas_answer, flag);
-    }
-    else{
-        printf("Совпадений нет\n");
-    }
+//    int n,k;
+//    printf("Enter one number(for n): ");
+//    scanf("%d", &n);
+//    printf("Enter one number(for k): ");
+//    scanf("%d", &k);
+//
+//    int len_answer = min(n,k);
+//    int *mas_n = malloc(sizeof(int) * n);
+//    fill_mas_rand(mas_n, n, 10);
+//    int *mas_k = malloc(sizeof(int) * k);
+//    fill_mas_rand(mas_k, k, 10);
+//
+//    int *mas_answer = malloc(sizeof(int) * len_answer);
+//
+//    printf("mas_n = ");
+//    print_array(mas_n, n);
+//    printf("mas_k = ");
+//    print_array(mas_k, k);
+//
+//    int flag = matching_elements(mas_n, n, mas_k, k, mas_answer, len_answer);
+//
+//    if(flag){
+//        printf("mas_answer = ");
+//        print_array(mas_answer, flag);
+//    }
+//    else{
+//        printf("Совпадений нет\n");
+//    }
+//    free(mas_answer);
+//    free(mas_n);
+//    free(mas_k);
+    return 0;
 }

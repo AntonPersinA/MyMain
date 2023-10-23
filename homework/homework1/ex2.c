@@ -25,6 +25,7 @@ int test_zero() {
 
     fscanf(fr, "%d %d", &count_zero_ans, &len_mas);
     int *mas = malloc(sizeof(int)*len_mas);
+    if(mas == NULL){fclose(fr);return 0;}
     for (int i = 0; i < len_mas; ++i) {
         fscanf(fr, "%d", &a);
 

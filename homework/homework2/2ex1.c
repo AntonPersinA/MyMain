@@ -40,14 +40,12 @@ int test_fib(){
 
     int ans;
     fscanf(fr, "%d", &ans);
-
+    fclose(fr);
     if (fibonachi_def(n_fib) != ans){
-        fclose(fr);
         return -1;
     }
 
     if (fibonachi_for(n_fib) != ans){
-        fclose(fr);
         return -2;
     }
     return 1;

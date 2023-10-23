@@ -33,6 +33,7 @@ int test_luck_ticket(){
     int answeing;
 
     fscanf(fr, "%d", &answeing);
+    fclose(fr);
     return answeing==luck_ticket();
 }
 

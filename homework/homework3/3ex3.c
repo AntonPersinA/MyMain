@@ -38,6 +38,15 @@ void *selection_sort(int * mas, int len, char if1down){
 }
 
 
+void print_array(int *mas, int length){
+    printf("{");
+    for (int i = 0; i<length; i++){
+        printf("%d, ", mas[i]);
+    }
+    printf("\b\b}\n");
+}
+
+
 void q_sort(int *mas, int len){
     if (len>3){                                     //Оптимальное значение тут 3
         int *main_i, *start = mas, *end = mas + len - 1;
@@ -99,8 +108,8 @@ int more_meet_el(int *mas, size_t len_mas){
     for (int i = 1; i < len_mas; ++i){
         if (*(help_mas+i)==*(help_mas+i-1)){
             kolv_el_now++;
-            ind_max_el = kolv_el_max>kolv_el_now?ind_max_el:i-1;
-            kolv_el_max = kolv_el_max>kolv_el_now?kolv_el_max:kolv_el_now;
+            ind_max_el = kolv_el_max>=kolv_el_now?ind_max_el:i-1;
+            kolv_el_max = kolv_el_max>=kolv_el_now?kolv_el_max:kolv_el_now;
         }
         else{
             kolv_el_now =1;
@@ -112,11 +121,33 @@ int more_meet_el(int *mas, size_t len_mas){
 }
 
 int test_more_meet_el(){
+    FILE *fr = fopen("3test1.txt", "r");
+    if (fr == NULL){
+        perror("3test1.txt");
+        return 0;
+    }
 
+    int len, answer;
+
+    fscanf(fr, "%d", &len);
+    fscanf(fr, "%d", &answer);
+
+    int *test_mas = malloc(sizeof (int)*len);
+    if(test_mas == NULL){return 0;}
+
+
+    for(int i = 0; i<len;++i){
+        fscanf(fr, "%d", test_mas+i);
+    }
+    if(more_meet_el(test_mas, len) == answer){
+        free(test_mas);
+        fclose(fr);
+        return 1;
+    }
+    return 0;
 }
 
 
 int main() {
-    int mas[5] = {2,1,3,3,2};
-    printf("%d\n", more_meet_el(mas, 5));
+    printf("test = %d\n", test_more_meet_el());
 }

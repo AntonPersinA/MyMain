@@ -537,7 +537,7 @@ void counting_sort(int *mas, size_t len_mas){
             }
         }
         int mas_now = 0;
-        print_array(help_minus, -min_el+1);
+//        print_array(help_minus, -min_el+1);
         for (int i = -min_el; i >= 1; +--i){
             for (int g = 0; g < *(help_minus+i); ++g) {
                 *(mas + mas_now) = -i;

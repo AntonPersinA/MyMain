@@ -41,9 +41,11 @@ def test1_4():
 
 
 def test1_5(how_many_test):
+    max_randint = 10
+    f.write(str(max_randint+1) + "\n")
     f.write(str(how_many_test) + "\n")
     for g in range(how_many_test):
-        len_str = randint(1, 4)
+        len_str = randint(1, max_randint)
         str1 = ""
         if (randint(1, 3) == 1):
             for i in range(len_str):
@@ -140,5 +142,5 @@ def test1_8():
     for i in a_h:
         f.write(str(i) + "\n")
 
-test1_4()
+test1_1()
 f.close()
