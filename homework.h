@@ -64,6 +64,8 @@ void insertion_sort(int *mas, int len_mas); //Сортировка вставк�
 
 void counting_sort(int *mas, size_t len_mas); //Сортировка подсчетом сложности O(n+k)
 
+int compare_array(int *mas1, int *mas2, int len); //Сравнивает массивы
+
 //#endif
 
 //-O3 -march=native

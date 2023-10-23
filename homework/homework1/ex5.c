@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <math.h>
 
 int parenthesis_rule(char *stroka) {
     int skobe = 0, i = 0;
@@ -19,6 +20,11 @@ int parenthesis_rule(char *stroka) {
 
 int test_scobe_rule() {
     FILE *fr = fopen("1test1.txt", "r");
+
+    if (fr == NULL){
+        perror("1test1.txt");
+        return 0;
+    }
 
     int count_test, flag;
     char *str;

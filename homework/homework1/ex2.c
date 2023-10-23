@@ -16,6 +16,11 @@ int array_zero(int *mas, size_t len_mas) {
 int test_zero() {
     FILE *fr = fopen("1test1.txt", "r");
 
+    if (fr == NULL){
+        perror("1test1.txt");
+        return 0;
+    }
+
     int a, count_zero_ans, len_mas;
 
     fscanf(fr, "%d %d", &count_zero_ans, &len_mas);
@@ -28,8 +33,10 @@ int test_zero() {
 
     if (array_zero(mas, len_mas) == count_zero_ans){
         free(mas);
+        fclose(fr);
         return 1;
     }
+    fclose(fr);
     free(mas);
     return 0;
 }

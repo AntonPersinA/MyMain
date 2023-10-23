@@ -41,6 +41,11 @@ int remainder1(int divider, int denominator) {
 int test_remainder() {
     FILE *fr = fopen("1test1.txt", "r");
 
+    if (fr == NULL){
+        perror("1test1.txt");
+        return 0;
+    }
+
     int a, b, c, count_test;
 
     fscanf(fr, "%d", &count_test);

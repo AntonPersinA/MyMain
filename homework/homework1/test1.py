@@ -36,6 +36,10 @@ def test1_3(how_many_test):
         f.write(str(a) + " " + str(b) + " " + str(c) + "\n")
 
 
+def test1_4():
+    f.write(str(55252) + "\n")
+
+    
 def test1_5(how_many_test):
     f.write(str(how_many_test)+"\n")
     for g in range(how_many_test):
@@ -79,6 +83,77 @@ def test1_5(how_many_test):
         f.write("1 ")
         f.write(str1+"\n")
 
-test1_5(10)
+
+def test1_6():
+    test_num = randint(2,100)
+    a=[]
+    for i in range(2,test_num+1):
+        flag = 1
+        for j in range(2,int(i**0.5) + 1):
+            if i%j == 0:
+                flag = 0
+                break
+        if flag:
+            a.append(i)
+
+    f.write('\t'+str(len(a))+"\n")
+    for i in a:
+        f.write(str(i)+"\n")
+
+
+
+def test1_7():
+        str1 = ""
+        str1_len = randint(2, 30)
+        for i in range(str1_len):
+            a = randint(97, 122)
+            str1 = str1 + chr(a)
+
+        str2 = ""
+        str2_len = randint(1, 3)
+        for i in range(str2_len):
+            a = randint(97, 122)
+            str2 = str2 + chr(a)
+
+        answer1 = len(str1.split(str2)) - 1
+
+        f.write(str(str1_len) + "\n")
+        f.write(str1 + "\n")
+        f.write(str(str2_len) + "\n")
+        f.write(str2 + "\n")
+        f.write(str(answer1) + "\n")
+
+
+def test1_8():
+    x1 = 1
+    x2 = 8
+    f.write(str(x1) + "\n")
+    f.write(str(x2) + "\n")
+    a = [randint(-10,10) for i in range(randint(10,11))]
+
+    f.write(str(len(a)) + "\n")
+
+    for i in a:
+        f.write(str(i) + "\n")
+
+    a_h = a[:x1] + a[x2:x1-1:-1] + a[x2+1:]
+
+    for i in a_h:
+        f.write(str(i) + "\n")
+
+
+
+test1_4()
+
+
+
+
+
+
+
+
+
+
+
 
 f.close()

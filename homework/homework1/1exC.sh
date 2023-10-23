@@ -2,5 +2,5 @@
 
 clear
 python3 test1.py
-gcc ex5.c -lm
+gcc ex4.c -lm
 ./a.out

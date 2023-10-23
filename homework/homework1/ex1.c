@@ -16,6 +16,11 @@ void swap_value(int *number1, int *number2) {
 int test_swap(){
     FILE *fr = fopen("1test1.txt", "r");
 
+    if (fr == NULL){
+        perror("1test1.txt");
+        return 0;
+    }
+
     int a_test, b_test;
     fscanf(fr, "%d %d", &a_test, &b_test);
     int a = a_test, b = b_test;

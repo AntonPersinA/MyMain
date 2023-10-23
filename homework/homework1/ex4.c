@@ -23,8 +23,24 @@ int luck_ticket() {
 }
 
 
+int test_luck_ticket(){
+    FILE *fr = fopen("1test1.txt", "r");
+
+    if (fr == NULL) {
+        perror("1test1.txt");
+        return 0;
+    }
+    int answeing;
+
+    fscanf(fr, "%d", &answeing);
+    return answeing==luck_ticket();
+}
+
+
 int main(){
     int answer = luck_ticket();
     printf("answer = %d\n", answer);
+
+    printf("test_check = %d\n", test_luck_ticket());
     return 0;
 }
