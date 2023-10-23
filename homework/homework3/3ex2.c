@@ -161,7 +161,74 @@ int matching_elements(int *masn, size_t len_masn,
 }
 
 
+int compare_array(int *mas1, int *mas2, int len){
+    for (int i = 0; i < len; ++i){
+        if (*(mas1 + i) != *(mas2 + i))return 0;
+    }
+    return 1;
+}
+
+
+int test_matching_elements(){
+    FILE *fr = fopen("3test1.txt", "r");
+
+    if (fr == NULL){
+        perror("3test1.txt");
+        return 0;
+    }
+    int len1,len2;
+    fscanf(fr, "%d", &len1);
+
+    int *test_mas1 = malloc(sizeof (int)*len1);
+    if(test_mas1 == NULL){return 0;}
+
+
+    for(int i = 0; i<len1;++i){
+        fscanf(fr, "%d", test_mas1+i);
+    }
+
+    fscanf(fr, "%d", &len2);
+    int *test_mas2 = malloc(sizeof (int)*len2);
+    if(test_mas2 == NULL){return 0;}
+
+    for(int i = 0; i<len2;++i){
+        fscanf(fr, "%d", test_mas2+i);
+    }
+
+
+
+
+    int len_ans;
+    fscanf(fr, "%d", &len_ans);
+    int *mas_ans = malloc(sizeof (int)*len_ans);
+    if(mas_ans == NULL){return 0;}
+
+    for(int i = 0; i<len_ans;++i){
+        fscanf(fr, "%d", mas_ans+i);
+    }
+
+    int *mas_help = malloc(sizeof (int)*min(len1, len2));
+    int len_mas_help = matching_elements(test_mas1, len1,test_mas2, len2, mas_help, min(len1, len2));
+    q_sort(mas_help, len_mas_help);
+    if (len_mas_help == len_ans && compare_array(mas_ans,mas_help,len_ans)){
+        fclose(fr);
+        free(mas_ans);
+        free(mas_help);
+        free(test_mas2);
+        free(test_mas1);
+        return 1;
+    }
+    free(mas_ans);
+    free(mas_help);
+    free(test_mas2);
+    free(test_mas1);
+    fclose(fr);
+    return 0;
+}
+
 int main() {
+    printf("%d\n", test_matching_elements());
+
     int n,k;
     printf("Enter one number(for n): ");
     scanf("%d", &n);

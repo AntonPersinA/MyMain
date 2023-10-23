@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 
-long long ll_pow_n(long long m, long long n){
+long long ll_pow_n(int m, int n){
     long long ans = 1;
     for(int i = 0; i<n;++i)
         ans*=m;
@@ -9,8 +9,9 @@ long long ll_pow_n(long long m, long long n){
 }
 
 
-long long ll_pow_logn(long long m, long long n){
+long long ll_pow_logn(int m, int n){
     long long otv = 1;
+    if (n == 0){return 1;}
     while (n>1){
         if (n%2 == 0){
             m*=m;
@@ -27,8 +28,36 @@ long long ll_pow_logn(long long m, long long n){
 }
 
 
+int test_MyPow(){
+    FILE *fr = fopen("2test1.txt", "r");
+
+    if (fr == NULL){
+        perror("2test1.txt");
+        return 0;
+    }
+
+    int n,m;
+
+    long long ans;
+    fscanf(fr, "%d", &m);
+    fscanf(fr, "%d", &n);
+    fscanf(fr, "%Ld", &ans);
+
+    if (ans != ll_pow_logn(m,n)){
+        fclose(fr);
+        return -1;
+    }
+
+    if (ans != ll_pow_n(m,n)){
+        fclose(fr);
+        return -2;
+    }
+    fclose(fr);
+    return 1;
+}
+
+
 int main() {
-    printf("result O(logn) = %lld\n", ll_pow_logn(2, 3));
-    printf("result O(n)    = %lld\n", ll_pow_n(2, 3));
+    printf("%d\n", test_MyPow());
     return 0;
 }

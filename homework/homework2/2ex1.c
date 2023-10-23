@@ -1,10 +1,10 @@
 #include <time.h>
 #include <stdio.h>
 
-#define test    41
+#define test    5
 
 long long fibonachi_def(int n){
-    if (n==1 || n == 2)
+    if (n<=2)
         return 1;
 //    if (n%2 == 0){
 //        long long f_k = fibonachi_def(n/2);
@@ -26,6 +26,34 @@ long long fibonachi_for(int n){
 }
 
 
+int test_fib(){
+    FILE *fr = fopen("2test1.txt", "r");
+
+    if (fr == NULL){
+        perror("2test1.txt");
+        return 0;
+    }
+
+    int n_fib;
+    fscanf(fr, "%d", &n_fib);
+
+
+    int ans;
+    fscanf(fr, "%d", &ans);
+
+    if (fibonachi_def(n_fib) != ans){
+        fclose(fr);
+        return -1;
+    }
+
+    if (fibonachi_for(n_fib) != ans){
+        fclose(fr);
+        return -2;
+    }
+    return 1;
+}
+
+
 int main() {
     clock_t end, start;
     int answer;
@@ -38,5 +66,8 @@ int main() {
     fibonachi_for(test);
     end = clock();
     printf("for loop time          = %f\n", ((double)end - start)/CLOCKS_PER_SEC);
+
+
+    printf("test = %d\n", test_fib());
     return 0;
 }

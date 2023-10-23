@@ -29,10 +29,12 @@ int value_num_byte(int start_value, int count) {
     return help_number;
 }
 
+
 int min(int a, int b){
     if (a>b)return b;
     return a;
 }
+
 
 //Задание первое(1) //В вводе ставить ссылку на переменные --- &
 void swap_value_or(int *number1, int *number2) {
@@ -194,7 +196,7 @@ void print_array(int *mas, int length){
 }
 
 
-//Задание восемь(8)                 На вход массив и по индексам та его часть которую надо перевернуть
+//Задание восемь(8)                 На вход массив и по индексам та его часть, которую надо перевернуть
 int *array_reverse(int *mas, int a, int b){
     int help = 0;
     for (a; a<b; a++) {

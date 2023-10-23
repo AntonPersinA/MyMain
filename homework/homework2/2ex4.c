@@ -59,6 +59,39 @@ void sort_depend_first(int *mas, int len) {
 }
 
 
+int test_sort_depend_first(){
+    int *mas = malloc(sizeof(int)*size);
+
+    if(mas == NULL){
+        return 0;
+    }
+    int test_size = 1000;
+
+    fill_mas_rand(mas, test_size, 10);
+
+    int check = *mas;
+
+    sort_depend_first(mas, test_size);
+
+    int i = 0;
+    for (; i<test_size;++i){
+        if (*(mas+i) > check){
+            free(mas);
+            return -1;
+        }
+        if(*(mas+i) == check){
+            break;
+        }
+    }
+    for(;i<test_size;++i){
+        if (*(mas+i) < check){
+            free(mas);
+            return -1;
+        }
+    }
+    free(mas);
+    return 1;
+}
 
 int main() {
     int *mas = malloc(sizeof(int)*size);
@@ -71,5 +104,13 @@ int main() {
     print_array(mas, size);
 
     free(mas);
+
+    printf("\ntest = %d\n", test_sort_depend_first());
+    for(int i = 0; i<100;++i){
+        if(test_sort_depend_first()!=1){
+            printf("in i = %d, test = %d\n", i,test_sort_depend_first());
+            break;
+        }
+    }
     return 0;
 }

@@ -97,16 +97,13 @@ void counting_sort(int *mas, size_t len_mas){
             }
         }
         int mas_now = 0;
-        print_array(help_minus, -min_el+1);
         for (int i = -min_el; i >= 1; +--i){
             for (int g = 0; g < *(help_minus+i); ++g) {
                 *(mas + mas_now) = -i;
                 mas_now++;
-                printf("mas_now = %d\n", mas_now);
             }
         }
-        printf("mas_now = %d\n ", mas_now);
-        for (int i = 1; i <= max_el; ++i){
+        for (int i = 0; i <= max_el; ++i){
             for (int g = 0; g < *(help_plus + i); ++g) {
                 *(mas + mas_now) = i;
                 mas_now++;
@@ -118,7 +115,75 @@ void counting_sort(int *mas, size_t len_mas){
 }
 
 
-#define size    100000
+int compare_array(int *mas1, int *mas2, int len){
+    for (int i = 0; i < len; ++i){
+        if (*(mas1 + i) != *(mas2 + i))return 0;
+    }
+    return 1;
+}
+
+
+int test_count_sort(){
+    FILE *fr = fopen("2test1.txt", "r");
+
+    if (fr == NULL){
+        perror("2test1.txt");
+        return 0;
+    }
+    int len;
+    fscanf(fr, "%d", &len);
+
+    int *test_mas = malloc(sizeof (int)*len);
+    if(test_mas == NULL){return 0;}
+    int *ans_mas = malloc(sizeof (int)*len);
+    if(ans_mas == NULL){return 0;}
+
+    for(int i = 0; i<len;++i){
+        fscanf(fr, "%d", test_mas+i);
+    }
+    for(int i = 0; i<len;++i){
+        fscanf(fr, "%d", ans_mas+i);
+    }
+
+    counting_sort(test_mas, len);
+    if(compare_array(test_mas, ans_mas, len)){
+        return 1;
+    }
+    return 0;
+}
+
+
+int test_buble_sort(){
+    FILE *fr = fopen("2test1.txt", "r");
+
+    if (fr == NULL){
+        perror("2test1.txt");
+        return 0;
+    }
+    int len;
+    fscanf(fr, "%d", &len);
+
+    int *test_mas = malloc(sizeof (int)*len);
+    if(test_mas == NULL){return 0;}
+    int *ans_mas = malloc(sizeof (int)*len);
+    if(ans_mas == NULL){return 0;}
+
+    for(int i = 0; i<len;++i){
+        fscanf(fr, "%d", test_mas+i);
+    }
+    for(int i = 0; i<len;++i){
+        fscanf(fr, "%d", ans_mas+i);
+    }
+
+    buble_sort(test_mas, len,0);
+    if(compare_array(test_mas, ans_mas, len)){
+        return 1;
+    }
+    return 0;
+}
+
+
+#define size    1000
 #define fill_limit    100
 
 
@@ -127,23 +192,22 @@ int main() {
 
     int *mas = malloc(sizeof(int)*size);
     fill_mas_rand(mas, size, fill_limit);
-//    print_array(mas,size);
     start = clock();
     buble_sort(mas, size, 0);
     end = clock();
-//    print_array(mas,size);
     printf("buble sort time = %f\n", ((float)(end - start))/CLOCKS_PER_SEC);
 
     printf("\n");
 
     fill_mas_rand(mas, size, fill_limit);
-//    print_array(mas,size);
     start = clock();
     counting_sort(mas, size);
     end = clock();
-//    print_array(mas,size);
     printf("counting sort time = %f\n", ((float)(end - start))/CLOCKS_PER_SEC);
 
     free(mas);
+
+    printf("\ncount sort test = %d\n", test_count_sort());
+    printf("\nbuble sort test = %d\n", test_buble_sort());
     return 0;
 }

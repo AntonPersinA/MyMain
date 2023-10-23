@@ -98,6 +98,44 @@ void q_sort(int *mas, int len){
 }
 
 
+int compare_array(int *mas1, int *mas2, int len){
+    for (int i = 0; i < len; ++i){
+        if (*(mas1 + i) != *(mas2 + i))return 0;
+    }
+    return 1;
+}
+
+
+int test_q_sort(){
+    FILE *fr = fopen("3test1.txt", "r");
+
+    if (fr == NULL){
+        perror("3test1.txt");
+        return 0;
+    }
+    int len;
+    fscanf(fr, "%d", &len);
+
+    int *test_mas = malloc(sizeof (int)*len);
+    if(test_mas == NULL){return 0;}
+    int *ans_mas = malloc(sizeof (int)*len);
+    if(ans_mas == NULL){return 0;}
+
+    for(int i = 0; i<len;++i){
+        fscanf(fr, "%d", test_mas+i);
+    }
+    for(int i = 0; i<len;++i){
+        fscanf(fr, "%d", ans_mas+i);
+    }
+
+    q_sort(test_mas, len);
+    if(compare_array(test_mas, ans_mas, len)){
+        return 1;
+    }
+    return 0;
+}
+
+
 int main() {
     int *mas = malloc(sizeof(int)*size);
     fill_mas_rand(mas, size, 10);
@@ -109,5 +147,7 @@ int main() {
 
 
     free(mas);
+
+    printf("\ntest = %d\n", test_q_sort());
     return 0;
 }
