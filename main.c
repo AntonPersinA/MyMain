@@ -29,18 +29,20 @@ int len_str(char *str){
     return strlen(str);
 }
 int main(){
-    big_int *n1,*n2;
+    big_int *n1,*n2, *n3;
 
-    n1 = big_int_get("1000000000000001");
+    n1 = big_int_get("00000000");
 
-//    char x = 300;
 
-    printf("%d\n", n1->number[102]);
-//    n1 = big_int_get("10101010");
-//
+    n2 = big_int_get("00000000");
+
     big_int_print(n1);
-//    big_int_print(n2);
-//
+    big_int_print(n2);
+
+    n3 = big_int_sum1(n1,n2);
+
+    big_int_print(n3);
+
 //    big_int_swap(n1,n2);
 //    big_int_swap(n1,n2);
 //    big_int_swap(n1,n2);

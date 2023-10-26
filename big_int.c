@@ -110,8 +110,8 @@ big_int *big_int_sum1(big_int *n1, big_int *n2){
     for(unsigned int i = 0; i < n3->length - 1; ++i){
         if(i < len_min) {
             n3->number[i] += n2->number[i] + n1->number[i] + flag;
-            flag = 0;
-            if (n2->number[i] >= n3->number[i] || n1->number[i] >= n3->number[i]) { flag = 1; }
+            flag = (256 - (int)n1->number[i] < (int)n2->number[i]);
+//            if (n2->number[i] >= n3->number[i] || n1->number[i] >= n3->number[i]) { flag = 1; }
         } else{
             if(n1->length < n2->length){
                 n3->number[i] += n2->number[i] + flag;
