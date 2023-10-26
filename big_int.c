@@ -70,19 +70,31 @@ void big_int_free(big_int *n){
 void big_int_swap(big_int *n1, big_int *n2){
     unsigned int len = n1->length;
     unsigned char *num = calloc(len, sizeof(unsigned char));
-    for(int i = 0; i < len; ++i){
-        num[i] = n1->number[i];
-    }
+    if(num==NULL){printf("memory error in big_int_swap");return;}
+    memmove(num, n1->number, len);
+
     n1->number = realloc(n1->number, n2->length);
-    for(int i = 0; i < n2->length; ++i){
-        n1->number[i] = n2->number[i];
-    }
+    if(n1->number==NULL){printf("memory error in big_int_swap");return;}
+    memmove(n1->number, n2->number, n2->length);
+
     n2->number = realloc(n2->number, n1->length);
-    for(int i = 0; i < n1->length; ++i){
-        n2->number[i] = num[i];
-    }
+    if(n2->number==NULL){printf("memory error in big_int_swap");return;}
+    memmove(n2->number, num, n1->length);
+
     n1->length = n2->length;
     n2->length = len;
+
     free(num);
 }
 
+
+big_int* big_int_copy(big_int *x){
+    big_int *n = malloc(sizeof(big_int));
+    if(n==NULL){printf("memory error in big_int_copy");}
+    unsigned char *num = calloc(x->length, sizeof(unsigned char));
+    if(num==NULL){printf("memory error in big_int_copy");}
+    memmove(num, x->number, x->length);
+    n->number = num;
+    n->length = x->length;
+    return n;
+}

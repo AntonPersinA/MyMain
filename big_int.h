@@ -14,3 +14,5 @@ char big_int_equal(big_int *n1, big_int *n2);
 void big_int_free(big_int *n);
 
 void big_int_swap(big_int *n1, big_int *n2);
+
+big_int* big_int_copy(big_int *x);

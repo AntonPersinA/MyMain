@@ -31,8 +31,13 @@ int len_str(char *str){
 int main(){
     big_int *n1,*n2;
 
-    n2 = big_int_get("1000100010001000100010001000100010001000");
-    n1 = big_int_get("1000100010001000100010001000100010001000");
+    n2 = big_int_get("111111111111111111111110000");
+    n1 = big_int_copy(n2);
+
+    n2 = big_int_get("11111111");
+
+    big_int_print(n1);
+    big_int_print(n2);
 
     big_int_free(n2);
     big_int_free(n1);
