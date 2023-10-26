@@ -28,6 +28,8 @@ int str_in_str(char *stroka1, char *stroka2); //Сколько раз строк
 
 void print_array(int *mas, int length); //Выводит массив
 
+void print_array_char(unsigned char *mas, unsigned int length);
+
 int *array_reverse(int *mas, int a, int b); //Переворачиваает массив по индексам, все включительно
 
 long long fibonachi_def(int n); //n-ое число фибоначи рекурсией

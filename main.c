@@ -29,17 +29,25 @@ int len_str(char *str){
     return strlen(str);
 }
 int main(){
-    big_int *n1 = big_int_get("11110000");
+    big_int *n1 = big_int_get("1111111110000001");
+    printf("n1 = ");
     big_int_print(n1);
     big_int *n2 = big_int_get("11110000");
+    printf("\nn2 = ");
     big_int_print(n2);
-    printf("%d\n", big_int_equal(n1,n2));
+//    printf("%d\n", big_int_equal(n1,n2));
 
-    free(n1->number);
-//    free(n2->number);
-    free(n1);
-//    free(n2);
+    big_int_swap(n1,n2);
+
+//    printf("\n");
+    printf("\nn1 = ");
+    big_int_print(n1);
+    printf("\nn2 = ");
+    big_int_print(n2);
+
+
     big_int_free(n2);
+    big_int_free(n1);
 }
 
 

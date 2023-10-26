@@ -60,7 +60,28 @@ char big_int_equal(big_int *n1, big_int *n2){
     return 1;
 }
 
+
 void big_int_free(big_int *n){
     free(n->number);
     free(n);
+}
+
+
+void big_int_swap(big_int *n1, big_int *n2){
+    unsigned int len = n1->length;
+    unsigned char *num = calloc(len, sizeof(unsigned char));
+    for(int i = 0; i < len; ++i){
+        num[i] = n1->number[i];
+    }
+    n1->number = realloc(n1->number, n2->length);
+    for(int i = 0; i < n2->length; ++i){
+        n1->number[i] = n2->number[i];
+    }
+    n2->number = realloc(n2->number, n1->length);
+    for(int i = 0; i < n1->length; ++i){
+        n2->number[i] = num[i];
+    }
+    n1->length = n2->length;
+    n2->length = len;
+    free(num);
 }

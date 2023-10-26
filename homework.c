@@ -195,6 +195,14 @@ void print_array(int *mas, int length){
     printf("\b\b}\n");
 }
 
+void print_array_char(unsigned char *mas, unsigned int length){
+    printf("{");
+    for (unsigned int i = 0; i<length; i++){
+        printf("%d, ", mas[i]);
+    }
+    printf("\b\b}\n");
+}
+
 
 //Задание восемь(8)                 На вход массив и по индексам та его часть, которую надо перевернуть
 int *array_reverse(int *mas, int a, int b){
