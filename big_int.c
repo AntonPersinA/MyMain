@@ -98,3 +98,34 @@ big_int* big_int_copy(big_int *x){
     n->length = x->length;
     return n;
 }
+
+
+big_int *big_int_sum1(big_int *n1, big_int *n2){
+    big_int *n3 = calloc(1, sizeof(big_int));
+    unsigned int len_max = n1->length > n2->length ? n1->length + 1: n2->length + 1;
+    unsigned int len_min = n1->length < n2->length ? n1->length: n2->length;
+    n3->length = len_max;
+    n3->number = calloc(n3->length, sizeof(unsigned char));
+    unsigned int flag = 0;
+    for(unsigned int i = 0; i < n3->length - 1; ++i){
+        if(i < len_min) {
+            n3->number[i] += n2->number[i] + n1->number[i] + flag;
+            flag = 0;
+            if (n2->number[i] >= n3->number[i] || n1->number[i] >= n3->number[i]) { flag = 1; }
+        } else{
+            if(n1->length < n2->length){
+                n3->number[i] += n2->number[i] + flag;
+                if(n2->number[i] != 255){flag = 0;}
+            }
+            else{
+                n3->number[i] += n1->number[i] + flag;
+                if(n1->number[i] != 255){flag = 0;}
+            }
+        }
+    }
+    if(flag){
+        n3->number[n3->length - 1] += flag;
+    }
+    big_int_dlz(n3);
+    return n3;
+}

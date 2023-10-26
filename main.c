@@ -31,15 +31,25 @@ int len_str(char *str){
 int main(){
     big_int *n1,*n2;
 
-    n2 = big_int_get("111111111111111111111110000");
-    n1 = big_int_copy(n2);
+    n1 = big_int_get("1000000000000001");
 
-    n2 = big_int_get("11111111");
+//    char x = 300;
 
+    printf("%d\n", n1->number[102]);
+//    n1 = big_int_get("10101010");
+//
     big_int_print(n1);
-    big_int_print(n2);
-
-    big_int_free(n2);
+//    big_int_print(n2);
+//
+//    big_int_swap(n1,n2);
+//    big_int_swap(n1,n2);
+//    big_int_swap(n1,n2);
+//    big_int_swap(n1,n2);
+//
+//    big_int_print(n1);
+//    big_int_print(n2);
+//
+//    big_int_free(n2);
     big_int_free(n1);
 }
 
