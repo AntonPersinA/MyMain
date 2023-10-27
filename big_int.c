@@ -129,3 +129,12 @@ big_int *big_int_sum1(big_int *n1, big_int *n2){
     big_int_dlz(n3);
     return n3;
 }
+
+
+void big_int_fwrite(big_int *n1, char *file){
+    fopen(file, "w");
+
+    fwrite(n1->number)
+
+    fclose(file);
+}
