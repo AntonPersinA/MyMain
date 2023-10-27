@@ -29,6 +29,8 @@ int len_str(char *str){
     return strlen(str);
 }
 int main(){
+
+
     big_int *n1,*n2, *n3;
 
     n1 = big_int_get("00000000");
@@ -43,15 +45,15 @@ int main(){
 
     big_int_print(n3);
 
-//    big_int_swap(n1,n2);
-//    big_int_swap(n1,n2);
-//    big_int_swap(n1,n2);
-//    big_int_swap(n1,n2);
-//
-//    big_int_print(n1);
-//    big_int_print(n2);
-//
-//    big_int_free(n2);
+    big_int_swap(n1,n2);
+    big_int_swap(n1,n2);
+    big_int_swap(n1,n2);
+    big_int_swap(n1,n2);
+
+    big_int_print(n1);
+    big_int_print(n2);
+
+    big_int_free(n2);
     big_int_free(n1);
 }
 

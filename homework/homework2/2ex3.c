@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
+#include <string.h>
 
 
 void print_array(int *mas, int length){
@@ -185,8 +186,8 @@ int test_buble_sort(){
 }
 
 
-#define size    1000
-#define fill_limit    100
+#define size    10000
+#define fill_limit    10000
 
 
 int main() {
