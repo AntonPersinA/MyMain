@@ -225,16 +225,63 @@ void big_int_shft_r(big_int *n1){
 }
 
 
+void big_int_shft_l2(big_int *n1, int cnt){
+    big_int_dlz(n1);
+    for(int i = 0; i < (cnt & 7); ++i){
+        big_int_shft_l(n1);
+    }
+    cnt>>=3;
+    if(!cnt){return;}
+    n1->length = n1->length + cnt;
+    n1->number = realloc(n1->number, n1->length);
+    for(int i = n1->length - cnt; i >= 0; --i){
+        n1->number[i+cnt] = n1->number[i];
+    }
+    for(int i = 0; i < cnt; ++i){
+        n1->number[i] = 0;
+    }
+}
 
 
+void big_int_shft_r2(big_int *n1, int cnt){
+    big_int_dlz(n1);
+    for(int i = 0; i < (cnt & 7); ++i){
+        big_int_shft_r(n1);
+    }
+    cnt>>=3;
+    if(!cnt){return;}
+    if(cnt>=n1->length){
+        n1->length = 1;
+        n1->number = realloc(n1->number, 1);
+        n1->number[0] = 0;
+    }
+    else {
+        n1->length = n1->length - cnt;
+        n1->number = realloc(n1->number, n1->length);
+    }
+}
 
 
+int bit_int_leq(big_int *n1, big_int *n2){ //n1<=n2
+    if(n1->length < n2->length)return 1;
+    if(n1->length > n2->length)return 0;
+    for(int i = n1->length - 1; i >=0; --i){
+        if (n1->number[i] < n2->number[i])return 1;
+        if (n1->number[i] > n2->number[i])return 0;
+    }
+    return 1;
+}
 
 
-
-
-
-
+int bit_int_meq(big_int *n1, big_int *n2){ //n1>=n2
+    if(n1->length > n2->length)return 1;
+    if(n1->length < n2->length)return 0;
+    for(int i = n1->length - 1; i >=0; --i){
+        if (n1->number[i] > n2->number[i])return 1;
+        if (n1->number[i] < n2->number[i])return 0;
+    }
+    return 1;
+}
 
 
 

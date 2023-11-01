@@ -14,20 +14,16 @@
 int main(){
     big_int *n1;
     big_int *n2;
-//    big_int *n3;
 
-    n1 = big_int_get("11111111");
-    n2 = big_int_get("10");
+    n1 = big_int_get("10010000");
+    n2 = big_int_get("10000001");
 
-//    printf("00000000 ");
+    printf("n1 = ");
     big_int_print(n1);
+    printf("n2 = ");
+    big_int_print(n2);
 
-    big_int_shft_l(n1);
-
-    big_int_print(n1);
-
-
-
+    printf("n1<=n2 = %d\n", bit_int_leq(n1,n2));
 
     big_int_free(n1);
     big_int_free(n2);
