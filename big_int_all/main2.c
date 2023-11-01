@@ -20,6 +20,7 @@ int main(){
 
     printf("n1 = ");
     big_int_print(n1);
+
     printf("n2 = ");
     big_int_print(n2);
 
