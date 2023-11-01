@@ -128,6 +128,37 @@ big_int *big_int_add1(big_int *n1, big_int *n2){
 }
 
 
+big_int *big_int_add2(big_int *n1, big_int *n2){
+    unsigned int len_max = n1->length > n2->length ? n1->length + 1: n2->length + 1;
+    unsigned int len_min = n1->length < n2->length ? n1->length: n2->length;
+    unsigned int flag = 0, flag2;
+
+    if(n1->length < n2->length){
+        unsigned char *n3 = n1->number;
+        n2->number = n1->number;
+        n1->number = n3;
+    }
+
+    n1->length = len_max;
+//    printf("len n1 = %d", n1->length);
+    n1->number = realloc(n1->number, n1->length);
+
+    for (int i = 0; i < len_max; ++i){
+        flag2 = flag;
+        if (i<len_min){
+            flag = (256 - (int)n1->number[i] <= (int)n2->number[i]);
+            n1->number[i] +=n2->number[i]+flag2;
+        }
+    }
+//    printf("\nflag = %d\n", flag2);
+    if(flag2){
+        n1->number[n1->length - 1] += flag2;
+    }
+//    printf("\nn1 f = ");
+
+//    big_int_print(n1);
+    big_int_dlz(n1);
+}
 
 
 

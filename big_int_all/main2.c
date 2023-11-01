@@ -12,21 +12,28 @@
 #include <limits.h>
 
 int main(){
-
-//    FILE *wfile = fopen("big_int_test.txt", "w");
-//    FILE *rfile = fopen("big_int_test.txt", "r");
-
     big_int *n1;
+    big_int *n2;
 
-    n1 = big_int_get("10001000");
+    n1 = big_int_get("1");
+    n2 = big_int_get("10");
 
-    big_int_print(n1);
+    for(int i = 0; i < 100; ++i){
+        big_int *n3;
+        n3 = big_int_add1(n1,n2);
+        big_int_add2(n1,n2);
+        if(!big_int_equal(n1,n3)){
+            big_int_print(n1);
+            big_int_print(n3);
+            big_int_free(n3);
+            break;
+        }
+        big_int_free(n3);
+    }
 
     big_int_test_add();
 
     big_int_free(n1);
-
-//    fclose(wfile);
-//    fclose(rfile);
+    big_int_free(n2);
 }
 
