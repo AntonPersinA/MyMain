@@ -174,9 +174,55 @@ void big_int_add2(big_int *n1, big_int *n2) {
 }
 
 
+void big_int_shft_l(big_int *n1){
+    int flag = 0;
+    if(n1->number[n1->length-1] & 128){
+        n1->number = realloc(n1->number, ++n1->length);
+        n1->number[n1->length-1] = 1;
+        for(int i = 0; i < n1->length - 1; ++i){
+            if(n1->number[i] & 128){
+                n1->number[i]<<=1;
+                n1->number[i]+=flag;
+                flag = 1;
+            }
+            else{
+                n1->number[i]<<=1;
+                n1->number[i]+=flag;
+                flag = 0;
+            }
+        }
+        return;
+    }
+    for(int i = 0; i < n1->length; ++i){
+        if(n1->number[i] & 128){
+            n1->number[i]<<=1;
+            n1->number[i]+=flag;
+            flag = 1;
+        }
+        else{
+            n1->number[i]<<=1;
+            n1->number[i]+=flag;
+            flag = 0;
+        }
+    }
+}
 
 
-
+void big_int_shft_r(big_int *n1){
+    if((n1->number[n1->length - 1] - 1) || n1->length == 1){
+        for(int i = 0; i < n1->length; ++i) {
+            n1->number[i] >>= 1;
+        }
+    }else{
+        n1->length--;
+        n1->number = realloc(n1->number, n1->length);
+        if (n1->number == NULL){printf("memory error in big_int_shft_r\n");return;}
+        for(int i = 0; i < n1->length; ++i) {
+            n1->number[i] >>= 1;
+        }
+        n1->number[n1->length - 1] += 128;
+    }
+}
 
 
 
