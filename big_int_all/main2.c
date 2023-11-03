@@ -15,7 +15,7 @@ int main(){
     big_int *n1;
     big_int *n2;
 
-    n1 = big_int_get("10010000");
+    n1 = big_int_get("-00001");
     n2 = big_int_get("10000001");
 
     printf("n1 = ");

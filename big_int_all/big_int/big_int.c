@@ -12,19 +12,28 @@
 
 big_int* big_int_get(char *bin_number){
     int bit_len = strlen(bin_number);
+    char sign_bin = 0;
     big_int *res = (big_int *)malloc(sizeof(big_int));
     if (res == NULL){printf("memory error in big_int_get\n");return NULL;}
-    res->length = (bit_len+7)>>3;
+
+    if(*bin_number == '-'){
+        sign_bin = 1;
+        res->sign = '-';
+    } else{res->sign = '+';}
+
+    res->length = (bit_len+7-sign_bin)>>3;
     res->number = calloc(res->length, sizeof(res->number[0]));
     if (res->number == NULL){printf("memory error in big_int_get\n");return NULL;}
-    for (int i = 0; i < bit_len; ++i){
+    for (int i = 0; i < bit_len-sign_bin; ++i){ //
         res->number[i/8] += (bin_number[bit_len - i - 1] - '0') << (i%8);
     }
+    big_int_dlz(res);
     return res;
 }
 
 
 void big_int_print(big_int *number){
+    putchar(number->sign);
     for(int i = number->length - 1; i>=0; --i){
             int bit = 128;
             for(int j = 7; j >=0; --j) {
@@ -59,6 +68,16 @@ char big_int_equal(big_int *n1, big_int *n2){
 }
 
 
+char big_int_equal_sgn(big_int *n1, big_int *n2){
+    if (n1->length != n2->length || n1->sign != n2->sign){return 0;}
+
+    for(int i = 0; i < n1->length; ++i){
+        if (n1->number[i] != n2->number[i]){return 0;}
+    }
+    return 1;
+}
+
+
 void big_int_free(big_int *n){
     free(n->number);
     free(n);
@@ -67,6 +86,7 @@ void big_int_free(big_int *n){
 
 void big_int_swap(big_int *n1, big_int *n2){
     unsigned int len = n1->length;
+    char sign = n1->sign;
     unsigned char *num = calloc(len, sizeof(unsigned char));
     if(num==NULL){printf("memory error in big_int_swap");return;}
     memmove(num, n1->number, len);
@@ -82,6 +102,9 @@ void big_int_swap(big_int *n1, big_int *n2){
     n1->length = n2->length;
     n2->length = len;
 
+    n1->sign = n2->sign;
+    n2->sign = sign;
+
     free(num);
 }
 
@@ -94,10 +117,11 @@ big_int* big_int_copy(big_int *x){
     memmove(num, x->number, x->length);
     n->number = num;
     n->length = x->length;
+    n->sign = x->sign;
     return n;
 }
 
-
+//redo
 big_int *big_int_add1(big_int *n1, big_int *n2){
     big_int *n3 = calloc(1, sizeof(big_int));
     unsigned int len_max = n1->length > n2->length ? n1->length + 1: n2->length + 1;

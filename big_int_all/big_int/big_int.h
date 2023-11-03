@@ -4,6 +4,7 @@
 #pragma once
 
 typedef struct big_int{
+    char sign;
     unsigned char* number;
     unsigned int length;
 } big_int;
@@ -15,6 +16,8 @@ void big_int_print(big_int *number);
 void big_int_dlz(big_int *n);
 
 char big_int_equal(big_int *n1, big_int *n2);
+
+char big_int_equal_sgn(big_int *n1, big_int *n2);
 
 void big_int_free(big_int *n);
 
@@ -34,6 +37,6 @@ void big_int_shft_l2(big_int *n1, int cnt);
 
 void big_int_shft_r2(big_int *n1, int cnt);
 
-int bit_int_leq(big_int *n1, big_int *n2); //n1<=n2
+int bit_int_leq(big_int *n1, big_int *n2);
 
-int bit_int_meq(big_int *n1, big_int *n2); //n1>=n2
+int bit_int_meq(big_int *n1, big_int *n2);
