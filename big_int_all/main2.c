@@ -11,11 +11,11 @@
 #include <stdarg.h>
 #include <limits.h>
 
-int main(){
+int main() {
     big_int *n1;
     big_int *n2;
 
-    n1 = big_int_get("-00001");
+    n1 = big_int_get("-00000000000000000000000000000000000000000000001");
     n2 = big_int_get("10000001");
 
     printf("n1 = ");
@@ -24,9 +24,8 @@ int main(){
     printf("n2 = ");
     big_int_print(n2);
 
-    printf("n1<=n2 = %d\n", bit_int_leq(n1,n2));
+    printf("n1<=n2 = %d\n", bit_int_leq(n1, n2));
 
     big_int_free(n1);
     big_int_free(n2);
 }
-

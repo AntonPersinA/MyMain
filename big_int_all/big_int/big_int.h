@@ -5,7 +5,7 @@
 
 typedef struct big_int{
     char sign;
-    unsigned char* number;
+    unsigned char *number;
     unsigned int length;
 } big_int;
 
