@@ -37,8 +37,9 @@ void big_int_shft_l2(big_int *n1, int cnt); //Быстрый сдвиг влев
 
 void big_int_shft_r2(big_int *n1, int cnt); //Быстрый сдвиг вправо
 
-int bit_int_leq(big_int *n1, big_int *n2); //n1<=n2
+int bit_int_leq(big_int *n1, big_int *n2); //Сравнение n1<=n2
 
-int bit_int_meq(big_int *n1, big_int *n2); //n1>=n2
+//! \brief Сравнение n1 >= n2
+int bit_int_meq(big_int *n1, big_int *n2);
 
 void big_int_sub2(big_int *n1, big_int *n2);
