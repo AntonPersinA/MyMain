@@ -450,25 +450,25 @@ void big_int_sub2(big_int *n1, big_int *n2)
         return;
     }
 
-//    if (n2->length > n1->length){
-//        int i = 0;
-//        n1->number = realloc(n1->number, n2->length);
-//        for (int j = n1->length; j < n2->length; ++j)
-//        {
-//            n1->number[j] = 0;
-//        }
-//        n1->length = n2->length;
-//        for (; i < n1->length; ++i)
-//        {
-//            n1->number[i] -= n2->number[i] + flag;
-//            flag = n1->number[i] >= (unsigned char)(n1->number[i] + n1->number[i]) > 0 ? 1 : 0;
-//            n1->number[i] = (unsigned char)~(n1->number[i]);
-//        }
-//        n1->number[i]-=flag;
-//        big_int_dlz(n1);
-//        n1->sign = '-';
-//        return;
-//    }
+    if (n2->length > n1->length){
+        int i = 0;
+        n1->number = realloc(n1->number, n2->length);
+        for (int j = n1->length; j < n2->length; ++j)
+        {
+            n1->number[j] = 0;
+        }
+        n1->length = n2->length;
+        for (; i < n1->length; ++i)
+        {
+            n1->number[i] -= n2->number[i] + flag;
+            flag = n1->number[i] >= (unsigned char)(n1->number[i] + n1->number[i]) > 0 ? 1 : 0;
+            n1->number[i] = (unsigned char)~(n1->number[i]);
+        }
+        n1->number[i]-=flag;
+        big_int_dlz(n1);
+        n1->sign = '-';
+        return;
+    }
 
     int i = n1->length - 1;
     for (; i>=0; --i)
