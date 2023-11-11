@@ -158,6 +158,20 @@ void big_int_swap(big_int *n1, big_int *n2)
     free(num);
 }
 
+void big_int_swap2(big_int *n1, big_int *n2)
+{
+    unsigned int len = n1->length;
+    char sign = n1->sign;
+    unsigned char *num = n1->number;
+
+    n1->number = n2->number;
+    n1->sign = n2->sign;
+    n1->length = n2->length;
+
+    n2->number = num;
+    n2->sign = sign;
+    n2->length = len;
+}
 
 big_int *big_int_copy(big_int *x)
 {
@@ -264,21 +278,19 @@ void big_int_add2(big_int *n1, big_int *n2)
     }
     if (n1->sign == *"-" && n2->sign == *"+")
     {
-//        printf("n1 = ");
-//        big_int_print(n1);
-//        printf("n2 = ");
-//        big_int_print(n2);
-//        printf("---------------------\n");
         n1->sign = *"+";
         big_int_sub2(n1,n2); ////
-        n1->sign = *"-";
+//        if (n1->sign = '-')
+//        {
+//            n1->sign = '+';
+//        }
+//        else
+//        {
+//            n1->sign = '-';
+//        }
         return;
     }
-    char sign = *"+";
-    if (n1->sign == *"-" && n2->sign == *"-")
-    {
-        sign = *"-";
-    }
+
 
 
 
@@ -570,6 +582,8 @@ big_int *big_int_sub1(big_int *n1, big_int *n2)
 
 void big_int_sub2(big_int *n1, big_int *n2)
 {
+    big_int_dlz(n1);
+    big_int_dlz(n2);
     if (n1->sign == *"+" && n2->sign == *"-") // n1 - (-n2) = n1 + n2
     {
         printf("test1\n");
@@ -581,73 +595,67 @@ void big_int_sub2(big_int *n1, big_int *n2)
     if (n1->sign == *"-" && n2->sign == *"-") // - n1 - (-n2) = - n1 + n2 = n2 - n1
     {
         printf("test2\n");
-        big_int_add2(n1,n2);
+        big_int *n3 = big_int_copy(n2);
+        n2->sign = '+';
+        n1->sign = '+';
+        big_int_sub2(n2,n1);
+        big_int_swap2(n1,n2);
+        n2->length = n3->length;
+        n2->sign = n3->sign;
+        n2->number = n3->number;
         return;
     }
     if (n1->sign == *"-" && n2->sign == *"+") // - n1 - n2 = - ( n2 + n1 )
     {
         printf("test3\n");
-        n2->sign = *"-";
+        n1->sign = *"+";
         big_int_add2(n1,n2);
-        n2->sign = *"+";
+        n1->sign = *"-";
         return;
     }
-//    if (bit_int_leq(n1,n2) && !big_int_equal(n1,n2))
-//    {
-//        big_int_sub2(n2,n1);
-//        n1->sign = *"-";
-//        return;
-//    }
 
+    if (!big_int_equal(n1,n2) && bit_int_leq(n1,n2))
+    {
+        big_int *n3 = big_int_copy(n2);
+        big_int_sub2(n2,n1);
+        big_int_swap2(n1,n2);
+        n2->length = n3->length;
+        n2->sign = n3->sign;
+        free(n2->number);
+        n2->number = n3->number;
+        free(n3);
+        return;
+    }
 
-
+    if (big_int_equal(n1,n2))
+    {
+        big_int *n3 = big_int_get("0");
+//        big_int_free(n1);
+//        big_int *n1;
+        n1->length = n3->length;
+        n1->sign = n3->sign;
+        free(n1->number);
+        n1->number = n3->number;
+        free(n3);
+        return;
+    }
 
     unsigned int flag = 0, flag2;
     int i = 0;
-    if (n1->length >= n2->length)
+    for (; i < n2->length; ++i)
     {
-        for (; i < n2->length; ++i)
-        {
-            flag2 = flag;
-            flag = ((int) n1->number[i] < (int) n2->number[i] + flag2); ///////////////////////////////////////////////////////
-            n1->number[i] -= n2->number[i] + flag2;//////////////////////////////////////////
-        }
-        if (flag)
-        {
-            while (n1->number[i] == 0)
-            {
-                n1->number[i] = 255;
-                ++i;
-            }
-            n1->number[i] -= 1;
-        }
+        flag2 = flag;
+        flag = ((int) n1->number[i] < (int) n2->number[i] + flag2); ///////////////////////////////////////////////////////
+        n1->number[i] -= n2->number[i] + flag2;//////////////////////////////////////////
     }
-//    else {
-//        unsigned int len_swap = n1->length;
-//        unsigned char *n3_ptr = n1->number;
-//        n1->length = n2->length;
-//        n2->length = len_swap;
-//
-//        n1->number = n2->number;
-//        n2->number = n3_ptr;
-//        n1->length += 1;
-//        n1->number = realloc(n1->number, n1->length);
-//
-//        for (; i < n2->length; ++i)
-//        {
-//            flag2 = flag;
-//            flag = (256 - (int) n1->number[i] <= (int) n2->number[i]);
-//            n1->number[i] += n2->number[i] + flag2;
-//        }
-//        if (flag)
-//        {
-//            while (n1->number[i] == 255)
-//            {
-//                n1->number[i] += 1;
-//                ++i;
-//            }
-//            n1->number[i] += 1;
-//        }
-//    }
-    big_int_dlz(n1);
+    if (flag)
+    {
+        while (n1->number[i] == 0)
+        {
+            n1->number[i] = 255;
+            ++i;
+        }
+        n1->number[i] -= 1;
+    }
+//    n2->sign = '+';
 }

@@ -125,7 +125,7 @@ int test2(int a)
 
             big_int_add2(n1,n2);//n1+=n2
 //
-//            big_int_dlz(ans_real);
+            big_int_dlz(ans_real);
             if (big_int_equal_sgn(n1, ans_real) == 0){
                 printf("str1=%s\n",str1);
                 printf("str2=%s\n",str2);
@@ -147,22 +147,23 @@ int test2(int a)
 //                free(str_ans);
                 return 1;
             }
-//            big_int_free(help);
-//            big_int_free(n1);
-//            big_int_free(n2);
-//            big_int_free(ans_real);
-//            free(str1);
-//            free(str2);
-//            free(str_ans);
+            big_int_free(help);
+            big_int_free(n1);
+            big_int_free(n2);
+            big_int_free(ans_real);
+            free(str1);
+            free(str2);
+            free(str_ans);
         }
     }
 }
 int main() {
     test2(100);
+
+
+//    big_int *n1 = big_int_get("-1100011");
+//    big_int *n2 = big_int_get("+1100100");
 //
-//
-//    big_int *n1 = big_int_get("-01100100");
-//    big_int *n2 = big_int_get("+01100100");
 //
 //    printf("n1 = ");
 //    big_int_print(n1);
@@ -172,11 +173,13 @@ int main() {
 //
 //    big_int_add2(n1, n2);
 //
-//    printf("an = ");
+//    printf("n2 before = ");
+//    big_int_print(n2);
+//
+//    printf("an pered = ");
 //    big_int_print(n1);
-//
-//
-//
+
+
 //    big_int_free(n1);
 //    big_int_free(n2);
 
