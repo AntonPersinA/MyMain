@@ -260,90 +260,6 @@ big_int *big_int_add1(big_int *n1, big_int *n2)
 }
 
 
-void big_int_add2(big_int *n1, big_int *n2)
-{
-    if (big_int_equal(n1,n2) && n1->sign != n2->sign)
-    {
-        free(n1->number);
-        n1->number = calloc(1, sizeof(char));
-        n1->sign = '+';
-        return;
-    }
-    if (n1->sign == *"+" && n2->sign == *"-")
-    {
-        n2->sign = *"+";
-        big_int_sub2(n1,n2);
-        n2->sign = *"-";
-        return;
-    }
-    if (n1->sign == *"-" && n2->sign == *"+")
-    {
-        n1->sign = *"+";
-        big_int_sub2(n1,n2); ////
-//        if (n1->sign = '-')
-//        {
-//            n1->sign = '+';
-//        }
-//        else
-//        {
-//            n1->sign = '-';
-//        }
-        return;
-    }
-
-
-
-
-    unsigned int flag = 0, flag2;
-    int i = 0;
-    if (n1->length >= n2->length)
-    {
-        n1->length += 1;
-        n1->number = realloc(n1->number, n1->length);
-        for (; i < n2->length; ++i)
-        {
-            flag2 = flag;
-            flag = (256 - (int) n1->number[i] <= (int) n2->number[i]);
-            n1->number[i] += n2->number[i] + flag2;
-        }
-        if (flag)
-        {
-            while (n1->number[i] == 255)
-            {
-                n1->number[i] += 1;
-                ++i;
-            }
-            n1->number[i] += 1;
-        }
-    } else {
-        unsigned int len_swap = n1->length;
-        unsigned char *n3_ptr = n1->number;
-        n1->length = n2->length;
-        n2->length = len_swap;
-
-        n1->number = n2->number;
-        n2->number = n3_ptr;
-        n1->length += 1;
-        n1->number = realloc(n1->number, n1->length);
-
-        for (; i < n2->length; ++i)
-        {
-            flag2 = flag;
-            flag = (256 - (int) n1->number[i] <= (int) n2->number[i]);
-            n1->number[i] += n2->number[i] + flag2;
-        }
-        if (flag)
-        {
-            while (n1->number[i] == 255)
-            {
-                n1->number[i] += 1;
-                ++i;
-            }
-            n1->number[i] += 1;
-        }
-    }
-    big_int_dlz(n1);
-}
 
 
 void big_int_shft_l(big_int *n1)
@@ -580,137 +496,70 @@ big_int *big_int_sub1(big_int *n1, big_int *n2)
 }
 
 
-void big_int_sub2(big_int *n1, big_int *n2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void big_int_add2(big_int *n1, big_int *n2)
 {
     big_int_dlz(n1);
     big_int_dlz(n2);
-    if (n1->sign == *"+" && n2->sign == *"-") // n1 - (-n2) = n1 + n2
-    {
-        printf("test1\n");
-        n2->sign = *"+";
-        big_int_add2(n1,n2);
-        n2->sign = *"-";
-        return;
-    }
-    if (n1->sign == *"-" && n2->sign == *"-") // - n1 - (-n2) = - n1 + n2 = n2 - n1
-    {
-        printf("test2\n");
-        big_int *n3 = big_int_copy(n2);
-        n2->sign = '+';
-        n1->sign = '+';
-        big_int_sub2(n2,n1);
-        big_int_swap2(n1,n2);
-        n2->length = n3->length;
-        n2->sign = n3->sign;
-        n2->number = n3->number;
-        return;
-    }
-    if (n1->sign == *"-" && n2->sign == *"+") // - n1 - n2 = - ( n2 + n1 )
-    {
-        printf("test3\n");
-        n1->sign = *"+";
-        big_int_add2(n1,n2);
-        n1->sign = *"-";
-        return;
-    }
 
-    if (!big_int_equal(n1,n2) && bit_int_leq(n1,n2))
+    if (n1->sign != n2->sign)
     {
-        big_int *n3 = big_int_copy(n2);
-        big_int_sub2(n2,n1);
-        big_int_swap2(n1,n2);
-        n2->length = n3->length;
-        n2->sign = n3->sign;
-        free(n2->number);
-        n2->number = n3->number;
-        free(n3);
-        return;
-    }
-
-    if (big_int_equal(n1,n2))
-    {
-        big_int *n3 = big_int_get("0");
-//        big_int_free(n1);
-//        big_int *n1;
-        n1->length = n3->length;
-        n1->sign = n3->sign;
-        free(n1->number);
-        n1->number = n3->number;
-        free(n3);
-        return;
-    }
-
-    unsigned int flag = 0, flag2;
-    int i = 0;
-    for (; i < n2->length; ++i)
-    {
-        flag2 = flag;
-        flag = ((int) n1->number[i] < (int) n2->number[i] + flag2); ///////////////////////////////////////////////////////
-        n1->number[i] -= n2->number[i] + flag2;//////////////////////////////////////////
-    }
-    if (flag)
-    {
-        while (n1->number[i] == 0)
+        if (n2->sign == '-')
         {
-            n1->number[i] = 255;
-            ++i;
+            n2->sign = '+';
+            big_int_sub2(n1,n2);
+            n2->sign = '-';
+            return;
         }
-        n1->number[i] -= 1;
+        n1->sign = '+';
+        big_int_sub2(n1,n2);
+        if (n1->sign == '+')
+        {
+            n1->sign = '-';
+            return;
+        }
+        n1->sign = '+';
+        return;
     }
-//    n2->sign = '+';
-}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void big_int_fastadd2(big_int *n1, big_int *n2)
-{
     if (n1->sign == n2->sign && n1->sign == '-')
     {
         n1->sign = '+';
         n2->sign = '+';
-        big_int_fastadd2(n1,n2);
+        big_int_add2(n1,n2);
         n1->sign = '-';
         n2->sign = '-';
         return;
     }
 
-    big_int_dlz(n1);
-    big_int_dlz(n2);
-
     if (n1->sign == n2->sign && n1->sign == '+')
     {
-        if (n1->length >= n2->length && n2->length >= 2)
+        if (n1->length > n2->length)
         {
-            short flag = (n1->number[1] + n2->number[1] + (n1->number[0] + n2->number[0] >= 256) >= 256);
-            n1->number[0] += n2->number[0];
-
-            int i = 1;
-            for (; i < n2->length - 1; ++i)
+            short flag1 = 0, flag2 = 0;
+            int i = 0;
+            for (; i < n2->length; ++i)
             {
-                n1->number[i] += n2->number[i] + flag;
-                flag = (n1->number[i + 1] + n2->number[i + 1] + flag >= 256);
+                flag1 = (n1->number[i] + n2->number[i] + flag2 >= 256);
+                n1->number[i] += n2->number[i] + flag2;
+                flag2 = flag1;
             }
-            n1->number[n2->length - 1] += n2->number[n2->length - 1] + flag;
-            ++i;
-
-            if (flag)
+            if (flag2)
             {
                 for (; i < n1->length; ++i)
                 {
@@ -721,82 +570,52 @@ void big_int_fastadd2(big_int *n1, big_int *n2)
                     else
                     {
                         n1->number[i] += 1;
-                        return;
                     }
                 }
-                n1->length += 1;
-                n1->number = realloc(n1->number, n1->length);
-                n1->number[i] = 1;
-                return;
             }
-
-            return;
-        }
-
-        if (n1->length < n2->length && n1->length >= 2)
-        {
-            short flag = (n1->number[1] + n2->number[1] + (n1->number[0] + n2->number[0] >= 256) >= 256);
-
-            n1->number[0] += n2->number[0];
-            n1->length = n2->length + 1;
-            n1->number = realloc(n1->number, n1->length);
-
-            int i = 1;
-            for (; i < n2->length - 1; ++i)
-            {
-                n1->number[i] += n2->number[i] + flag;
-                flag = (n1->number[i + 1] + n2->number[i + 1] + flag >= 256);
-            }
-            int flag2 = (n1->number[n2->length - 1] + n2->number[n2->length - 1] + flag >= 256);
-            n1->number[n2->length - 1] += n2->number[n2->length - 1] + flag;
-            ++i;
-
-            if (flag2)
-            {
-                n1->number[n1->length - 1] = 1;
-            }
-
             big_int_dlz(n1);
             return;
         }
 
-        int i = 0;
-        n1->length = n1->length > n2->length ? n1->length + 1 : n2->length + 1;
-        n1->number = realloc(n1->number, n1->length);
-
-        char flag1 = 0, flag2 = 0;
-        for (; i < n2->length; ++i)
+        if (n1->length <= n2->length)
         {
-            flag2 = (n1->number[i] + n2->number[i] + flag1 >= 256);
-            n1->number[i] += n2->number[i] + flag1;
-            flag1 = flag2;
-        }
+            short flag1 = 0, flag2 = 0;
+            n1->number = realloc(n1->number, n2->length + 1);
 
-        if (flag1)
-        {
+            int i = 0;
             for (; i < n1->length; ++i)
             {
-                if (n1->number[i] == 255)
+                flag1 = (n1->number[i] + n2->number[i] + flag2 >= 256);
+                n1->number[i] += n2->number[i] + flag2;
+                flag2 = flag1;
+            }
+            n1->length = n2->length + 1;
+            if (flag2)
+            {
+                for (; i < n2->length; ++i)
                 {
-                    n1->number[i] = 0;
-                }
-                else
-                {
-                    n1->number[i] += 1;
-                    big_int_dlz(n1);
-                    return;
+                    if (n2->number[i] == 255)
+                    {
+                        n1->number[i] = 0;
+                    }
+                    else
+                    {
+                        n1->number[i] = n2->number[i] + 1;
+
+                        flag2 = 0;
+                        ++i;
+                        break;
+                    }
                 }
             }
-            n1->length += 1;
-            n1->number = realloc(n1->number, n1->length);
-            n1->number[i] = 1;
-
+            for (; i < n2->length; ++i)
+            {
+                n1->number[i] = n2->number[i];
+            }
+            n1->number[n2->length] = flag2;
             big_int_dlz(n1);
             return;
         }
-
-        big_int_dlz(n1);
-        return;
     }
 }
 
@@ -815,29 +634,40 @@ void big_int_fastadd2(big_int *n1, big_int *n2)
 
 
 
-void big_int_fastsub2(big_int *n1, big_int *n2)
+void big_int_sub2(big_int *n1, big_int *n2)
 {
     big_int_dlz(n1);
     big_int_dlz(n2);
 
-    if (n1->sign == n2->sign && n1->sign == '+')
+    if (n1->sign != n2->sign)
     {
-        if (n1->length >= n2->length && n2->length >= 2)
+        if (n1->sign == '+')
         {
-            short flag = (n2->number[1] - n1->number[1] + (n2->number[0] - n1->number[0] > 0) > 0);
-//            printf("flag = %d\n", flag);
-            n1->number[0] -= n2->number[0];
-//            printf("n2_len = %d\n", n2->length);
-            int i = 1;
-            for (; i < n2->length - 1; ++i)
-            {
-                n1->number[i] -= n2->number[i] + flag;
-                flag = (n2->number[i + 1] - n1->number[i + 1] + flag > 0);
-            }
-            n1->number[n2->length - 1] -= n2->number[n2->length - 1] + flag;
-            ++i;
+            n2->sign = '+';
+            big_int_add2(n1,n2);
+            n2->sign = '-';
+            return;
+        }
+        n2->sign = '-';
+        big_int_add2(n1,n2);
+        n2->sign = '+';
+        return;
+    }
 
-            if (flag)
+        if (n1->sign == n2->sign && n1->sign == '+')
+    {
+        if (n1->length > n2->length)
+        {
+            short flag1 = 0, flag2 = 0;
+            int i = 0;
+            for (; i < n2->length; ++i)
+            {
+                flag1 = (n2->number[i] - n1->number[i] + flag2 > 0);
+                n1->number[i] -= n2->number[i] + flag2;
+                flag2 = flag1;
+            }
+
+            if (flag2)
             {
                 for (; i < n1->length; ++i)
                 {
@@ -848,83 +678,24 @@ void big_int_fastsub2(big_int *n1, big_int *n2)
                     else
                     {
                         n1->number[i] -= 1;
-                        big_int_dlz(n1);
-                        return;
                     }
                 }
-                n1->length += 1;
-                n1->number = realloc(n1->number, n1->length);
-                n1->number[i] = 1;
-                big_int_dlz(n1);
-                return;
-            }
-            big_int_dlz(n1);
-            return;
-        }
-
-        if (n1->length < n2->length && n1->length >= 2)
-        {
-            short flag = (n1->number[1] + n2->number[1] + (n1->number[0] + n2->number[0] >= 256) >= 256);
-
-            n1->number[0] += n2->number[0];
-            n1->length = n2->length + 1;
-            n1->number = realloc(n1->number, n1->length);
-
-            int i = 1;
-            for (; i < n2->length - 1; ++i)
-            {
-                n1->number[i] += n2->number[i] + flag;
-                flag = (n1->number[i + 1] + n2->number[i + 1] + flag >= 256);
-            }
-            int flag2 = (n1->number[n2->length - 1] + n2->number[n2->length - 1] + flag >= 256);
-            n1->number[n2->length - 1] += n2->number[n2->length - 1] + flag;
-            ++i;
-
-            if (flag2)
-            {
-                n1->number[n1->length - 1] = 1;
             }
 
             big_int_dlz(n1);
             return;
         }
 
-        int i = 0;
-        n1->length = n1->length > n2->length ? n1->length + 1 : n2->length + 1;
-        n1->number = realloc(n1->number, n1->length);
-
-        char flag1 = 0, flag2 = 0;
-        for (; i < n2->length; ++i)
+        if (n1->length <= n2->length)
         {
-            flag2 = (n1->number[i] + n2->number[i] + flag1 >= 256);
-            n1->number[i] += n2->number[i] + flag1;
-            flag1 = flag2;
-        }
-
-        if (flag1)
-        {
-            for (; i < n1->length; ++i)
-            {
-                if (n1->number[i] == 255)
-                {
-                    n1->number[i] = 0;
-                }
-                else
-                {
-                    n1->number[i] += 1;
-                    big_int_dlz(n1);
-                    return;
-                }
-            }
-            n1->length += 1;
-            n1->number = realloc(n1->number, n1->length);
-            n1->number[i] = 1;
-
+            big_int *n3 = big_int_sub1(n1,n2);
+            free(n1->number);
+            n1->number = n3->number;
+            n1->length = n3->length;
+            n1->sign = n3->sign;
+            free(n3);
             big_int_dlz(n1);
             return;
         }
-
-        big_int_dlz(n1);
-        return;
     }
 }

@@ -59,10 +59,12 @@ int bit_int_meq(big_int *n1, big_int *n2);
 
 big_int *big_int_sub1(big_int *n1, big_int *n2);
 
-void big_int_sub2(big_int *n1, big_int *n2);
+//void big_int_sub2(big_int *n1, big_int *n2);
 
 void big_int_swap2(big_int *n1, big_int *n2);
 
-void big_int_fastadd2(big_int *n1, big_int *n2);
+void big_int_add2(big_int *n1, big_int *n2);
 
-void big_int_fastsub2(big_int *n1, big_int *n2);
+void big_int_sub2(big_int *n1, big_int *n2);
+
+big_int *big_int_add(big_int * n1,big_int *n2);
