@@ -159,8 +159,8 @@ int test2(int a)
 }
 int main() {
 
-    big_int *n1 = big_int_get("1010101010101010101010101010101010101010");
-    big_int *n2 = big_int_get("10101010101010101010101010101010101010101");
+    big_int *n1 = big_int_get("1111111110000000011111111");
+    big_int *n2 = big_int_get("0111111111111111111111110");
 
 
     printf("n1 = ");
@@ -169,18 +169,13 @@ int main() {
     printf("n2 = ");
     big_int_print(n2);
 
-    big_int_fastadd2(n1,n2);
+    big_int_fastsub2(n1,n2);
 
     printf("n1 before = ");
     big_int_print(n1);
 
     big_int_free(n1);
     big_int_free(n2);
-//00000001 00000000 11111111 11111111 11111111 11111110
-    unsigned char a = 100;
-//    int flag = ( (a = ((unsigned char)255 + (unsigned char)2)) > 10);
-//    printf("%d\n\n\n", flag);
-    printf("%d\n\n\n", a);
 
     return 0;
 }
