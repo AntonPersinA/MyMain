@@ -158,30 +158,23 @@ int test2(int a)
     }
 }
 int main() {
-    test2(100);
+
+    big_int *n1 = big_int_get("1111111111111111");
+    big_int *n2 = big_int_get("1111111111111111");
 
 
-//    big_int *n1 = big_int_get("-1100011");
-//    big_int *n2 = big_int_get("+1100100");
-//
-//
-//    printf("n1 = ");
-//    big_int_print(n1);
-//
-//    printf("n2 = ");
-//    big_int_print(n2);
-//
-//    big_int_add2(n1, n2);
-//
-//    printf("n2 before = ");
-//    big_int_print(n2);
-//
-//    printf("an pered = ");
-//    big_int_print(n1);
+    printf("n1 = ");
+    big_int_print(n1);
 
+    printf("n2 = ");
+    big_int_print(n2);
 
-//    big_int_free(n1);
-//    big_int_free(n2);
+    big_int_fastadd2(n1,n2);
+    printf("n1 before = ");
+    big_int_print(n1);
+
+    big_int_free(n1);
+    big_int_free(n2);
 
     return 0;
 }

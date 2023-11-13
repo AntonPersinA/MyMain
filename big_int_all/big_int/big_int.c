@@ -659,3 +659,48 @@ void big_int_sub2(big_int *n1, big_int *n2)
     }
 //    n2->sign = '+';
 }
+
+void big_int_fastadd2(big_int *n1, big_int *n2)
+{
+    if (n1->sign == n2->sign && n1->sign == '+')
+    {
+        if (n1->length >= n2->length)
+        {
+            unsigned short flag = 0;
+            int i = 0;
+            for (; i < n2->length; ++i)
+            {
+                n1->number[i] += n2->number[i] + flag;
+                flag = ((unsigned short)n1->number[i] <= ((unsigned short)n2->number[i] + flag));
+                printf("flag = %d\n", flag);
+            }
+            for (; i < n1->length; ++i) {
+                if (n1->number[i] == 255)
+                {
+                    n1->number = 0;
+                }
+                else
+                {
+                    n1->number += 1;
+                    return;
+                }
+                ++i;
+            }
+            if (flag)
+            {
+//                printf("i = %d\n", i + 1);
+                n1->length = i + 1;
+                n1->number = realloc(n1->number, n1->length);
+                n1->number[i] = 1;
+            }
+            return;
+        }
+//        big_int_dlz(n2);
+        if (n1->length < n2->length)
+        {
+            n1->length = n2->length + 1;
+            n1->number = realloc(n1->number, n1->length);
+
+        }
+    }
+}
