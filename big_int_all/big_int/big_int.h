@@ -12,6 +12,8 @@ typedef struct big_int{
 //! \brief Получение big_int через строку
 big_int* big_int_get(char *bin_number);
 
+big_int *big_int_getloop(char *bin_number, int loop);
+
 //! \brief Переопределение big_int через строку
 big_int *big_int_reget(big_int *n1, char *bin_number);
 
@@ -29,6 +31,9 @@ char big_int_equal_sgn(big_int *n1, big_int *n2);
 
 //! \brief Освобождает память выделенную под big_int
 void big_int_free(big_int *n);
+
+//! \brief Освобождает выделенную память под несколько big_int
+void big_int_free2(char times, ...);
 
 //! \brief Меняет местами два big_int
 void big_int_swap(big_int *n1, big_int *n2);
@@ -71,3 +76,7 @@ void big_int_add2(big_int *n1, big_int *n2);
 
 //! \brief Вычитание a -= b
 void big_int_sub2(big_int *n1, big_int *n2);
+
+big_int *big_int_mult1(big_int *n1, big_int *n2);
+
+big_int *big_int_mul(const big_int *n1,const big_int *n2);

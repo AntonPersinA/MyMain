@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 
 #include "big_int.h"
 
@@ -88,6 +89,50 @@ big_int *big_int_reget(big_int *n1, char *bin_number)
 }
 
 
+big_int *big_int_getloop(char *bin_number, int loop)
+{
+    long long bit_len = strlen(bin_number);
+    loop = loop <= 0 ? 1 : loop;
+    long long  bit_len_loop = strlen(bin_number) * loop;
+    char sign_bin = 0;
+    big_int *res = (big_int *) calloc(1, sizeof(big_int));
+    if (res == NULL)
+    {
+        printf("memory error in big_int_get\n");
+        return NULL;
+    }
+
+    if (*bin_number == '-')
+    {
+        sign_bin = 1;
+        res->sign = '-';
+    } else { res->sign = '+'; }
+    if (*bin_number == '+') {
+        sign_bin = 1;
+    }
+
+    res->length = (bit_len_loop + 7 - sign_bin) >> 3;
+    res->number = calloc(res->length, sizeof(res->number[0]));
+    if (res->number == NULL)
+    {
+        printf("memory error in big_int_get\n");
+        return NULL;
+    }
+
+    for (int i = 0; i < (bit_len_loop - sign_bin); ++i)
+    {
+        res->number[i / 8] += (bin_number[bit_len - i%bit_len - 1] - '0') << (i % 8);
+    }
+    big_int_dlz(res);
+
+    if (res->number[0] == 0 && res->length == 1)
+    {
+        res->sign = '+';
+    }
+    return res;
+}
+
+
 void big_int_print(big_int *number)
 {
     putchar(number->sign);
@@ -165,6 +210,20 @@ void big_int_free(big_int *n)
 {
     free(n->number);
     free(n);
+}
+
+
+void big_int_free2(char times, ...)
+{
+    va_list arg;
+    va_start(arg, times);
+
+    for (int i = 0; i < times; ++i)
+    {
+        big_int *n1 = va_arg(arg, big_int *);
+        big_int_free(n1);
+    }
+    va_end(arg);
 }
 
 
@@ -514,7 +573,6 @@ big_int *big_int_sub1(big_int *n1, big_int *n2)
     }
     if (n1->sign == *"+" && n2->sign == *"-") // n1 - (-n2) = n1 + n2
     {
-        printf("test1\n");
         n2->sign = *"+";
         n3 = big_int_add1(n1,n2);
         n2->sign = *"-";
@@ -522,7 +580,6 @@ big_int *big_int_sub1(big_int *n1, big_int *n2)
     }
     if (n1->sign == *"-" && n2->sign == *"-") // - n1 - (-n2) = - n1 + n2 = n2 - n1
     {
-        printf("test2\n");
         n1->sign = *"+";
         n2->sign = *"+";
         n3 = big_int_sub1(n2,n1);
@@ -532,7 +589,6 @@ big_int *big_int_sub1(big_int *n1, big_int *n2)
     }
     if (n1->sign == *"-" && n2->sign == *"+") // - n1 - n2 = n2 - n1
     {
-        printf("test3\n");
         n2->sign = *"-";
         n3 = big_int_add1(n1,n2);
         n2->sign = *"+";
@@ -766,4 +822,76 @@ void big_int_sub2(big_int *n1, big_int *n2)
             return;
         }
     }
+}
+
+
+big_int *big_int_mult1(big_int *n1, big_int *n2) {
+    big_int *n3 = calloc(1, sizeof(big_int));
+    if (n3 == NULL)
+    {
+        printf("memory error in big_int_mult1\n");
+        return NULL;
+    }
+    n3->length = n1->length + n2->length;
+    n3->number = calloc(n3->length, sizeof(n3->number[0]));
+    if (n3->number == NULL)
+    {
+        printf("memory error in big_int_mult1\n");
+        return NULL;
+    }
+    n3->sign = '-';
+    if (n1->sign == n2->sign)
+    {
+        n3->sign = '+';
+    }
+    unsigned int mult, flag, k;
+    for (size_t i = 0; i < n1->length; ++i)
+    {
+        for (size_t j = 0; j < n2->length; ++j)
+        {
+            mult = n1->number[i] * n2->number[j];
+            flag = (n3->number[i + j] + mult) >> 8;
+            n3->number[i + j] += mult & 255;
+            k = 1;
+            while (flag)
+            {
+                unsigned int flag2 = (n3->number[i + j + k] + (flag)) >> 8;
+                n3->number[i + j + k] += (flag & 255);
+                flag = flag2;
+                k++;
+            }
+        }
+    }
+    big_int_dlz(n3);
+    return n3;
+}
+
+
+big_int *big_int_mul(const big_int *n1,const big_int *n2) {
+
+    unsigned int new_length = n1->length + n2->length;
+
+    big_int *result = (big_int *) malloc(sizeof(big_int));
+    if (!result) return NULL;
+    result->length = new_length;
+
+    result->number = (unsigned char *) calloc(result->length, sizeof(unsigned char));
+
+    for (size_t i = 0; i < n1->length; i++) {
+        for (size_t j = 0; j < n2->length; j++) {
+            unsigned short mult = n1->number[i] * n2->number[j];
+            unsigned short carry = (result->number[i + j] + mult) >> 8;
+            result->number[i + j] += mult;
+            int k = 1;
+            while (carry) {
+                unsigned short carry2 = (result->number[i + j + k] + carry) >> 8;
+                result->number[i + j + k] += carry;
+                carry = carry2;
+                k++;
+            }
+        }
+    }
+    result->sign = n1->sign != n2->sign ? '-' : '+';
+    big_int_dlz(result);
+    return result;
 }

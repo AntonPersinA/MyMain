@@ -1,6 +1,6 @@
 #pragma once
 
-int test_all(int limit);
+void test_all(int limit);
 
 int test_get();
 

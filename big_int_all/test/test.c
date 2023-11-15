@@ -5,8 +5,10 @@
 #include "test.h"
 #include "../lib/lib.h"
 
-int test_all(int limit)
+void test_all(int limit)
 {
+    int s = -1000;
+
     int test_get();
 
     int test_equal(int limit);

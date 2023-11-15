@@ -1,3 +1,3 @@
 #pragma once
 
-char *bin_str(int a);
+char *bin_str(long long a);
