@@ -23,6 +23,7 @@ big_int *big_int_get(char *bin_number)
     if (*bin_number == '+') {
         sign_bin = 1;
     }
+
     res->length = (bit_len + 7 - sign_bin) >> 3;
     res->number = calloc(res->length, sizeof(res->number[0]));
     if (res->number == NULL)
@@ -34,11 +35,56 @@ big_int *big_int_get(char *bin_number)
     for (int i = 0; i < bit_len - sign_bin; ++i)
     {
         res->number[i / 8] += (bin_number[bit_len - i - 1] - '0') << (i % 8);
-//        printf("%d", (bin_number[bit_len - i - 1] - '0'));
     }
-//    printf("\n\n\n");
-//    big_int_dlz(res);
+    big_int_dlz(res);
+
+    if (res->number[0] == 0 && res->length == 1)
+    {
+        res->sign = '+';
+    }
     return res;
+}
+
+
+big_int *big_int_reget(big_int *n1, char *bin_number)
+{
+    free(n1->number);
+
+    int bit_len = strlen(bin_number);
+    char sign_bin = 0;
+
+    if (*bin_number == '-')
+    {
+        sign_bin = 1;
+        n1->sign = '-';
+    } else
+    {
+        n1->sign = '+';
+    }
+    if (*bin_number == '+')
+    {
+        sign_bin = 1;
+    }
+
+    n1->length = (bit_len + 7 - sign_bin) >> 3;
+    n1->number = calloc(n1->length, sizeof(n1->number[0]));
+    if (n1->number == NULL)
+    {
+        printf("memory error in big_int_reget\n");
+        return NULL;
+    }
+
+    for (int i = 0; i < bit_len - sign_bin; ++i)
+    {
+        n1->number[i / 8] += (bin_number[bit_len - i - 1] - '0') << (i % 8);
+    }
+    big_int_dlz(n1);
+
+    if (n1->number[0] == 0 && n1->length == 1)
+    {
+        n1->sign = '+';
+    }
+    return n1;
 }
 
 
@@ -66,6 +112,7 @@ void big_int_dlz(big_int *n)
     {
         --i;
     }
+
     if (i != n->length - 1)
     {
         n->length = i + 1;
@@ -158,6 +205,7 @@ void big_int_swap(big_int *n1, big_int *n2)
     free(num);
 }
 
+
 void big_int_swap2(big_int *n1, big_int *n2)
 {
     unsigned int len = n1->length;
@@ -172,6 +220,7 @@ void big_int_swap2(big_int *n1, big_int *n2)
     n2->sign = sign;
     n2->length = len;
 }
+
 
 big_int *big_int_copy(big_int *x)
 {
@@ -221,6 +270,7 @@ big_int *big_int_add1(big_int *n1, big_int *n2)
         sign = *"-";
     }
     n3 = calloc(1, sizeof(big_int));
+
     unsigned int len_max = n1->length > n2->length ? n1->length + 1 : n2->length + 1;
     unsigned int len_min = n1->length < n2->length ? n1->length : n2->length;
     n3->length = len_max;
@@ -496,22 +546,6 @@ big_int *big_int_sub1(big_int *n1, big_int *n2)
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void big_int_add2(big_int *n1, big_int *n2)
 {
     big_int_dlz(n1);
@@ -618,20 +652,6 @@ void big_int_add2(big_int *n1, big_int *n2)
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 void big_int_sub2(big_int *n1, big_int *n2)
