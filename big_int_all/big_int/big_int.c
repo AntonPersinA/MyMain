@@ -175,7 +175,7 @@ void big_int_swap(big_int *n1, big_int *n2)
     unsigned char *num = calloc(len, sizeof(unsigned char));
     if (num == NULL)
     {
-        printf("memory error in big_int_swap");
+        printf("memory error in big_int_swap\n");
         return;
     }
     memmove(num, n1->number, len);
@@ -183,7 +183,7 @@ void big_int_swap(big_int *n1, big_int *n2)
     n1->number = realloc(n1->number, n2->length);
     if (n1->number == NULL)
     {
-        printf("memory error in big_int_swap");
+        printf("memory error in big_int_swap\n");
         return;
     }
     memmove(n1->number, n2->number, n2->length);
@@ -191,7 +191,7 @@ void big_int_swap(big_int *n1, big_int *n2)
     n2->number = realloc(n2->number, n1->length);
     if (n2->number == NULL)
     {
-        printf("memory error in big_int_swap");
+        printf("memory error in big_int_swap\n");
         return;
     }
     memmove(n2->number, num, n1->length);
@@ -227,12 +227,12 @@ big_int *big_int_copy(big_int *x)
     big_int *n = calloc(1, sizeof(big_int));
     if (n == NULL)
     {
-        printf("memory error in big_int_copy");
+        printf("memory error in big_int_copy\n");
     }
     unsigned char *num = calloc(x->length, sizeof(unsigned char));
     if (num == NULL)
     {
-        printf("memory error in big_int_copy");
+        printf("memory error in big_int_copy\n");
     }
     memmove(num, x->number, x->length);
     n->number = num;
@@ -270,11 +270,21 @@ big_int *big_int_add1(big_int *n1, big_int *n2)
         sign = *"-";
     }
     n3 = calloc(1, sizeof(big_int));
+    if (n3 == NULL)
+    {
+        printf("memory error in big_int_add1\n");
+        return NULL;
+    }
 
     unsigned int len_max = n1->length > n2->length ? n1->length + 1 : n2->length + 1;
     unsigned int len_min = n1->length < n2->length ? n1->length : n2->length;
     n3->length = len_max;
     n3->number = calloc(n3->length, sizeof(unsigned char));
+    if (n3->number == NULL)
+    {
+        printf("memory error in big_int_add1\n");
+        return NULL;
+    }
     unsigned int flag = 0;
     for (unsigned int i = 0; i < n3->length - 1; ++i)
     {
@@ -318,6 +328,12 @@ void big_int_shft_l(big_int *n1)
     if (n1->number[n1->length - 1] & 128)
     {
         n1->number = realloc(n1->number, ++n1->length);
+        if (n1->number == NULL)
+        {
+            printf("memory error in big_int_shft_l\n");
+            return;
+        }
+
         n1->number[n1->length - 1] = 1;
         for (int i = 0; i < n1->length - 1; ++i)
         {
@@ -389,6 +405,12 @@ void big_int_shft_l2(big_int *n1, int cnt)
     }
     n1->length = n1->length + cnt;
     n1->number = realloc(n1->number, n1->length);
+    if (n1->number == NULL)
+    {
+        printf("memory error in big_int_shft_l2\n");
+        return;
+    }
+
     for (int i = n1->length - cnt; i >= 0; --i)
     {
         n1->number[i + cnt] = n1->number[i];
@@ -416,10 +438,20 @@ void big_int_shft_r2(big_int *n1, int cnt)
     {
         n1->length = 1;
         n1->number = realloc(n1->number, 1);
+        if (n1->number == NULL)
+        {
+            printf("memory error in big_int_shft_r2\n");
+            return;
+        }
         n1->number[0] = 0;
     } else {
         n1->length = n1->length - cnt;
         n1->number = realloc(n1->number, n1->length);
+        if (n1->number == NULL)
+        {
+            printf("memory error in big_int_shft_r2\n");
+            return;
+        }
     }
 }
 
@@ -515,7 +547,18 @@ big_int *big_int_sub1(big_int *n1, big_int *n2)
     else
     {
         n3 = calloc(1, sizeof(big_int));
+        if (n3 == NULL)
+        {
+            printf("memory error in big_int_sub1\n");
+            return NULL;
+        }
         n3->number = calloc(n1->length, sizeof(unsigned char));
+        if (n3->number == NULL)
+        {
+            printf("memory error in big_int_sub1\n");
+            return NULL;
+        }
+
         n3->length = n1->length;
         n3->sign = *"+";
         int i = 0;
@@ -615,6 +658,11 @@ void big_int_add2(big_int *n1, big_int *n2)
         {
             short flag1 = 0, flag2 = 0;
             n1->number = realloc(n1->number, n2->length + 1);
+            if (n1->number == NULL)
+            {
+                printf("memory error in big_int_add2\n");
+                return;
+            }
 
             int i = 0;
             for (; i < n1->length; ++i)
