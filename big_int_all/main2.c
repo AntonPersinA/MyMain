@@ -17,7 +17,7 @@
 
 int main() {
 
-    test_all(258);
+//    test_all(258);
 
     big_int *n1 = big_int_get("11111111111111111111111111");
 
