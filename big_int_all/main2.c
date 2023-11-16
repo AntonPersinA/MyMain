@@ -124,8 +124,10 @@ vcomplex1 fft1mpfr(const vcomplex1 A, int size)
     vcomplex1 roots = (vcomplex1)malloc(sizeof(complex1) * n);
     for(int i = 0; i < n; i++) {
         mpfr_t temp;
-
+        mpfr_init(roots[i].re);
+        mpfr_init(roots[i].im);
         mpfr_init(temp);
+
         mpfr_mul_ui(temp, PI, 2 * i, MPFR_RNDN);
         mpfr_div_ui(temp, temp, n, MPFR_RNDN);
         mpfr_mul_si(temp, temp, -1, MPFR_RNDN);
@@ -138,6 +140,9 @@ vcomplex1 fft1mpfr(const vcomplex1 A, int size)
 
     vcomplex1 cur = (vcomplex1)malloc(sizeof(complex1) * n);
     for(int i = 0; i < n; i++){
+        mpfr_init(cur[i].re);
+        mpfr_init(cur[i].im);
+
         mpfr_set(cur[i].re, A[rev[i]].re, MPFR_RNDN);
         mpfr_set(cur[i].im, A[rev[i]].im, MPFR_RNDN);
     }
@@ -188,6 +193,9 @@ vcomplex1 fft1mpfr(const vcomplex1 A, int size)
 
     mpfr_clear(PI);
     for(int i = 0; i < n; i++) {
+        mpfr_init(A[i].re);
+        mpfr_init(A[i].im);
+
         mpfr_clear(roots[i].re);
         mpfr_clear(roots[i].im);
     }
@@ -222,12 +230,6 @@ void print_complex_array(vcomplex1 cur, int size)
 }
 
 
-#include <stdio.h>
-#include <mpfr.h>
-#include <stdlib.h>
-#include <unistd.h>
-
-// Сюда вставьте методы fft1mpfr и print_complex_array
 
 int init_my()
 {
@@ -504,18 +506,6 @@ int main() {
     free(complex_data);
     free(res);
     free(res2);
-
-
-
-
-
-
-    init_my();
-
-
-
-    printf("ttt = %d\n", (int)(log2(1)) + 1);
-
 
     return 0;
 }
