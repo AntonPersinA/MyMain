@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+#include <math.h>
 
 #include "big_int.h"
 
@@ -894,4 +895,14 @@ big_int *big_int_mul(const big_int *n1,const big_int *n2) {
     result->sign = n1->sign != n2->sign ? '-' : '+';
     big_int_dlz(result);
     return result;
+}
+
+
+big_int *big_int_fftmul(big_int *n1, big_int *n2)
+{
+    int discrete1 = (int)(log2(n1->length)) + 1;
+    int discrete2 = (int)(log2(n2->length)) + 1;
+
+
+
 }
