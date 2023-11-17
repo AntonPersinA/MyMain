@@ -21,8 +21,8 @@
 #include <complex.h>
 #include <stdio.h>
 
-typedef long double complex cd;
-typedef cd* vcd;
+//typedef long double complex cd;
+//typedef cd* vcd;
 
 
 //#include <gmp.h>
@@ -100,66 +100,89 @@ typedef struct {
 
 typedef complex1* vcomplex1;
 
-vcomplex1 fft1mpfr(const vcomplex1 as, int size, mpfr_prec_t prec) //прек это точность в битах
-{
-    int n = size;
-    int k = 0;
-    while ((1 << k) < n) k++;
-    int* rev = (int*)malloc(sizeof(int) * n);
+//vcomplex1 fft1mpfr(const vcomplex1 as, int size, mpfr_prec_t prec) //прек это точность в битах
+//{
+//    int n = size;
+//    int k = 0;
+//    while ((1 << k) < n) k++;
+//    int* rev = (int*)malloc(sizeof(int) * n);
+//
+//    rev[0] = 0;
+//    int high1 = -1;
+//    for (int i = 1; i < n; i++) {
+//        if ((i & (i - 1)) == 0)
+//            high1++;
+//        rev[i] = rev[i ^ (1 << high1)];
+//        rev[i] |= (1 << (k - high1 - 1));
+//    }
+//
+//    vcomplex1 roots = (vcomplex1)malloc(sizeof(complex1) * n);
+//    for (int i = 0; i < n; i++) {
+//        mpfr_t alpha;
+//        mpfr_init2(alpha, prec);
+//        mpfr_set_d(alpha, 2 * M_PI * i / n, MPFR_RNDN);
+//        mpfr_cos(roots[i].re, alpha, MPFR_RNDN);
+//        mpfr_sin(roots[i].im, alpha, MPFR_RNDN);
+//        mpfr_clear(alpha);
+//    }
+//
+//    vcomplex1 cur = (vcomplex1)malloc(sizeof(complex1) * n);
+//    for (int i = 0; i < n; i++)
+//        cur[i] = as[rev[i]];
+//
+//    for (int len = 1; len < n; len <<= 1) {
+//        vcomplex1 ncur = (vcomplex1)malloc(sizeof(complex1) * n);
+//        int rstep = n / (len * 2);
+//        for (int pdest = 0; pdest < n;) {
+//            int p1 = pdest;
+//            for (int i = 0; i < len; i++) {
+//                complex1 val;
+//                mpfr_init2(val.re, prec);
+//                mpfr_init2(val.im, prec);
+//
+//                mpfr_mul(val.re, roots[i * rstep].re, cur[p1 + len].re, MPFR_RNDN);
+//                mpfr_sub(val.re, cur[p1].re, val.re, MPFR_RNDN);
+//
+//                mpfr_mul(val.im, roots[i * rstep].im, cur[p1 + len].im, MPFR_RNDN);
+//                mpfr_add(val.im, cur[p1].im, val.im, MPFR_RNDN);
+//
+//                ncur[pdest] = val;
+//                pdest++, p1++;
+//            }
+//            pdest += len;
+//        }
+//        free(cur);
+//        cur = ncur;
+//    }
+//
+//    free(rev);
+//    free(roots);
+//
+//    return cur;
+//}
 
-    rev[0] = 0;
-    int high1 = -1;
-    for (int i = 1; i < n; i++) {
-        if ((i & (i - 1)) == 0)
-            high1++;
-        rev[i] = rev[i ^ (1 << high1)];
-        rev[i] |= (1 << (k - high1 - 1));
-    }
 
-    vcomplex1 roots = (vcomplex1)malloc(sizeof(complex1) * n);
-    for (int i = 0; i < n; i++) {
-        mpfr_t alpha;
-        mpfr_init2(alpha, prec);
-        mpfr_set_d(alpha, 2 * M_PI * i / n, MPFR_RNDN);
-        mpfr_cos(roots[i].re, alpha, MPFR_RNDN);
-        mpfr_sin(roots[i].im, alpha, MPFR_RNDN);
-        mpfr_clear(alpha);
-    }
 
-    vcomplex1 cur = (vcomplex1)malloc(sizeof(complex1) * n);
-    for (int i = 0; i < n; i++)
-        cur[i] = as[rev[i]];
 
-    for (int len = 1; len < n; len <<= 1) {
-        vcomplex1 ncur = (vcomplex1)malloc(sizeof(complex1) * n);
-        int rstep = n / (len * 2);
-        for (int pdest = 0; pdest < n;) {
-            int p1 = pdest;
-            for (int i = 0; i < len; i++) {
-                complex1 val;
-                mpfr_init2(val.re, prec);
-                mpfr_init2(val.im, prec);
 
-                mpfr_mul(val.re, roots[i * rstep].re, cur[p1 + len].re, MPFR_RNDN);
-                mpfr_sub(val.re, cur[p1].re, val.re, MPFR_RNDN);
 
-                mpfr_mul(val.im, roots[i * rstep].im, cur[p1 + len].im, MPFR_RNDN);
-                mpfr_add(val.im, cur[p1].im, val.im, MPFR_RNDN);
 
-                ncur[pdest] = val;
-                pdest++, p1++;
-            }
-            pdest += len;
-        }
-        free(cur);
-        cur = ncur;
-    }
 
-    free(rev);
-    free(roots);
 
-    return cur;
-}
+
+
+
+
+
+
+
+
+typedef long double complex cd;
+typedef cd* vcd;
+
+
+
+
 
 
 
@@ -215,33 +238,33 @@ vcd fft1(const vcd as, int size)
 }
 
 
-int float_test()
-{
-
-    mpf_t num1, num2, sum;
-
-    // Инициализация чисел
-    mpf_init(num1);
-    mpf_init(num2);
-    mpf_init(sum);
-
-    // Установка значений для num1 и num2
-    mpf_set_d(num1, 3.14);
-    mpf_set_str(num2, "2.71828", 10);
-
-    // Сложение num1 и num2
-    mpf_add(sum, num1, num2);
-
-    // Вывод результата
-    gmp_printf("Сумма: %.10Ff\n", sum);
-
-    // Освобождение ресурсов
-    mpf_clear(num1);
-    mpf_clear(num2);
-    mpf_clear(sum);
-
-    return 0;
-}
+//int float_test()
+//{
+//
+//    mpf_t num1, num2, sum;
+//
+//    // Инициализация чисел
+//    mpf_init(num1);
+//    mpf_init(num2);
+//    mpf_init(sum);
+//
+//    // Установка значений для num1 и num2
+//    mpf_set_d(num1, 3.14);
+//    mpf_set_str(num2, "2.71828", 10);
+//
+//    // Сложение num1 и num2
+//    mpf_add(sum, num1, num2);
+//
+//    // Вывод результата
+//    gmp_printf("Сумма: %.10Ff\n", sum);
+//
+//    // Освобождение ресурсов
+//    mpf_clear(num1);
+//    mpf_clear(num2);
+//    mpf_clear(sum);
+//
+//    return 0;
+//}
 
 
 
@@ -319,11 +342,11 @@ vcd elementwise_multiply(vcd a, vcd b, int n) {
 
 
 
-void in_2_copy_1(long double *mas1, long double * mas2, int len){
-    for (int i = 0; i < len; ++i){
-        *(mas2+i) = *(mas1+i);
-    }
-}
+//void in_2_copy_1(long double *mas1, long double * mas2, int len){
+//    for (int i = 0; i < len; ++i){
+//        *(mas2+i) = *(mas1+i);
+//    }
+//}
 
 
 
@@ -332,32 +355,35 @@ void in_2_copy_1(long double *mas1, long double * mas2, int len){
 
 
 int main() {
-    vcd complex_data = (vcd) malloc(sizeof(cd) * 8);
+    int size = 4;
+    vcd complex_data = (vcd) malloc(sizeof(cd) * size);
 
-    complex_data[0] = 4.0;
-    complex_data[1] = 3.0;
-    complex_data[2] = 2.0;
-    complex_data[3] = 1.0;
+    complex_data[0] = 40005542567887.0;
+    complex_data[1] = 3546543245678878778.0;
+    complex_data[2] = 124567890967544564632.0;
+    complex_data[3] = 1345654532134567865.0;
 
-    for (int i = 5; i < 8; ++i)
+    for (int i = 5; i < size; ++i)
     {
-        complex_data[i] = 0.0 + I*0.0;
+        complex_data[i] = 789854323456789.0 + I*0.0;
     }
 
-    vcd res = fft1(complex_data, 8);
+    vcd res = fft1(complex_data, size);
 
     long double pr;
-    for (int i = 0; i < 8; ++i)
+    for (int i = 0; i < size; ++i)
     {
         pr = res[i];
         printf("%Lf  ", pr);
     }
 
-    vcd res2 = ifft1(res, 8);
+    printf("\n\n\n\n");
+
+    vcd res2 = ifft1(res, size);
 
     printf("\n");
 
-    for (int i = 0; i < 8; ++i)
+    for (int i = 0; i < size; ++i)
     {
         pr = res2[i];
         printf("%Lf  ", pr);
@@ -365,9 +391,25 @@ int main() {
 
     printf("\n");
 
+    //надо создать еще одно уравнение и потом использовать уже мул поэлементно, после это ifft
+
     free(complex_data);
     free(res);
     free(res2);
+
+
+
+
+
+    char *str1 = bin_str(40005542567887);
+
+    big_int *n1 = big_int_get(str1);
+
+    printf("len = %d\n\n", n1->length);
+
+    big_int_free(n1);
+
+    free(str1);
 
     return 0;
 }
