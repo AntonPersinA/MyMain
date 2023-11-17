@@ -349,26 +349,25 @@ vcd elementwise_multiply(vcd a, vcd b, int n) {
 //}
 
 
-
-
-
-
-
-int main() {
+int fft_test()
+{
     int size = 4;
     vcd complex_data = (vcd) malloc(sizeof(cd) * size);
 
-    complex_data[0] = 40005542567887.0;
-    complex_data[1] = 3546543245678878778.0;
-    complex_data[2] = 124567890967544564632.0;
-    complex_data[3] = 1345654532134567865.0;
+    complex_data[0] = 1.0;
+    complex_data[1] = 0.0;
+    complex_data[2] = 0.0;
+    complex_data[3] = 2.0;
 
-    for (int i = 5; i < size; ++i)
+    for (int i = 4; i < size; ++i)
     {
-        complex_data[i] = 789854323456789.0 + I*0.0;
+        complex_data[i] = 0.0 + I*0.0;
     }
 
     vcd res = fft1(complex_data, size);
+
+
+    printf("fft(res1)  = ");
 
     long double pr;
     for (int i = 0; i < size; ++i)
@@ -377,39 +376,93 @@ int main() {
         printf("%Lf  ", pr);
     }
 
-    printf("\n\n\n\n");
+    printf("\n\n");
 
-    vcd res2 = ifft1(res, size);
+//    vcd res2 = ifft1(res, size);
+//
+//    printf("\n");
+//
+//    for (int i = 0; i < size; ++i)
+//    {
+//        pr = res2[i];
+//        printf("%Lf  ", pr);
+//    }
+//
+//    printf("\n");
 
-    printf("\n");
+    //надо создать еще одно уравнение и потом использовать уже мул поэлементно, после это ifft
+
+    vcd complex_data2 = (vcd) malloc(sizeof(cd) * size);
+
+    complex_data2[0] = 3.0;
+    complex_data2[1] = 0.0;
+    complex_data2[2] = 0.0;
+    complex_data2[3] = 1.0;
+    for (int i = 4; i < size; ++i)
+    {
+        complex_data[i] = 0.0 + I*0.0;
+    }
+
+    vcd res2 = fft1(complex_data2, size);
+
+    printf("fft(res2)  = ");
+
+    long double pr2;
+    for (int i = 0; i < size; ++i)
+    {
+        pr2 = res2[i];
+        printf("%Lf  ", pr2);
+    }
+
+    printf("\n\n");
+
+
+
+
+    vcd mul_res = (vcd) malloc(sizeof(cd) * size);
+
+    mul_res = elementwise_multiply(res, res2, size);
+
+    printf("(fr1,fr2)  = ");
 
     for (int i = 0; i < size; ++i)
     {
-        pr = res2[i];
+        pr2 = mul_res[i];
+        printf("%Lf  ", pr2);
+    }
+
+    printf("\n\n");
+
+
+
+
+    vcd res_otv = ifft1(mul_res, size);
+
+    printf("ifft(mul)  = ");
+
+
+    for (int i = 0; i < size; ++i)
+    {
+        pr = res_otv[i];
         printf("%Lf  ", pr);
     }
 
     printf("\n");
 
-    //надо создать еще одно уравнение и потом использовать уже мул поэлементно, после это ifft
-
     free(complex_data);
+    free(complex_data2);
     free(res);
     free(res2);
+}
 
 
 
 
 
-    char *str1 = bin_str(40005542567887);
 
-    big_int *n1 = big_int_get(str1);
+int main() {
 
-    printf("len = %d\n\n", n1->length);
 
-    big_int_free(n1);
-
-    free(str1);
 
     return 0;
 }
