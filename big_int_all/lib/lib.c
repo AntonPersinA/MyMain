@@ -6,7 +6,8 @@
 #include "../test/test.h"
 
 
-char *bin_str(long long a) {
+char *bin_str(long long int a)
+{
     int minus = a < 0 ? 1 : 0;
     a = a < 0 ? -a : a;
     if (a > 1234567890123456789) {
@@ -18,14 +19,14 @@ char *bin_str(long long a) {
         *(str + 0) = *"0";
         return str;
     }
-    long long c = 1, i = 0;
+    long long int c = 1, i = 0;
     for (; c <= a; ++i) {
         c *= 2;
     }
     char *str = calloc(i, sizeof(char));
     str[0] = minus == 1 ? *"-" : *"+";
     c >>= 1;
-    for (long long j = minus; j < i + minus; ++j) {
+    for (long long int j = minus; j < i - minus; ++j) {/////////////////////////////////////////////////////////////////////////////////////////////+ on -
         if (c <= a) {
             str[j] = *"1";
             a -= c;

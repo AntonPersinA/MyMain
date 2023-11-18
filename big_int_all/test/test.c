@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 
 #include "../big_int/big_int.h"
 #include "test.h"
@@ -417,4 +418,128 @@ int test_copy()
         big_int_free(n1);
         big_int_free(n2);
     }
+}
+
+
+int test_add12(int a)
+{
+    for (int i = -a; i < a; ++i)
+    {
+        for(int j = -a; j < a; ++j)
+        {
+            big_int *n1 = big_int_get(bin_str(i));
+            big_int *n2 = big_int_get(bin_str(j));
+            big_int *n3 = big_int_get(bin_str(i + j));
+
+            big_int *n4 = big_int_add1(n1, n2);
+            big_int_add2(n1, n2);
+            if (!big_int_equal_sgn(n3, n4))
+            {
+                printf("error test_add1\n");
+                big_int_free2(4, n1, n2, n3, n4);
+                return 0;
+            }
+            if (!big_int_equal_sgn(n3, n1))
+            {
+                printf("error test_add2\n");
+                printf("%d %d\n", i, j);
+                big_int_print(n3);
+                big_int_print(n1);
+                big_int_free2(4, n1, n2, n3, n4);
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
+
+int test_sub12(int a)
+{
+    for (int i = -a; i < a; ++i)
+    {
+        for(int j = -a; j < a; ++j)
+        {
+            big_int *n1 = big_int_get(bin_str(i));
+            big_int *n2 = big_int_get(bin_str(j));
+            big_int *n3 = big_int_get(bin_str(i - j));
+
+            big_int *n4 = big_int_sub1(n1, n2);
+            big_int_sub2(n1, n2);
+            if (!big_int_equal_sgn(n3, n4))
+            {
+                printf("error test_sub1\n");
+                big_int_free2(4, n1, n2, n3, n4);
+                return 0;
+            }
+            if (!big_int_equal_sgn(n3, n1))
+            {
+                printf("error test_sub2\n");
+                printf("%d %d\n", i, j);
+                big_int_print(n3);
+                big_int_print(n1);
+                big_int_free2(4, n1, n2, n3, n4);
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
+
+int test_mult1(int a)
+{
+    for (int i = -a; i < a; ++i)
+    {
+        for(int j = -a; j < a; ++j)
+        {
+            big_int *n1 = big_int_get(bin_str(i));
+            big_int *n2 = big_int_get(bin_str(j));
+            big_int *n3 = big_int_get(bin_str(i*j));
+
+            big_int *n4 = big_int_mult1(n1,n2);
+            if (!big_int_equal_sgn(n3, n4))
+            {
+                printf("error test_mult1\n");
+                printf("%d %d\n", i, j);
+                big_int_print(n3);
+                big_int_print(n4);
+                big_int_free2(4, n1, n2, n3, n4);
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
+int test_shft()
+{
+    for (int i = -1030; i < 1030; ++i)
+    {
+        for(int j = 0; j < 30; ++j)
+        {
+            big_int *n1 = big_int_get(bin_str(i));
+            big_int *n2 = big_int_get(bin_str(i));
+            long long int ppp = 1;
+            for (int k = 0; k < j; ++k)
+            {
+                ppp *= 2;
+            }
+            big_int *n3 = big_int_get(bin_str((i*ppp)));
+
+            big_int_shft_l2(n1, j);
+            if (!big_int_equal_sgn(n1, n3))
+            {
+                printf("error test_shft = %lld\n", ppp*i);
+                printf("00000000 00000000 ");
+                big_int_print(n2);
+                printf("00000000 ");
+                big_int_print(n1);
+                big_int_print(n3);
+                big_int_free2(3, n1, n2, n3);
+                return 0;
+            }
+        }
+    }
+    return 1;
 }
