@@ -446,9 +446,9 @@ int fft_test()
 
 
 long double *mul_polynomials(long double *a,
-                               long double *b,
-                               long long int size_a,
-                               long long int size_b)
+                             long double *b,
+                             long long int size_a,
+                             long long int size_b)
 {
 
     long long int new_size = size_b + size_a - 1;

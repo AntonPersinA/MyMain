@@ -5,6 +5,8 @@
 #include <math.h>
 
 #include "big_int.h"
+#include "../lib/lib.h"
+
 
 big_int *big_int_get(char *bin_number)
 {
@@ -868,41 +870,6 @@ big_int *big_int_mult1(big_int *n1, big_int *n2) {
 }
 
 
-big_int *big_int_mul(const big_int *n1,const big_int *n2) {
-
-    unsigned int new_length = n1->length + n2->length;
-
-    big_int *result = (big_int *) malloc(sizeof(big_int));
-    if (!result) return NULL;
-    result->length = new_length;
-
-    result->number = (unsigned char *) calloc(result->length, sizeof(unsigned char));
-
-    for (size_t i = 0; i < n1->length; i++) {
-        for (size_t j = 0; j < n2->length; j++) {
-            unsigned short mult = n1->number[i] * n2->number[j];
-            unsigned short carry = (result->number[i + j] + mult) >> 8;
-            result->number[i + j] += mult;
-            int k = 1;
-            while (carry) {
-                unsigned short carry2 = (result->number[i + j + k] + carry) >> 8;
-                result->number[i + j + k] += carry;
-                carry = carry2;
-                k++;
-            }
-        }
-    }
-    result->sign = n1->sign != n2->sign ? '-' : '+';
-    big_int_dlz(result);
-    return result;
-}
-
-
-big_int *big_int_fftmul(big_int *n1, big_int *n2)
-{
-    int discrete1 = (int)(log2(n1->length)) + 1;
-    int discrete2 = (int)(log2(n2->length)) + 1;
 
 
 
-}

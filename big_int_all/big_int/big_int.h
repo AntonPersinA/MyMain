@@ -79,4 +79,4 @@ void big_int_sub2(big_int *n1, big_int *n2);
 
 big_int *big_int_mult1(big_int *n1, big_int *n2);
 
-big_int *big_int_mul(const big_int *n1,const big_int *n2);
+big_int *big_int_fftmul(big_int *n1, big_int *n2);
