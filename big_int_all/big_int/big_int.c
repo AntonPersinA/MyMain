@@ -381,7 +381,8 @@ big_int *big_int_add1(big_int *n1, big_int *n2)
     return n3;
 }
 
-//big_int *big_int_add1(big_int * n1,big_int *n2) {
+//big_int *big_int_add(big_int * n1,big_int *n2)
+//{
 //    if (n1->sign != n2->sign) {
 //        int t = n1->sign == '+';
 //        if (t) {
@@ -700,74 +701,75 @@ big_int *big_int_sub1(big_int *n1, big_int *n2)
     return n3;
 }
 
-//big_int *big_int_sub1(big_int *n1, big_int *n2) {
-//    if (n1->sign != n2->sign) {
-//        if (n1->sign == '+') {
-//            n2->sign = '+';
-//            big_int *n4 = (big_int_add1(n1, n2));
-//            big_int_dlz(n4);
-//            n2->sign = '-';
-//            return n4;
-//        } else {
-//            n2->sign = '-';
-//            big_int *n4 = (big_int_add1(n2, n1));
-//            big_int_dlz(n4);
-//            n2->sign = '+';
-//            return n4;
-//        }
-//    }
-//    int mx = (int) fmax(n1->length, n2->length), carry = 0;
-//    big_int *n3 = (big_int *) malloc(sizeof(big_int));
-//    n3->length = mx;
-//    n3->number = (unsigned char *) calloc(n3->length, sizeof(n3->number[0]));
-//    if (n3->number == NULL) { printf("memory error in big_int_sub\n"); }
-//    int t = bit_int_leq(n1, n2);
-//    if (t)big_int_swap2(n1, n2);
-//    for (int i = 0; i < mx; i++) {
-//        if (i < n2->length) {
-//            if (n1->number[i] > n2->number[i]) {
-//                n3->number[i] = n1->number[i] - n2->number[i] - carry;
-//                carry = 0;
-//            }
-//            if (n1->number[i] == n2->number[i]) {
-//                if (carry) {
-//                    n3->number[i] = 0xFF;
-//                } else {
-//                    n3->number[i] = 0;
-//                }
-//            }
-//            if (n1->number[i] < n2->number[i]) {
-//                if (carry) {
-//                    n3->number[i] = 0xFF + n1->number[i] - n2->number[i];
-//                } else {
-//                    n3->number[i] = 0x100 + n1->number[i] - n2->number[i];
-//                    carry = 1;
-//                }
-//            }
-//        } else {
-//            if (carry) {
-//                if (n1->number[i]) {
-//                    n3->number[i] = n1->number[i] - 1;
-//                    carry = 0;
-//                } else {
-//                    n3->number[i] = 0xFF;
-//                }
-//            } else {
-//                n3->number[i] = n1->number[i];
-//            }
-//        }
-//    }
-//    if (t) big_int_swap2(n1, n2);
-//    if (n1->sign == '+') {
-//        if (t)n3->sign = '-';
-//        else n3->sign = '+';
-//    } else {
-//        if (t)n3->sign = '+';
-//        else n3->sign = '-';
-//    }
-//    big_int_dlz(n3);
-//    return n3;
-//}
+big_int *big_int_sub(big_int *n1, big_int *n2)
+{
+    if (n1->sign != n2->sign) {
+        if (n1->sign == '+') {
+            n2->sign = '+';
+            big_int *n4 = (big_int_add1(n1, n2));
+            big_int_dlz(n4);
+            n2->sign = '-';
+            return n4;
+        } else {
+            n2->sign = '-';
+            big_int *n4 = (big_int_add1(n2, n1));
+            big_int_dlz(n4);
+            n2->sign = '+';
+            return n4;
+        }
+    }
+    int mx = (int) fmax(n1->length, n2->length), carry = 0;
+    big_int *n3 = (big_int *) malloc(sizeof(big_int));
+    n3->length = mx;
+    n3->number = (unsigned char *) calloc(n3->length, sizeof(n3->number[0]));
+    if (n3->number == NULL) { printf("memory error in big_int_sub\n"); }
+    int t = bit_int_leq(n1, n2);
+    if (t)big_int_swap2(n1, n2);
+    for (int i = 0; i < mx; i++) {
+        if (i < n2->length) {
+            if (n1->number[i] > n2->number[i]) {
+                n3->number[i] = n1->number[i] - n2->number[i] - carry;
+                carry = 0;
+            }
+            if (n1->number[i] == n2->number[i]) {
+                if (carry) {
+                    n3->number[i] = 0xFF;
+                } else {
+                    n3->number[i] = 0;
+                }
+            }
+            if (n1->number[i] < n2->number[i]) {
+                if (carry) {
+                    n3->number[i] = 0xFF + n1->number[i] - n2->number[i];
+                } else {
+                    n3->number[i] = 0x100 + n1->number[i] - n2->number[i];
+                    carry = 1;
+                }
+            }
+        } else {
+            if (carry) {
+                if (n1->number[i]) {
+                    n3->number[i] = n1->number[i] - 1;
+                    carry = 0;
+                } else {
+                    n3->number[i] = 0xFF;
+                }
+            } else {
+                n3->number[i] = n1->number[i];
+            }
+        }
+    }
+    if (t) big_int_swap2(n1, n2);
+    if (n1->sign == '+') {
+        if (t)n3->sign = '-';
+        else n3->sign = '+';
+    } else {
+        if (t)n3->sign = '+';
+        else n3->sign = '-';
+    }
+    big_int_dlz(n3);
+    return n3;
+}
 
 void big_int_add2(big_int *n1, big_int *n2)
 {

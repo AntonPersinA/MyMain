@@ -21,8 +21,8 @@
 
 void test_kar()
 {
-    big_int *n1 = big_int_getloop("1111000011111111000101111", 1000); //11110000111111110001000100000000
-    big_int *n2 = big_int_getloop("1100000010000000000001010", 1000); //10100000111111110000101000000000
+    big_int *n1 = big_int_getloop("1111000011111111000101111", 100); //11110000111111110001000100000000
+    big_int *n2 = big_int_getloop("1100000010000000000001010", 100); //10100000111111110000101000000000
 //    printf("n1 = ");
 //    big_int_print(n1);
 //    printf("n2 = ");
@@ -59,44 +59,87 @@ void test_kar()
 
 }
 
+int new_func()
+{
+    time_t start, end;
+
+    big_int *n1 = big_int_getloop("10011011", 10000000);
+    big_int *n2 = big_int_getloop("10011011", 100000000);
+
+    start = clock();
+    big_int *n3 = big_int_add1(n1, n2);
+    end = clock();
+
+    printf("time my = %f\n", (float)(end - start) / CLOCKS_PER_SEC);
+
+    big_int_free2(3, &n1, &n2, &n3);
+}
+
+
+
+int new_func_slava()
+{
+    time_t start1, end1;
+
+    big_int *n11 = big_int_getloop("10011011", 10000000);
+    big_int *n22 = big_int_getloop("10011011", 100000000);
+
+    start1 = clock();
+    big_int *n33 = big_int_add1(n11, n22);
+    end1 = clock();
+
+    printf("time slava = %f\n", (float)(end1 - start1) / CLOCKS_PER_SEC);
+
+    big_int_free2(3, &n11, &n22, &n33);
+}
+
+
+int new_func2()
+{
+    time_t start, end;
+
+    big_int *n1 = big_int_getloop("10011011", 100000000);
+    big_int *n2 = big_int_getloop("11011011", 10000000);
+
+    start = clock();
+    big_int *n3 = big_int_sub1(n1, n2);
+    end = clock();
+
+    printf("time my = %f\n", (float)(end - start) / CLOCKS_PER_SEC);
+
+    big_int_free2(3, &n1, &n2, &n3);
+}
+
+
+
+int new_func_slava2()
+{
+    time_t start1, end1;
+
+    big_int *n11 = big_int_getloop("10011011", 100000000);
+    big_int *n22 = big_int_getloop("11011011", 10000000);
+
+    start1 = clock();
+    big_int *n33 = big_int_sub(n11, n22);
+    end1 = clock();
+
+    printf("time slava = %f\n", (float)(end1 - start1) / CLOCKS_PER_SEC);
+
+    big_int_free2(3, &n11, &n22, &n33);
+}
+
 
 int main() {
 
-//test_kar();
-//    test_all(5);
-//    char *str1 = bin_str(-65340);
-//    char *str2 = bin_str(-216);
-//    big_int *n1 = big_int_getloop(str1, 1);
-//    big_int *n2 = big_int_getloop(str2, 1);
-
-//    test_all(1300);
-
-    int i = 1;
-    int k = 1;
-    test_all(7);
-    while(1)
-    {
-        test_all(i);
-        i += 1;
-//        k++;
-        if (i%100 == 0)
-        {
-            printf("i = %d\n", i);
-        }
-
-    }
-
-
-//    printf("\n\n\n");
-//    big_int_print(n1);
-//    big_int_print(n2);
+//    test_kar();
 //
-//    big_int *n3 = big_int_add1(n1,n2);
-//    big_int_add2(n1,n2);
-//    big_int_print(n1);
-//    big_int_print(n3);
+//    new_func();
 //
-//    big_int_free2(3, &n1, &n2, &n3);
-//    free(str1);
-//    free(str2);
+//    new_func_slava();
+
+    new_func2();
+
+    new_func_slava2();
+
+    new_func2();
 }
