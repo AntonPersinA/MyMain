@@ -40,10 +40,10 @@ int test_get()
             n1->length == 1))
         {
             printf("error test_get big_int1\n");
-            big_int_free(n1);
+            big_int_free(&n1);
             return 0;
         }
-        big_int_free(n1);
+        big_int_free(&n1);
     }
 
     {
@@ -53,10 +53,10 @@ int test_get()
               n1->length == 1))
         {
             printf("error test_get big_int2\n");
-            big_int_free(n1);
+            big_int_free(&n1);
             return 0;
         }
-        big_int_free(n1);
+        big_int_free(&n1);
     }
 
     {
@@ -66,10 +66,10 @@ int test_get()
               n1->length == 1))
         {
             printf("error test_get big_int3\n");
-            big_int_free(n1);
+            big_int_free(&n1);
             return 0;
         }
-        big_int_free(n1);
+        big_int_free(&n1);
     }
 
     {
@@ -79,10 +79,10 @@ int test_get()
               n1->length == 1))
         {
             printf("error test_get big_int4\n");
-            big_int_free(n1);
+            big_int_free(&n1);
             return 0;
         }
-        big_int_free(n1);
+        big_int_free(&n1);
     }
 
     {
@@ -92,10 +92,10 @@ int test_get()
               n1->length == 1))
         {
             printf("error test_get big_int5\n");
-            big_int_free(n1);
+            big_int_free(&n1);
             return 0;
         }
-        big_int_free(n1);
+        big_int_free(&n1);
     }
 
     {
@@ -105,10 +105,10 @@ int test_get()
               n1->length == 1))
         {
             printf("error test_get big_int6\n");
-            big_int_free(n1);
+            big_int_free(&n1);
             return 0;
         }
-        big_int_free(n1);
+        big_int_free(&n1);
     }
 
     {
@@ -118,10 +118,10 @@ int test_get()
               n1->length == 1))
         {
             printf("error test_get big_int7\n");
-            big_int_free(n1);
+            big_int_free(&n1);
             return 0;
         }
-        big_int_free(n1);
+        big_int_free(&n1);
     }
 
     {
@@ -131,10 +131,10 @@ int test_get()
               n1->length == 1))
         {
             printf("error test_get big_int8\n");
-            big_int_free(n1);
+            big_int_free(&n1);
             return 0;
         }
-        big_int_free(n1);
+        big_int_free(&n1);
     }
 
     {
@@ -145,10 +145,10 @@ int test_get()
               n1->length == 2))
         {
             printf("error test_get big_int9\n");
-            big_int_free(n1);
+            big_int_free(&n1);
             return 0;
         }
-        big_int_free(n1);
+        big_int_free(&n1);
     }
 
     {
@@ -159,10 +159,10 @@ int test_get()
               n1->length == 2))
         {
             printf("error test_get big_int10\n");
-            big_int_free(n1);
+            big_int_free(&n1);
             return 0;
         }
-        big_int_free(n1);
+        big_int_free(&n1);
     }
 }
 
@@ -188,16 +188,16 @@ int test_equal(int limit)
 
                 free(str1);
                 free(str2);
-                big_int_free(n1);
-                big_int_free(n2);
+                big_int_free(&n1);
+                big_int_free(&n2);
 
                 return 0;
             }
 
             free(str1);
             free(str2);
-            big_int_free(n1);
-            big_int_free(n2);
+            big_int_free(&n1);
+            big_int_free(&n2);
         }
     }
     return 1;
@@ -222,16 +222,16 @@ int test_equal_sgn(int limit)
 
                 free(str1);
                 free(str2);
-                big_int_free(n1);
-                big_int_free(n2);
+                big_int_free(&n1);
+                big_int_free(&n2);
 
                 return 0;
             }
 
             free(str1);
             free(str2);
-            big_int_free(n1);
-            big_int_free(n2);
+            big_int_free(&n1);
+            big_int_free(&n2);
         }
     }
     return 1;
@@ -263,10 +263,10 @@ int test_swap1(int limit)
                 free(str2);
                 free(str222);
 
-                big_int_free(n1);
-                big_int_free(n111);
-                big_int_free(n2);
-                big_int_free(n222);
+                big_int_free(&n1);
+                big_int_free(&n111);
+                big_int_free(&n2);
+                big_int_free(&n222);
 
                 continue;
             }
@@ -276,10 +276,10 @@ int test_swap1(int limit)
             free(str2);
             free(str222);
 
-            big_int_free(n1);
-            big_int_free(n111);
-            big_int_free(n2);
-            big_int_free(n222);
+            big_int_free(&n1);
+            big_int_free(&n111);
+            big_int_free(&n2);
+            big_int_free(&n222);
 
             printf("error test_swap1 big_int\n");
             return 0;
@@ -314,10 +314,10 @@ int test_swap2(int limit)
                 free(str2);
                 free(str222);
 
-                big_int_free(n1);
-                big_int_free(n111);
-                big_int_free(n2);
-                big_int_free(n222);
+                big_int_free(&n1);
+                big_int_free(&n111);
+                big_int_free(&n2);
+                big_int_free(&n222);
 
                 continue;
             }
@@ -327,10 +327,10 @@ int test_swap2(int limit)
             free(str2);
             free(str222);
 
-            big_int_free(n1);
-            big_int_free(n111);
-            big_int_free(n2);
-            big_int_free(n222);
+            big_int_free(&n1);
+            big_int_free(&n111);
+            big_int_free(&n2);
+            big_int_free(&n222);
 
             printf("error test_swap2 big_int\n");
             return 0;
@@ -348,12 +348,12 @@ int test_copy()
         if (!big_int_equal_sgn(n1,n2))
         {
             printf("error test_copy big_int1\n");
-            big_int_free(n1);
-            big_int_free(n2);
+            big_int_free(&n1);
+            big_int_free(&n2);
             return 0;
         }
-        big_int_free(n1);
-        big_int_free(n2);
+        big_int_free(&n1);
+        big_int_free(&n2);
     }
 
     {
@@ -362,12 +362,12 @@ int test_copy()
         if (!big_int_equal_sgn(n1,n2))
         {
             printf("error test_copy big_int2\n");
-            big_int_free(n1);
-            big_int_free(n2);
+            big_int_free(&n1);
+            big_int_free(&n2);
             return 0;
         }
-        big_int_free(n1);
-        big_int_free(n2);
+        big_int_free(&n1);
+        big_int_free(&n2);
     }
 
     {
@@ -376,12 +376,12 @@ int test_copy()
         if (!big_int_equal_sgn(n1,n2))
         {
             printf("error test_copy big_int3\n");
-            big_int_free(n1);
-            big_int_free(n2);
+            big_int_free(&n1);
+            big_int_free(&n2);
             return 0;
         }
-        big_int_free(n1);
-        big_int_free(n2);
+        big_int_free(&n1);
+        big_int_free(&n2);
     }
 
     {
@@ -390,12 +390,12 @@ int test_copy()
         if (!big_int_equal_sgn(n1,n2))
         {
             printf("error test_copy big_int4\n");
-            big_int_free(n1);
-            big_int_free(n2);
+            big_int_free(&n1);
+            big_int_free(&n2);
             return 0;
         }
-        big_int_free(n1);
-        big_int_free(n2);
+        big_int_free(&n1);
+        big_int_free(&n2);
     }
 
     {
@@ -404,12 +404,12 @@ int test_copy()
         if (!big_int_equal_sgn(n1,n2))
         {
             printf("error test_copy big_int5\n");
-            big_int_free(n1);
-            big_int_free(n2);
+            big_int_free(&n1);
+            big_int_free(&n2);
             return 0;
         }
-        big_int_free(n1);
-        big_int_free(n2);
+        big_int_free(&n1);
+        big_int_free(&n2);
     }
 
     {
@@ -418,12 +418,12 @@ int test_copy()
         if (!big_int_equal_sgn(n1,n2))
         {
             printf("error test_copy big_int6\n");
-            big_int_free(n1);
-            big_int_free(n2);
+            big_int_free(&n1);
+            big_int_free(&n2);
             return 0;
         }
-        big_int_free(n1);
-        big_int_free(n2);
+        big_int_free(&n1);
+        big_int_free(&n2);
     }
 }
 
@@ -448,7 +448,7 @@ int test_add12(int a)
             if (!big_int_equal_sgn(n3, n4))
             {
                 printf("error test_add1\n");
-                big_int_free2(4, n1, n2, n3, n4);
+                big_int_free2(4, &n1, &n2, &n3, &n4);
                 free(str1);
                 free(str2);
                 free(str3);
@@ -460,13 +460,13 @@ int test_add12(int a)
                 printf("%lld %lld\n", i, j);
                 big_int_print(n3);
                 big_int_print(n1);
-                big_int_free2(4, n1, n2, n3, n4);
+                big_int_free2(4, &n1, &n2, &n3, &n4);
                 free(str1);
                 free(str2);
                 free(str3);
                 return 0;
             }
-            big_int_free2(4, n1, n2, n3, n4);
+            big_int_free2(4, &n1, &n2, &n3, &n4);
             free(str1);
             free(str2);
             free(str3);
@@ -496,7 +496,7 @@ int test_sub12(int a)
             if (!big_int_equal_sgn(n3, n4))
             {
                 printf("error test_sub1\n");
-                big_int_free2(4, n1, n2, n3, n4);
+                big_int_free2(4, &n1, &n2, &n3, &n4);
                 free(str1);
                 free(str2);
                 free(str3);
@@ -508,7 +508,7 @@ int test_sub12(int a)
                 printf("%lld %lld\n", i, j);
                 big_int_print(n3);
                 big_int_print(n1);
-                big_int_free2(4, n1, n2, n3, n4);
+                big_int_free2(4, &n1, &n2, &n3, &n4);
                 free(str1);
                 free(str2);
                 free(str3);
@@ -517,7 +517,7 @@ int test_sub12(int a)
             free(str1);
             free(str2);
             free(str3);
-            big_int_free2(4, n1, n2, n3, n4);
+            big_int_free2(4, &n1, &n2, &n3, &n4);
         }
     }
     return 1;
@@ -549,13 +549,13 @@ int test_mult1(int a)
                 free(str1);
                 free(str2);
                 free(str3);
-                big_int_free2(4, n1, n2, n3, n4);
+                big_int_free2(4, &n1, &n2, &n3, &n4);
                 return 0;
             }
             free(str1);
             free(str2);
             free(str3);
-            big_int_free2(4, n1, n2, n3, n4);
+            big_int_free2(4, &n1, &n2, &n3, &n4);
         }
     }
     return 1;
@@ -570,13 +570,13 @@ int test_shft()
             char *str1 = bin_str(i);
             char *str2 = bin_str(j);
             big_int *n1 = big_int_get(str1);
-            big_int *n2 = big_int_get(str2);
+//            big_int *n2 = big_int_get(str2);
             long long int ppp = 1;
             for (int k = 0; k < j; ++k)
             {
                 ppp *= 2;
             }
-            char *str3 = bin_str(i*ppp);
+            char *str3 = bin_str((long long int)((long long int)i*(long long int)ppp));
             big_int *n3 = big_int_get(str3);
 
             big_int_shft_l2(n1, j);
@@ -584,20 +584,20 @@ int test_shft()
             {
                 printf("error test_shft = %d\n", j);
 //                printf("00000000 00000000 ");
-                big_int_print(n2);
+//                big_int_print(n2);
 //                printf("00000000 ");
                 big_int_print(n1);
                 big_int_print(n3);
                 free(str1);
                 free(str2);
                 free(str3);
-                big_int_free2(3, n1, n2, n3);
+                big_int_free2(2, &n1, &n3);
                 return 0;
             }
             free(str1);
             free(str2);
             free(str3);
-            big_int_free2(3, n1, n2, n3);
+            big_int_free2(2, &n1, &n3);
         }
     }
     return 1;
