@@ -63,8 +63,8 @@ int new_func()
 {
     time_t start, end;
 
-    big_int *n1 = big_int_getloop("10011011", 10000000);
-    big_int *n2 = big_int_getloop("10011011", 100000000);
+    big_int *n1 = big_int_getloop("11111011", 10000000);
+    big_int *n2 = big_int_getloop("1111011", 100000000);
 
     start = clock();
     big_int *n3 = big_int_add1(n1, n2);
@@ -81,8 +81,8 @@ int new_func_slava()
 {
     time_t start1, end1;
 
-    big_int *n11 = big_int_getloop("10011011", 10000000);
-    big_int *n22 = big_int_getloop("10011011", 100000000);
+    big_int *n11 = big_int_getloop("11111011", 10000000);
+    big_int *n22 = big_int_getloop("1111011", 100000000);
 
     start1 = clock();
     big_int *n33 = big_int_add1(n11, n22);
@@ -98,8 +98,8 @@ int new_func2()
 {
     time_t start, end;
 
-    big_int *n1 = big_int_getloop("10011011", 100000000);
-    big_int *n2 = big_int_getloop("11011011", 10000000);
+    big_int *n1 = big_int_getloop("11111011", 10000000);
+    big_int *n2 = big_int_getloop("1111011", 100000000);
 
     start = clock();
     big_int *n3 = big_int_sub1(n1, n2);
@@ -116,30 +116,69 @@ int new_func_slava2()
 {
     time_t start1, end1;
 
-    big_int *n11 = big_int_getloop("10011011", 100000000);
-    big_int *n22 = big_int_getloop("11011011", 10000000);
+    big_int *n11 = big_int_getloop("11111011", 10000000);
+    big_int *n22 = big_int_getloop("1111011", 100000000);
 
     start1 = clock();
-    big_int *n33 = big_int_sub(n11, n22);
+//    big_int *n33 = big_int_sub(n11, n22);
     end1 = clock();
 
     printf("time slava = %f\n", (float)(end1 - start1) / CLOCKS_PER_SEC);
 
-    big_int_free2(3, &n11, &n22, &n33);
+//    big_int_free2(3, &n11, &n22, &n33);
+    big_int_free2(2, &n11, &n22);
 }
 
+
+int new_func3()
+{
+    time_t start, end;
+
+    big_int *n1 = big_int_getloop("1101011", 10000000);
+    big_int *n2 = big_int_getloop("111011", 100000000);
+
+    start = clock();
+    big_int_add2(n1, n2);
+    end = clock();
+
+    printf("time my = %f\n", (float)(end - start) / CLOCKS_PER_SEC);
+
+    big_int_free2(2, &n1, &n2);
+}
+
+
+
+int new_func_slava3()
+{
+    time_t start1, end1;
+
+    big_int *n11 = big_int_getloop("1101011", 10000000);
+    big_int *n22 = big_int_getloop("111011", 100000000);
+
+    start1 = clock();
+//    big_int_add22(n11, n22);
+    end1 = clock();
+
+    printf("time slava = %f\n", (float)(end1 - start1) / CLOCKS_PER_SEC);
+
+    big_int_free2(2, &n11, &n22);
+}
 
 int main() {
 
 //    test_kar();
-//
+
 //    new_func();
-//
+
 //    new_func_slava();
 
-    new_func2();
+//    new_func2();
 
-    new_func_slava2();
+//    new_func_slava2();
 
-    new_func2();
+//    new_func2();
+
+//    new_func3();
+
+//    new_func_slava3();
 }

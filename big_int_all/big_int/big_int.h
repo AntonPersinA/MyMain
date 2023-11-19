@@ -90,4 +90,6 @@ big_int *big_int_karatsuba_mult2(big_int *n1, big_int *n2);
 
 //big_int *big_int_add(big_int * n1,big_int *n2);
 
-big_int *big_int_sub(big_int *n1, big_int *n2);
+//big_int *big_int_sub(big_int *n1, big_int *n2);
+
+//void big_int_add22(big_int *n1, big_int *n2);
