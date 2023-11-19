@@ -435,38 +435,58 @@ int test_add12(int a)
         for (int j1 = -a; j1 < a; ++j1)
         {
             long long int i = (291 * i1 * a) % 300000;
-            long long int j = (291 * i1 * a) % 300000;
+            long long int j = (291 * j1 * a) % 300000;
             char *str1 = bin_str(i);
             char *str2 = bin_str(j);
             char *str3 = bin_str(i + j);
             big_int *n1 = big_int_get(str1);
             big_int *n2 = big_int_get(str2);
             big_int *n3 = big_int_get(str3);
-
+            big_int *n6 = big_int_copy(n1);
+            big_int *n5 = big_int_copy(n2);
             big_int *n4 = big_int_add1(n1, n2);
-            big_int_add2(n1, n2);
+
+
+            if (!big_int_equal_sgn(n2, n5))
+            {
+                printf("error change n5, redo\n");
+                return 0;
+            }
+
+
             if (!big_int_equal_sgn(n3, n4))
             {
                 printf("error test_add1\n");
-                big_int_free2(4, &n1, &n2, &n3, &n4);
+                printf("i = %lld, j = %lld\n", i, j);
+                big_int_print(n1);
+                big_int_print(n2);
+                big_int_print(n4);
+                big_int_print(n3);
+                big_int_free2(6, &n1, &n2, &n3, &n4, &n5, &n6);
                 free(str1);
                 free(str2);
                 free(str3);
                 return 0;
             }
+            if (!big_int_equal_sgn(n1, n6))
+            {
+                printf("error change n6, redo\n");
+                return 0;
+            }
+            big_int_add2(n1, n2);
             if (!big_int_equal_sgn(n3, n1))
             {
                 printf("error test_add2\n");
                 printf("%lld %lld\n", i, j);
                 big_int_print(n3);
                 big_int_print(n1);
-                big_int_free2(4, &n1, &n2, &n3, &n4);
+                big_int_free2(6, &n1, &n2, &n3, &n4, &n5, &n6);
                 free(str1);
                 free(str2);
                 free(str3);
                 return 0;
             }
-            big_int_free2(4, &n1, &n2, &n3, &n4);
+            big_int_free2(6, &n1, &n2, &n3, &n4, &n5, &n6);
             free(str1);
             free(str2);
             free(str3);
@@ -483,7 +503,7 @@ int test_sub12(int a)
         for (int j1 = -a; j1 < a; ++j1)
         {
             long long int i = (291 * i1 * a) % 300000;
-            long long int j = (291 * i1 * a) % 300000;
+            long long int j = (291 * j1 * a) % 300000;
             char *str1 = bin_str(i);
             char *str2 = bin_str(j);
             char *str3 = bin_str(i - j);
@@ -531,7 +551,7 @@ int test_mult1(int a)
         for (int j1 = -a; j1 < a; ++j1)
         {
             long long int i = (291 * i1 * a) % 300000;
-            long long int j = (291 * i1 * a) % 300000;
+            long long int j = (291 * j1 * a) % 300000;
             char *str1 = bin_str(i);
             char *str2 = bin_str(j);
             char *str3 = bin_str(i * j);

@@ -21,8 +21,8 @@
 
 void test_kar()
 {
-    big_int *n1 = big_int_getloop("111100001111111100001111", 10); //11110000111111110001000100000000
-    big_int *n2 = big_int_getloop("110000000000000000001010", 10); //10100000111111110000101000000000
+    big_int *n1 = big_int_getloop("1111000011111111000101111", 1000); //11110000111111110001000100000000
+    big_int *n2 = big_int_getloop("1100000010000000000001010", 1000); //10100000111111110000101000000000
 //    printf("n1 = ");
 //    big_int_print(n1);
 //    printf("n2 = ");
@@ -64,15 +64,40 @@ int main() {
 
 test_kar();
 //    test_all(5);
-    big_int *n1 = big_int_getloop("00101000100010000011", 100);
-    big_int *n2 = big_int_getloop("00101000100010000011", 1000);
+char *str1 = bin_str(-114675);
+    big_int *n1 = big_int_getloop("-11000110", 1);
+    big_int *n2 = big_int_getloop("000001000000000010000110", 1);
 
-//    test_sub12(13);
-//    big_int_print(n1);
+//    test_all(1300);
 
-//    bit_int_meq(n1,n2);
+    int i = 1;
+    int k = 1;
+    test_all(7);
+    while(1)
+    {
+        test_all(i);
+        i += 1;
+//        k++;
+        if (i%100 == 0)
+        {
+            printf("i = %d\n", i);
+        }
 
-//    big_int_print(n1);
+    }
+    printf("i = %d\n", i);
 
-big_int_free2(2, &n1, &n2);
+////+00000011 00000000 11000000
+////+00000011 11111111 11000000
+
+    test_sub12(17);
+
+    printf("\n\n\n");
+    big_int_print(n1);
+    big_int_print(n2);
+
+    big_int *n3 = big_int_add1(n1,n2);
+    big_int_print(n3);
+
+big_int_free2(3, &n1, &n2, &n3);
+free(str1);
 }
