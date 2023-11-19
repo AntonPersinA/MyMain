@@ -810,10 +810,14 @@ void big_int_add2(big_int *n1, big_int *n2)
         return;
     }
 
+
     if (n1->sign == n2->sign && n1->sign == '+')
     {
         if (n1->length > n2->length)
         {
+            n1->length += 1;
+            n1->number = realloc(n1->number, n1->length);
+            n1->number[n1->length - 1] = 0;
             short flag1 = 0, flag2 = 0;
             int i = 0;
             for (; i < n2->length; ++i)

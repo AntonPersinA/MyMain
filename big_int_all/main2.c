@@ -62,11 +62,12 @@ void test_kar()
 
 int main() {
 
-test_kar();
+//test_kar();
 //    test_all(5);
-char *str1 = bin_str(-114675);
-    big_int *n1 = big_int_getloop("-11000110", 1);
-    big_int *n2 = big_int_getloop("000001000000000010000110", 1);
+//    char *str1 = bin_str(-65340);
+//    char *str2 = bin_str(-216);
+//    big_int *n1 = big_int_getloop(str1, 1);
+//    big_int *n2 = big_int_getloop(str2, 1);
 
 //    test_all(1300);
 
@@ -84,20 +85,18 @@ char *str1 = bin_str(-114675);
         }
 
     }
-    printf("i = %d\n", i);
 
-////+00000011 00000000 11000000
-////+00000011 11111111 11000000
 
-    test_sub12(17);
-
-    printf("\n\n\n");
-    big_int_print(n1);
-    big_int_print(n2);
-
-    big_int *n3 = big_int_add1(n1,n2);
-    big_int_print(n3);
-
-big_int_free2(3, &n1, &n2, &n3);
-free(str1);
+//    printf("\n\n\n");
+//    big_int_print(n1);
+//    big_int_print(n2);
+//
+//    big_int *n3 = big_int_add1(n1,n2);
+//    big_int_add2(n1,n2);
+//    big_int_print(n1);
+//    big_int_print(n3);
+//
+//    big_int_free2(3, &n1, &n2, &n3);
+//    free(str1);
+//    free(str2);
 }
