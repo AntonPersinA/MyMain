@@ -108,6 +108,8 @@ typedef struct big_int{
 //! \brief Получение big_int через строку
 big_int* big_int_get(char *bin_number);
 
+big_int *big_int_get_n(char *bin_number, int count);
+
 big_int *big_int_getloop(char *bin_number, int loop);
 
 //! \brief Переопределение big_int через строку
@@ -175,10 +177,6 @@ void big_int_sub2(big_int *n1, big_int *n2);
 
 big_int *big_int_mult1(big_int *n1, big_int *n2);
 
-//big_int *big_int_karatsuba(big_int *n1, big_int *n2);
+big_int *big_int_karatsuba_help(big_int *n1, big_int *n2);
 
-//big_int *big_int_copy_part(big_int *n1);
-
-//big_int *big_int_karatsuba_help(big_int *n1, big_int *n2);
-
-//big_int *big_int_karatsuba_mult2(big_int *n1, big_int *n2);
+big_int *big_int_karatsuba_mult2(big_int *n1, big_int *n2);
