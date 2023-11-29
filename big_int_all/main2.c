@@ -166,12 +166,16 @@ int new_func_slava3()
 
 int main()
 {
-    big_int *n1 = big_int_get10(10);
-    big_int *n2 = big_int_get10(3);
-    big_int *n3 = big_int_pow(n1,n2);
+    big_int *n1 = big_int_get10(345*1232);
+    big_int *n2 = big_int_get10(345);
+    big_int *n3 = big_int_divided(n1, n2);
+    big_int_to10(n1);
+    big_int_to10(n2);
+    big_int_to10(n3);
 //    big_int_print(n1);
 //    big_int_print(n2);
 //    big_int_print(n3);
+
     big_int_free2(3, &n1, &n2, &n3);
     return 0;
 }

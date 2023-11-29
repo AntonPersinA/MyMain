@@ -557,7 +557,7 @@ void big_int_shft_l2(big_int *n1, int cnt)
     {
         n1->number[i] = 0;
     }
-    big_int_dlz(n1);
+//    big_int_dlz(n1);
 }
 
 
@@ -1228,3 +1228,59 @@ big_int *big_int_pow(big_int *n1, big_int *n2)
     return res;
 }
 
+
+big_int *big_int_divided(big_int *a, big_int *b)
+{
+    big_int_dlz(a);
+    big_int_dlz(b);
+    if ((b->length == 1 && b->number[0] == 0) || b->length > a->length)
+    {
+        big_int *res = big_int_get("0");
+        return res;
+    }
+    big_int *Q = calloc(1, sizeof(big_int));
+    Q->length = a->length - b->length + 1;
+    unsigned char *mas_q = calloc(Q->length, sizeof(unsigned char));
+    Q->number = mas_q;
+    Q->sign = '+';
+
+    big_int *R = big_int_get("0");
+
+    unsigned short char_digit = 1;
+    for (; char_digit < a->number[a->length - 1];)
+    {
+        char_digit <<= 1;
+    }
+
+    if (char_digit > a->number[a->length - 1])
+    {
+        char_digit >>= 1;
+    }
+    {
+        for (int t = char_digit; t >=1; t >>= 1)
+        {
+            big_int_shft_l(R);
+            R->number[0] = (R->number[0]) | ((t & a->number[(a->length - 1)]) && 1);
+            if (bit_int_meq(R, b))
+            {
+                big_int_sub2(R, b);
+                Q->number[(a->length - 1)] = Q->number[(a->length - 1)] | t;
+            }
+        }
+    }
+
+    for (int j = (a->length - 2); j >= 0; --j)
+    {
+        for (int t = 128; t >=1; t >>= 1)
+        {
+            big_int_shft_l(R);
+            R->number[0] = (R->number[0]) | ((t & a->number[j]) && 1);
+            if (bit_int_meq(R, b))
+            {
+                big_int_sub2(R, b);
+                Q->number[j] = Q->number[j] | t;
+            }
+        }
+    }
+    return Q;
+}
