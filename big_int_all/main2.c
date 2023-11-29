@@ -21,8 +21,8 @@
 
 void test_kar()
 {
-    big_int *n1 = big_int_getloop("1111000011111111000101111", 100); //11110000111111110001000100000000
-    big_int *n2 = big_int_getloop("1100000010000000000001010", 100); //10100000111111110000101000000000
+    big_int *n1 = big_int_getloop("1111000011111111000101111", 10); //11110000111111110001000100000000
+    big_int *n2 = big_int_getloop("1100000010000000000001010", 10); //10100000111111110000101000000000
 //    printf("n1 = ");
 //    big_int_print(n1);
 //    printf("n2 = ");
@@ -63,8 +63,8 @@ int new_func()
 {
     time_t start, end;
 
-    big_int *n1 = big_int_getloop("11111011", 10000000);
-    big_int *n2 = big_int_getloop("1111011", 100000000);
+    big_int *n1 = big_int_getloop("11111011", 10);
+    big_int *n2 = big_int_getloop("1111011", 10);
 
     start = clock();
     big_int *n3 = big_int_add1(n1, n2);
@@ -81,8 +81,8 @@ int new_func_slava()
 {
     time_t start1, end1;
 
-    big_int *n11 = big_int_getloop("11111011", 10000000);
-    big_int *n22 = big_int_getloop("1111011", 100000000);
+    big_int *n11 = big_int_getloop("11111011", 10);
+    big_int *n22 = big_int_getloop("1111011", 10);
 
     start1 = clock();
     big_int *n33 = big_int_add1(n11, n22);
@@ -98,8 +98,8 @@ int new_func2()
 {
     time_t start, end;
 
-    big_int *n1 = big_int_getloop("11111011", 10000000);
-    big_int *n2 = big_int_getloop("1111011", 100000000);
+    big_int *n1 = big_int_getloop("11111011", 10);
+    big_int *n2 = big_int_getloop("1111011", 10);
 
     start = clock();
     big_int *n3 = big_int_sub1(n1, n2);
@@ -116,8 +116,8 @@ int new_func_slava2()
 {
     time_t start1, end1;
 
-    big_int *n11 = big_int_getloop("11111011", 10000000);
-    big_int *n22 = big_int_getloop("1111011", 100000000);
+    big_int *n11 = big_int_getloop("11111011", 10);
+    big_int *n22 = big_int_getloop("1111011", 10);
 
     start1 = clock();
 //    big_int *n33 = big_int_sub(n11, n22);
@@ -134,8 +134,8 @@ int new_func3()
 {
     time_t start, end;
 
-    big_int *n1 = big_int_getloop("1101011", 10000000);
-    big_int *n2 = big_int_getloop("111011", 100000000);
+    big_int *n1 = big_int_getloop("1101011", 10);
+    big_int *n2 = big_int_getloop("111011", 10);
 
     start = clock();
     big_int_add2(n1, n2);
@@ -152,8 +152,8 @@ int new_func_slava3()
 {
     time_t start1, end1;
 
-    big_int *n11 = big_int_getloop("1101011", 10000000);
-    big_int *n22 = big_int_getloop("111011", 100000000);
+    big_int *n11 = big_int_getloop("1101011", 10);
+    big_int *n22 = big_int_getloop("111011", 10);
 
     start1 = clock();
 //    big_int_add22(n11, n22);
@@ -164,21 +164,14 @@ int new_func_slava3()
     big_int_free2(2, &n11, &n22);
 }
 
-int main() {
-
-//    test_kar();
-
-//    new_func();
-
-//    new_func_slava();
-
-//    new_func2();
-
-//    new_func_slava2();
-
-//    new_func2();
-
-//    new_func3();
-
-//    new_func_slava3();
+int main()
+{
+    big_int *n1 = big_int_get10(10);
+    big_int *n2 = big_int_get10(3);
+    big_int *n3 = big_int_pow(n1,n2);
+//    big_int_print(n1);
+//    big_int_print(n2);
+//    big_int_print(n3);
+    big_int_free2(3, &n1, &n2, &n3);
+    return 0;
 }
