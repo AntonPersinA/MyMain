@@ -23,6 +23,8 @@ big_int *big_int_get10(long long int n1);
 //! \brief Вывод big_int
 void big_int_print(big_int *number);
 
+int big_int_to10(big_int *number);
+
 //! \brief Удаляет лидирующие нули
 void big_int_dlz(big_int *n);
 

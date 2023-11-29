@@ -160,6 +160,32 @@ void big_int_print(big_int *number)
     printf("\n");
 }
 
+int big_int_to10(big_int *number)
+{
+    unsigned long long int res = 0;
+    unsigned long long int pow2_long = 1;
+//    printf("len = %d\n", (number->length > 8 ? 8 : number->length));
+    for (int i = 0; i < (number->length > 8 ? 8 : number->length) ; ++i)
+    {
+        char pow2 = 1;
+        for (int j = 0; j < 8; ++j)
+        {
+            if (number->number[i] & pow2)
+            {
+//                printf("||||||||, = %lld\n", pow2_long);
+                res += pow2_long;
+            }
+            pow2_long <<= 1;
+            pow2 <<= 1;
+        }
+    }
+    if(number->sign == '-')
+    {
+        res *= -1;
+    }
+    printf("%lld\n", res);
+}
+
 
 void big_int_dlz(big_int *n)
 {
@@ -1201,5 +1227,4 @@ big_int *big_int_pow(big_int *n1, big_int *n2)
     big_int_free(&n2_cpy);
     return res;
 }
-
 
