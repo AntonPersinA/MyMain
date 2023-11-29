@@ -135,6 +135,14 @@ big_int *big_int_getloop(char *bin_number, int loop)
     return res;
 }
 
+big_int *big_int_get10(long long int n1)
+{
+    char *n1_str = bin_str(n1);
+    big_int *n1_BI = big_int_get(n1_str);
+    free(n1_str);
+    return n1_BI;
+}
+
 
 void big_int_print(big_int *number)
 {
@@ -1154,3 +1162,44 @@ big_int *big_int_karatsuba_mult2(big_int *n1, big_int *n2)
         return res;
     }
 }
+
+
+big_int *big_int_pow_help(big_int *n1_cpy, big_int *n2_cpy, big_int *res)
+{
+    if((n2_cpy->number)[0] > 0 || n2_cpy->length > 1)
+    {
+        if ((n2_cpy->number)[0] & 1)
+        {
+            big_int *res2 = big_int_karatsuba_mult2(n1_cpy, res);
+            big_int *digit1 = big_int_get("1");
+            big_int_sub2(n2_cpy, digit1);
+            big_int_free(&digit1);
+            big_int_swap2(res, res2);
+            big_int_free(&res2);
+            big_int_pow_help(n1_cpy, n2_cpy, res);
+        } else
+        {
+            big_int_shft_r(n2_cpy);
+            big_int *n1_cpy_cpy = big_int_copy(n1_cpy);
+            big_int *n3 = big_int_karatsuba_mult2(n1_cpy, n1_cpy_cpy);
+            big_int_free(&n1_cpy_cpy);
+            big_int_pow_help(n3, n2_cpy, res);
+            big_int_free(&n3);
+
+        }
+    }
+}
+
+
+big_int *big_int_pow(big_int *n1, big_int *n2)
+{
+    big_int *res = big_int_get("1");
+    big_int *n1_cpy = big_int_copy(n1);
+    big_int *n2_cpy = big_int_copy(n2);
+    big_int_pow_help(n1_cpy, n2_cpy, res);
+    big_int_free(&n1_cpy);
+    big_int_free(&n2_cpy);
+    return res;
+}
+
+

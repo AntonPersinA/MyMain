@@ -18,6 +18,8 @@ big_int *big_int_getloop(char *bin_number, int loop);
 //! \brief Переопределение big_int через строку
 big_int *big_int_reget(big_int *n1, char *bin_number);
 
+big_int *big_int_get10(long long int n1);
+
 //! \brief Вывод big_int
 void big_int_print(big_int *number);
 
@@ -84,6 +86,7 @@ big_int *big_int_karatsuba_help(big_int *n1, big_int *n2);
 
 big_int *big_int_karatsuba_mult2(big_int *n1, big_int *n2);
 
+big_int *big_int_pow(big_int *n1, big_int *n2);
 
 
 
