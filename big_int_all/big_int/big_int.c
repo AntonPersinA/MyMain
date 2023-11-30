@@ -457,27 +457,46 @@ void big_int_shft_l(big_int *n1)
 }
 
 
+//void big_int_shft_r(big_int *n1)
+//{
+//    if ((n1->number[n1->length - 1] - 1) || n1->length == 1)
+//    {
+//        for (int i = 0; i < n1->length; ++i)
+//        {
+//            n1->number[i] >>= 1;
+//        }
+//    } else {
+//        n1->length--;
+//        n1->number = realloc(n1->number, n1->length);
+//        if (n1->number == NULL)
+//        {
+//            printf("memory error in big_int_shft_r\n");
+//            return;
+//        }
+//        for (int i = 0; i < n1->length; ++i)
+//        {
+//            n1->number[i] >>= 1;
+//        }
+//        n1->number[n1->length - 1] += 128;
+//    }
+//}
+
+
 void big_int_shft_r(big_int *n1)
 {
-    if ((n1->number[n1->length - 1] - 1) || n1->length == 1)
+    n1->number[0] >>= 1;
+    for (int i = 1; i < n1->length; ++i)
     {
-        for (int i = 0; i < n1->length; ++i)
+        if (n1->number[i] & 1)
         {
-            n1->number[i] >>= 1;
+            n1->number[i - 1] = n1->number[i - 1] | 128;
         }
-    } else {
-        n1->length--;
-        n1->number = realloc(n1->number, n1->length);
-        if (n1->number == NULL)
-        {
-            printf("memory error in big_int_shft_r\n");
-            return;
-        }
-        for (int i = 0; i < n1->length; ++i)
-        {
-            n1->number[i] >>= 1;
-        }
-        n1->number[n1->length - 1] += 128;
+        n1->number[i] >>= 1;
+    }
+    big_int_dlz(n1);
+    if (n1->length == 1 && n1->number[0] == 0)
+    {
+        n1->sign = '+';
     }
 }
 
@@ -515,7 +534,6 @@ void big_int_shft_l2(big_int *n1, int cnt)
     {
         n1->number[i] = 0;
     }
-//    big_int_dlz(n1);
 }
 
 
@@ -542,34 +560,61 @@ void big_int_shft_r2(big_int *n1, int cnt)
         }
         n1->number[0] = 0;
     } else {
-        n1->length = n1->length - cnt;
-        n1->number = realloc(n1->number, n1->length);
-        if (n1->number == NULL)
+        for (int i = cnt; i < n1->length; ++i)
         {
-            printf("memory error in big_int_shft_r2\n");
-            return;
+            n1->number[i - cnt] = n1->number[cnt];
         }
+        n1->length -= cnt;
+        n1->number = realloc(n1->number, n1->length);
+    }
+    big_int_dlz(n1);
+    if (n1->length == 1 && n1->number[0] == 0)
+    {
+        n1->sign = '+';
     }
 }
 
 
 int bit_int_leq(big_int *n1, big_int *n2) //n1<=n2
 {
+    if (n1->sign == '-' && n2->sign == '+')
+    {
+        return 1;
+    }
+    if (n1->sign == '+' && n2->sign == '-')
+    {
+        return 0;
+    }
+    big_int_dlz(n1);
+    big_int_dlz(n2);
     if (n1->length < n2->length)
     {
+        if (n1->sign == '-' && n2->sign == '-')
+        {
+            return 0;
+        }
         return 1;
     }
     if (n1->length > n2->length)
     {
+        if (n1->sign == '-' && n2->sign == '-')
+        {
+            return 1;
+        }
         return 0;
+    }
+    char ret = 1;
+    if (n1->sign == '-' && n2->sign == '-')
+    {
+        ret = 0;
     }
     for (int i = n1->length - 1; i >= 0; --i)
     {
         if (n1->number[i] < n2->number[i]){
-            return 1;
+            return ret;
         }
         if (n1->number[i] > n2->number[i]){
-            return 0;
+            return !ret;
         }
     }
     return 1;
@@ -579,23 +624,39 @@ int bit_int_leq(big_int *n1, big_int *n2) //n1<=n2
 
 int bit_int_meq(big_int *n1, big_int *n2) //n1>=n2
 {
-    if (n1->length > n2->length)
-    {
-        return 1;
-    }
-    if (n1->length < n2->length)
+    if (n1->sign == '-' && n2->sign == '+')
     {
         return 0;
     }
+    if (n1->sign == '+' && n2->sign == '-')
+    {
+        return 1;
+    }
+    big_int_dlz(n1);
+    big_int_dlz(n2);
+    char ret = 1;
+    if (n1->sign == '-' && n2->sign == '-')
+    {
+        ret = 0;
+    }
+    if (n1->length > n2->length)
+    {
+        return ret;
+    }
+    if (n1->length < n2->length)
+    {
+        return !ret;
+    }
+
     for (int i = n1->length - 1; i >= 0; --i)
     {
         if (n1->number[i] > n2->number[i])
         {
-            return 1;
+            return ret;
         }
         if (n1->number[i] < n2->number[i])
         {
-            return 0;
+            return !ret;
         }
     }
     return 1;
@@ -1056,7 +1117,7 @@ big_int *big_int_pow(big_int *n1, big_int *n2)
 }
 
 
-big_int *big_int_divided(big_int *a, big_int *b)
+big_int *big_int_divided_help(big_int *a, big_int *b)
 {
     big_int_dlz(a);
     big_int_dlz(b);
@@ -1095,7 +1156,6 @@ big_int *big_int_divided(big_int *a, big_int *b)
             }
         }
     }
-
     for (int j = (a->length - 2); j >= 0; --j)
     {
         for (int t = 128; t >=1; t >>= 1)
@@ -1110,22 +1170,51 @@ big_int *big_int_divided(big_int *a, big_int *b)
         }
     }
     big_int_free(&R);
-    if (a->sign != b->sign)
-    {
-        if (Q->length > 1 || Q->number[0] != 0)
-        {
-            Q->sign = '-';
-        }
-    }
     return Q;
 }
 
+big_int *big_int_divided(big_int *a, big_int *b)
+{
+    char sign_a = a->sign;
+    char sign_b = b->sign;
+    a->sign = '+';
+    b->sign = '+';
+    big_int *ret = big_int_divided_help(a, b);
+    a->sign = sign_a;
+    b->sign = sign_b;
+    if (a->sign != b->sign)
+    {
+        if (ret->length > 1 || ret->number[0] != 0)
+        {
+            ret->sign = '-';
+        }
+    }
+    big_int_dlz(ret);
+    return ret;
+}
 
-big_int *big_int_mod(big_int *a, big_int *b)
+
+
+
+
+
+
+
+//    unsigned short char_digit = 256;
+//    for (int ii = 8; ii >= 0; --ii)
+//    {
+//        if (MAS_POW2[ii] < a->number[a->length - 1])
+//        {
+//            char_digit = MAS_POW2[ii];
+//        }
+//    }
+const short MAS_POW2[] = { 1, 2, 4, 8, 16, 32, 64, 128, 256};
+
+big_int *big_int_mod_help(big_int *a, big_int *b)
 {
     big_int_dlz(a);
     big_int_dlz(b);
-    if ((b->length == 1 && b->number[0] == 0) || b->length > a->length)
+    if ((b->length == 1 && b->number[0] == 0))
     {
         big_int *res = big_int_get("0");
         return res;
@@ -1148,6 +1237,7 @@ big_int *big_int_mod(big_int *a, big_int *b)
     {
         char_digit >>= 1;
     }
+
     {
         for (int t = char_digit; t >=1; t >>= 1)
         {
@@ -1177,3 +1267,26 @@ big_int *big_int_mod(big_int *a, big_int *b)
     big_int_free(&Q);
     return R;
 }
+
+
+big_int *big_int_mod(big_int *a, big_int *b)
+{
+    char sign_a = a->sign;
+    char sign_b = b->sign;
+    a->sign = '+';
+    b->sign = '+';
+    big_int *ret = big_int_mod_help(a, b);
+    a->sign = sign_a;
+    b->sign = sign_b;
+    if (a->sign == '-')
+    {
+        if (ret->length > 1 || ret->number[0] != 0)
+        {
+            ret->sign = '-';
+        }
+    }
+    big_int_dlz(ret);
+    return ret;
+}
+
+
