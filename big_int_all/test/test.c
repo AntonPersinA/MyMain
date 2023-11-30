@@ -6,28 +6,102 @@
 #include "test.h"
 #include "../lib/lib.h"
 
-void test_all(int limit)
+int test_all(int limit)
 {
 
-    test_get();
+    if (!test_get())
+    {
+        return 0;
+    }
 
-    test_equal(limit);
+    if (!test_equal(limit))
+    {
+        return 0;
+    }
 
-    test_equal_sgn(limit);
+    if (!test_equal_sgn(limit))
+    {
+        return 0;
+    }
 
-    test_swap1(limit);
+    if (!test_leq())
+    {
+        return 0;
+    }
 
-    test_swap2(limit);
+    if (!test_meq())
+    {
+        return 0;
+    }
 
-    test_copy();
+    if (!test_swap1(limit))
+    {
+        return 0;
+    }
 
-    test_add12(limit);
+    if (!test_swap2(limit))
+    {
+        return 0;
+    }
 
-    test_sub12(limit);
 
-    test_mult1(limit);
+    if (!test_copy())
+    {
+        return 0;
+    }
 
-    test_shft();
+    if (!test_add12(limit))
+    {
+        return 0;
+    }
+
+
+    if (!test_sub12(limit))
+    {
+        return 0;
+    }
+
+    if (!test_mult1(limit))
+    {
+        return 0;
+    }
+
+    if (!test_shft_l())
+    {
+        return 0;
+    }
+
+    if (!test_shft_r())
+    {
+        return 0;
+    }
+
+    if (!test_karatsuba(limit))
+    {
+        return 0;
+    }
+
+    if (!test_pow(limit))
+    {
+        return 0;
+    }
+
+    if (!test_divided(limit))
+    {
+        return 0;
+    }
+
+    if (!test_mod(limit))
+    {
+        return 0;
+    }
+
+    if (!test_dlz())
+    {
+        return 0;
+    }
+
+    return 1;
 }
 
 
@@ -164,6 +238,8 @@ int test_get()
         }
         big_int_free(&n1);
     }
+
+    return 1;
 }
 
 
@@ -425,6 +501,8 @@ int test_copy()
         big_int_free(&n1);
         big_int_free(&n2);
     }
+
+    return 1;
 }
 
 
@@ -434,8 +512,8 @@ int test_add12(int a)
     {
         for (int j1 = -a; j1 < a; ++j1)
         {
-            long long int i = (291 * i1 * a) % 300000;
-            long long int j = (291 * j1 * a) % 300000;
+            long long int i = (291 * i1 * a) % 300001;
+            long long int j = (291 * j1 * a) % 300001;
             char *str1 = bin_str(i);
             char *str2 = bin_str(j);
             char *str3 = bin_str(i + j);
@@ -502,8 +580,8 @@ int test_sub12(int a)
     {
         for (int j1 = -a; j1 < a; ++j1)
         {
-            long long int i = (291 * i1 * a) % 300000;
-            long long int j = (291 * j1 * a) % 300000;
+            long long int i = (291 * i1 * a) % 300001;
+            long long int j = (291 * j1 * a) % 300001;
             char *str1 = bin_str(i);
             char *str2 = bin_str(j);
             char *str3 = bin_str(i - j);
@@ -550,8 +628,8 @@ int test_mult1(int a)
     {
         for (int j1 = -a; j1 < a; ++j1)
         {
-            long long int i = (291 * i1 * a) % 300000;
-            long long int j = (291 * j1 * a) % 300000;
+            long long int i = (291 * i1 * a) % 300001;
+            long long int j = (291 * j1 * a) % 300001;
             char *str1 = bin_str(i);
             char *str2 = bin_str(j);
             char *str3 = bin_str(i * j);
@@ -581,7 +659,7 @@ int test_mult1(int a)
     return 1;
 }
 
-int test_shft()
+int test_shft_l()
 {
     for (int i = -10310; i < 10310; ++i)
     {
@@ -590,7 +668,6 @@ int test_shft()
             char *str1 = bin_str(i);
             char *str2 = bin_str(j);
             big_int *n1 = big_int_get(str1);
-//            big_int *n2 = big_int_get(str2);
             long long int ppp = 1;
             for (int k = 0; k < j; ++k)
             {
@@ -600,12 +677,11 @@ int test_shft()
             big_int *n3 = big_int_get(str3);
 
             big_int_shft_l2(n1, j);
+            big_int_dlz(n1);
+            big_int_dlz(n3);
             if (!big_int_equal_sgn(n1, n3))
             {
-                printf("error test_shft = %d\n", j);
-//                printf("00000000 00000000 ");
-//                big_int_print(n2);
-//                printf("00000000 ");
+                printf("error test_shft_l = %d\n", j);
                 big_int_print(n1);
                 big_int_print(n3);
                 free(str1);
@@ -621,4 +697,657 @@ int test_shft()
         }
     }
     return 1;
+}
+
+
+int test_shft_r()
+{
+    for (int i = -10310; i < 10310; ++i)
+    {
+        for(int j = 0; j < 30; ++j)
+        {
+            char *str1 = bin_str(i);
+            char *str2 = bin_str(j);
+            big_int *n1 = big_int_get(str1);
+            long long int ppp = 1;
+            for (int k = 0; k < j; ++k)
+            {
+                ppp *= 2;
+            }
+            char *str3 = bin_str((long long int)((long long int)i/(long long int)ppp));
+            big_int *n3 = big_int_get(str3);
+
+            big_int_shft_r2(n1, j);
+            big_int_dlz(n3);
+            if (!big_int_equal_sgn(n1, n3))
+            {
+                printf("error test_shft_r = %d\n", j);
+                printf("error i = %d\n", i);
+                big_int *pri = big_int_get10(i);
+                big_int_print(pri);
+                big_int_free(&pri);
+                big_int_print(n1);
+                big_int_print(n3);
+                free(str1);
+                free(str2);
+                free(str3);
+                big_int_free2(2, &n1, &n3);
+                return 0;
+            }
+            free(str1);
+            free(str2);
+            free(str3);
+            big_int_free2(2, &n1, &n3);
+        }
+    }
+    return 1;
+}
+
+
+int test_karatsuba(int a)
+{
+    for (int i1 = -a; i1 < a; ++i1)
+    {
+        for (int j1 = -a; j1 < a; ++j1)
+        {
+            long long int i = (291 * i1 * a) % 300001;
+            long long int j = (291 * j1 * a) % 300001;
+            char *str1 = bin_str(i);
+            char *str2 = bin_str(j);
+            char *str3 = bin_str(i * j);
+            big_int *n1 = big_int_get(str1);
+            big_int *n2 = big_int_get(str2);
+            big_int *n3 = big_int_get(str3);
+
+            big_int *n4 = big_int_karatsuba_mult2(n1,n2);
+            if (!big_int_equal_sgn(n3, n4))
+            {
+                printf("error test_karatsuba\n");
+                printf("%lld %lld\n", i, j);
+                big_int_print(n3);
+                big_int_print(n4);
+                free(str1);
+                free(str2);
+                free(str3);
+                big_int_free2(4, &n1, &n2, &n3, &n4);
+                return 0;
+            }
+            free(str1);
+            free(str2);
+            free(str3);
+            big_int_free2(4, &n1, &n2, &n3, &n4);
+        }
+    }
+    return 1;
+}
+
+
+int test_pow(int a)
+{
+    for (int i1 = 0; i1 < a; ++i1)
+    {
+        for (int j1 = 0; j1 < a; ++j1)
+        {
+            long long int i = (291 * i1 * a) % 36 - 18;
+            long long int j = (291 * j1 * a) % 15;
+            char *str1 = bin_str(i);
+            char *str2 = bin_str(j);
+            char *str3 = bin_str((long long int)powl(i, j));
+            big_int *n1 = big_int_get(str1);
+            big_int *n2 = big_int_get(str2);
+            big_int *n3 = big_int_get(str3);
+
+            big_int *n4 = big_int_pow(n1,n2);
+            if (!big_int_equal_sgn(n3, n4))
+            {
+                printf("error test_pow\n");
+                printf("%lld %lld\n", i, j);
+                big_int_print(n3);
+                big_int_print(n4);
+                free(str1);
+                free(str2);
+                free(str3);
+                big_int_free2(4, &n1, &n2, &n3, &n4);
+                return 0;
+            }
+            free(str1);
+            free(str2);
+            free(str3);
+            big_int_free2(4, &n1, &n2, &n3, &n4);
+        }
+    }
+    return 1;
+}
+
+int test_divided(int a)
+{
+    for (int i1 = -a; i1 < a; ++i1)
+    {
+        for (int j1 = -a; j1 < a; ++j1)
+        {
+            long long int i = (291 * i1 * a) % 12345678901234567;
+            long long int j = (291 * j1 * a) % 123456 + (!((291 * j1 * a) % 123456));
+            char *str1 = bin_str(i);
+            char *str2 = bin_str(j);
+            char *str3 = bin_str((long long int)(i/j));
+            big_int *n1 = big_int_get(str1);
+            big_int *n2 = big_int_get(str2);
+            big_int *n3 = big_int_get(str3);
+
+            big_int *n4 = big_int_divided(n1,n2);
+            if (!big_int_equal_sgn(n3, n4))
+            {
+                printf("error test_divided\n");
+                printf("%lld %lld\n", i, j);
+                big_int_print(n3);
+                big_int_print(n4);
+                free(str1);
+                free(str2);
+                free(str3);
+                big_int_free2(4, &n1, &n2, &n3, &n4);
+                return 0;
+            }
+            free(str1);
+            free(str2);
+            free(str3);
+            big_int_free2(4, &n1, &n2, &n3, &n4);
+        }
+    }
+    return 1;
+}
+
+
+int test_mod(int a)
+{
+    for (int i1 = -a; i1 < a; ++i1)
+    {
+        for (int j1 = -a; j1 < a; ++j1)
+        {
+            long long int i = (11 * i1 * a) % 12345678901234567;
+            long long int j = (j1 * a) % 1234568 + (!(((j1 * a) % 1234568)));
+            char *str1 = bin_str(i);
+            char *str2 = bin_str(j);
+            char *str3 = bin_str((long long int)(i%j));
+            big_int *n1 = big_int_get(str1);
+            big_int *n2 = big_int_get(str2);
+            big_int *n3 = big_int_get(str3);
+
+            big_int *n4 = big_int_mod(n1,n2);
+            if (!big_int_equal_sgn(n3, n4))
+            {
+                printf("error test_mod\n");
+                printf("%lld %lld\n", i, j);
+                big_int_print(n3);
+                big_int_print(n4);
+                free(str1);
+                free(str2);
+                free(str3);
+                big_int_free2(4, &n1, &n2, &n3, &n4);
+                return 0;
+            }
+            free(str1);
+            free(str2);
+            free(str3);
+            big_int_free2(4, &n1, &n2, &n3, &n4);
+        }
+    }
+    return 1;
+}
+
+
+int test_divided_loop(int a)
+{
+    for (int i1 = -a; i1 < a; ++i1)
+    {
+        for (int j1 = -a; j1 < a; ++j1)
+        {
+            long long int i = i1;
+            long long int j = j1 + !j1;
+            char *str1 = bin_str(i);
+            char *str2 = bin_str(j);
+            char *str3 = bin_str((long long int)(i/j));
+            big_int *n1 = big_int_get(str1);
+            big_int *n2 = big_int_get(str2);
+            big_int *n3 = big_int_get(str3);
+
+            big_int *n4 = big_int_divided(n1,n2);
+            if (!big_int_equal_sgn(n3, n4))
+            {
+                printf("error test_divided\n");
+                printf("%lld %lld\n", i, j);
+                big_int_print(n3);
+                big_int_print(n4);
+                free(str1);
+                free(str2);
+                free(str3);
+                big_int_free2(4, &n1, &n2, &n3, &n4);
+                return 0;
+            }
+            free(str1);
+            free(str2);
+            free(str3);
+            big_int_free2(4, &n1, &n2, &n3, &n4);
+        }
+    }
+    return 1;
+}
+
+
+
+int test_leq()
+{
+    for (int i = -10; i < 11; ++i)
+    {
+        for (int j = -10; j < 11; ++j)
+        {
+            big_int *n1 = big_int_get10(i);
+            big_int *n2 = big_int_get10(j);
+
+            if (bit_int_leq(n1, n2) != (i <= j))
+            {
+                printf("error test_leq1 = %d\n", bit_int_leq(n1, n2));
+                big_int_free2(2, &n1, &n2);
+                return 0;
+            }
+            big_int_free2(2, &n1, &n2);
+        }
+    }
+
+    {
+        big_int *n1 = big_int_get10(-123456789);
+        big_int *n2 = big_int_get10(12345);
+        if (bit_int_leq(n1, n2) != (-123456789 <= 12345))
+        {
+            printf("error test_leq2\n");
+            big_int_free2(2, &n1, &n2);
+            return 0;
+        }
+        big_int_free2(2, &n1, &n2);
+    }
+    {
+        big_int *n1 = big_int_get10(123456789);
+        big_int *n2 = big_int_get10(12345);
+        if (bit_int_leq(n1, n2) != (123456789 <= 12345))
+        {
+            printf("error test_leq3\n");
+            big_int_free2(2, &n1, &n2);
+            return 0;
+        }
+        big_int_free2(2, &n1, &n2);
+    }
+    {
+        big_int *n1 = big_int_get10(-123456789);
+        big_int *n2 = big_int_get10(-12345);
+        if (bit_int_leq(n1, n2) != (-123456789 <= -12345))
+        {
+            printf("error test_leq4\n");
+            big_int_free2(2, &n1, &n2);
+            return 0;
+        }
+        big_int_free2(2, &n1, &n2);
+    }
+    {
+        big_int *n1 = big_int_get10(123456789);
+        big_int *n2 = big_int_get10(12345);
+        if (bit_int_leq(n1, n2) != (123456789 <= 12345))
+        {
+            printf("error test_leq5\n");
+            big_int_free2(2, &n1, &n2);
+            return 0;
+        }
+        big_int_free2(2, &n1, &n2);
+    }
+    {
+        big_int *n1 = big_int_get10(123456789);
+        big_int *n2 = big_int_get10(-12345);
+        if (bit_int_leq(n1, n2) != (123456789 <= -12345))
+        {
+            printf("error test_leq6\n");
+            big_int_free2(2, &n1, &n2);
+            return 0;
+        }
+        big_int_free2(2, &n1, &n2);
+    }
+    {
+        big_int *n1 = big_int_get10(12345);
+        big_int *n2 = big_int_get10(-123456789);
+        if (bit_int_leq(n1, n2) != (12345 <= -123456789))
+        {
+            printf("error test_leq7\n");
+            big_int_free2(2, &n1, &n2);
+            return 0;
+        }
+        big_int_free2(2, &n1, &n2);
+    }
+    {
+        big_int *n1 = big_int_get10(12345);
+        big_int *n2 = big_int_get10(123456789);
+        if (bit_int_leq(n1, n2) != (12345 <= 123456789))
+        {
+            printf("error test_leq8\n");
+            big_int_free2(2, &n1, &n2);
+            return 0;
+        }
+        big_int_free2(2, &n1, &n2);
+    }
+    {
+        big_int *n1 = big_int_get10(-12345);
+        big_int *n2 = big_int_get10(123456789);
+        if (bit_int_leq(n1, n2) != (-12345 <= 123456789))
+        {
+            printf("error test_leq9\n");
+            big_int_free2(2, &n1, &n2);
+            return 0;
+        }
+        big_int_free2(2, &n1, &n2);
+    }
+    {
+        big_int *n1 = big_int_get10(-12345);
+        big_int *n2 = big_int_get10(-123456789);
+        if (bit_int_leq(n1, n2) != (-12345 <= -123456789))
+        {
+            printf("error test_leq10\n");
+            big_int_free2(2, &n1, &n2);
+            return 0;
+        }
+        big_int_free2(2, &n1, &n2);
+    }
+
+
+
+
+
+    {
+        big_int *n1 = big_int_get10(12345);
+        big_int *n2 = big_int_get10(-12345);
+        if (bit_int_leq(n1, n2) != (12345 <= -12345))
+        {
+            printf("error test_leq11\n");
+            big_int_free2(2, &n1, &n2);
+            return 0;
+        }
+        big_int_free2(2, &n1, &n2);
+    }
+    {
+        big_int *n1 = big_int_get10(12345);
+        big_int *n2 = big_int_get10(12345);
+        if (bit_int_leq(n1, n2) != (12345 <= 12345))
+        {
+            printf("error test_leq12\n");
+            big_int_free2(2, &n1, &n2);
+            return 0;
+        }
+        big_int_free2(2, &n1, &n2);
+    }
+    {
+        big_int *n1 = big_int_get10(-12345);
+        big_int *n2 = big_int_get10(12345);
+        if (bit_int_leq(n1, n2) != (-12345 <= 12345))
+        {
+            printf("error test_leq13\n");
+            big_int_free2(2, &n1, &n2);
+            return 0;
+        }
+        big_int_free2(2, &n1, &n2);
+    }
+    {
+        big_int *n1 = big_int_get10(-12345);
+        big_int *n2 = big_int_get10(-12345);
+        if (bit_int_leq(n1, n2) != (-12345 <= -12345))
+        {
+            printf("error test_leq14\n");
+            big_int_free2(2, &n1, &n2);
+            return 0;
+        }
+        big_int_free2(2, &n1, &n2);
+    }
+    return 1;
+}
+
+
+int test_meq()
+{
+    for (int i = -10; i < 11; ++i)
+    {
+        for (int j = -10; j < 11; ++j)
+        {
+            big_int *n1 = big_int_get10(i);
+            big_int *n2 = big_int_get10(j);
+
+            if (bit_int_meq(n1, n2) != (i >= j))
+            {
+                printf("error test_meq1 = %d\n", bit_int_leq(n1, n2));
+                big_int_free2(2, &n1, &n2);
+                return 0;
+            }
+            big_int_free2(2, &n1, &n2);
+        }
+    }
+
+    {
+        big_int *n1 = big_int_get10(-123456789);
+        big_int *n2 = big_int_get10(12345);
+        if (bit_int_meq(n1, n2) != (-123456789 >= 12345))
+        {
+            printf("error test_meq2\n");
+            big_int_free2(2, &n1, &n2);
+            return 0;
+        }
+        big_int_free2(2, &n1, &n2);
+    }
+    {
+        big_int *n1 = big_int_get10(123456789);
+        big_int *n2 = big_int_get10(12345);
+        if (bit_int_meq(n1, n2) != (123456789 >= 12345))
+        {
+            printf("error test_meq3\n");
+            big_int_free2(2, &n1, &n2);
+            return 0;
+        }
+        big_int_free2(2, &n1, &n2);
+    }
+    {
+        big_int *n1 = big_int_get10(-123456789);
+        big_int *n2 = big_int_get10(-12345);
+        if (bit_int_meq(n1, n2) != (-123456789 >= -12345))
+        {
+            printf("error test_meq4\n");
+            big_int_free2(2, &n1, &n2);
+            return 0;
+        }
+        big_int_free2(2, &n1, &n2);
+    }
+    {
+        big_int *n1 = big_int_get10(123456789);
+        big_int *n2 = big_int_get10(-12345);
+        if (bit_int_meq(n1, n2) != (123456789 >= -12345))
+        {
+            printf("error test_meq6\n");
+            big_int_free2(2, &n1, &n2);
+            return 0;
+        }
+        big_int_free2(2, &n1, &n2);
+    }
+    {
+        big_int *n1 = big_int_get10(12345);
+        big_int *n2 = big_int_get10(-123456789);
+        if (bit_int_meq(n1, n2) != (12345 >= -123456789))
+        {
+            printf("error test_meq7\n");
+            big_int_free2(2, &n1, &n2);
+            return 0;
+        }
+        big_int_free2(2, &n1, &n2);
+    }
+    {
+        big_int *n1 = big_int_get10(12345);
+        big_int *n2 = big_int_get10(123456789);
+        if (bit_int_meq(n1, n2) != (12345 >= 123456789))
+        {
+            printf("error test_meq8\n");
+            big_int_free2(2, &n1, &n2);
+            return 0;
+        }
+        big_int_free2(2, &n1, &n2);
+    }
+    {
+        big_int *n1 = big_int_get10(-12345);
+        big_int *n2 = big_int_get10(123456789);
+        if (bit_int_meq(n1, n2) != (-12345 >= 123456789))
+        {
+            printf("error test_meq9\n");
+            big_int_free2(2, &n1, &n2);
+            return 0;
+        }
+        big_int_free2(2, &n1, &n2);
+    }
+    {
+        big_int *n1 = big_int_get10(-12345);
+        big_int *n2 = big_int_get10(-123456789);
+        if (bit_int_meq(n1, n2) != (-12345 >= -123456789))
+        {
+            printf("error test_meq10\n");
+            big_int_free2(2, &n1, &n2);
+            return 0;
+        }
+        big_int_free2(2, &n1, &n2);
+    }
+    {
+        big_int *n1 = big_int_get10(12345);
+        big_int *n2 = big_int_get10(-12345);
+        if (bit_int_meq(n1, n2) != (12345 >= -12345))
+        {
+            printf("error test_meq11\n");
+            big_int_free2(2, &n1, &n2);
+            return 0;
+        }
+        big_int_free2(2, &n1, &n2);
+    }
+    {
+        big_int *n1 = big_int_get10(12345);
+        big_int *n2 = big_int_get10(12345);
+        if (bit_int_meq(n1, n2) != (12345 >= 12345))
+        {
+            printf("error test_meq12\n");
+            big_int_free2(2, &n1, &n2);
+            return 0;
+        }
+        big_int_free2(2, &n1, &n2);
+    }
+    {
+        big_int *n1 = big_int_get10(-12345);
+        big_int *n2 = big_int_get10(12345);
+        if (bit_int_meq(n1, n2) != (-12345 >= 12345))
+        {
+            printf("error test_meq13\n");
+            big_int_free2(2, &n1, &n2);
+            return 0;
+        }
+        big_int_free2(2, &n1, &n2);
+    }
+    {
+        big_int *n1 = big_int_get10(-12345);
+        big_int *n2 = big_int_get10(-12345);
+        if (bit_int_meq(n1, n2) != (-12345 >= -12345))
+        {
+            printf("error test_meq14\n");
+            big_int_free2(2, &n1, &n2);
+            return 0;
+        }
+        big_int_free2(2, &n1, &n2);
+    }
+    return 1;
+}
+
+
+int test_dlz()
+{
+    {
+        big_int *n1 = calloc(1, sizeof(big_int));
+        n1->number = calloc(10, sizeof(unsigned char));
+        n1->length = 10;
+        n1->sign = '-';
+        big_int_dlz(n1);
+        if (n1->length != 1 && n1->number[0] != 0)
+        {
+            printf("error test_dlz1\n");
+            big_int_free(&n1);
+            return 0;
+        }
+        big_int_free(&n1);
+    }
+    {
+        big_int *n1 = calloc(1, sizeof(big_int));
+        n1->number = calloc(10, sizeof(unsigned char));
+        n1->length = 10;
+        n1->sign = '-';
+        n1->number[1] = 1;
+        big_int_dlz(n1);
+        if (n1->length != 2 && n1->number[0] != 0 && n1->number[1] != 1)
+        {
+            printf("error test_dlz2\n");
+            big_int_free(&n1);
+            return 0;
+        }
+        big_int_free(&n1);
+    }
+    {
+        big_int *n1 = calloc(1, sizeof(big_int));
+        n1->number = calloc(10, sizeof(unsigned char));
+        n1->length = 10;
+        n1->sign = '-';
+        n1->number[0] = 1;
+        big_int_dlz(n1);
+        if (n1->length != 1 && n1->number[0] != 1)
+        {
+            printf("error test_dlz3\n");
+            big_int_free(&n1);
+            return 0;
+        }
+        big_int_free(&n1);
+    }
+    {
+        big_int *n1 = calloc(1, sizeof(big_int));
+        n1->number = calloc(1, sizeof(unsigned char));
+        n1->length = 1;
+        n1->sign = '-';
+        big_int_dlz(n1);
+        if (n1->length != 1 && n1->number[0] != 0)
+        {
+            printf("error test_dlz4\n");
+            big_int_free(&n1);
+            return 0;
+        }
+        big_int_free(&n1);
+    }
+    {
+        big_int *n1 = calloc(1, sizeof(big_int));
+        n1->number = calloc(2, sizeof(unsigned char));
+        n1->length = 2;
+        n1->sign = '-';
+        n1->number[1] = 1;
+        big_int_dlz(n1);
+        if (n1->length != 2 && n1->number[0] != 0 && n1->number[1] != 1)
+        {
+            printf("error test_dlz5\n");
+            big_int_free(&n1);
+            return 0;
+        }
+        big_int_free(&n1);
+    }
+    {
+        big_int *n1 = calloc(1, sizeof(big_int));
+        n1->number = calloc(1, sizeof(unsigned char));
+        n1->length = 1;
+        n1->sign = '-';
+        n1->number[0] = 1;
+        big_int_dlz(n1);
+        if (n1->length != 1 && n1->number[0] != 1)
+        {
+            printf("error test_dlz6\n");
+            big_int_free(&n1);
+            return 0;
+        }
+        big_int_free(&n1);
+    }
 }

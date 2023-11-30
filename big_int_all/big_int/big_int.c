@@ -1,11 +1,17 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdarg.h>
+#include <limits.h>
 #include <math.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <time.h>
+
 
 #include "big_int.h"
 #include "../lib/lib.h"
+
+
+
 
 
 big_int *big_int_get(char *bin_number)
@@ -1290,3 +1296,37 @@ big_int *big_int_mod(big_int *a, big_int *b)
 }
 
 
+big_int *big_int_rnd(int byte_count)
+{
+    big_int *res = calloc(1, sizeof(big_int));
+    res->number = calloc(byte_count, sizeof(unsigned char));
+    res->length = byte_count;
+    res->sign = '+';
+    srand(time(NULL) + rand());
+    for (int i = 0; i < byte_count - 1; ++i)
+    {
+        res->number[i] = rand()%256;
+    }
+    int last = rand()%256;
+    res->number[byte_count - 1] = last + !last;
+
+    return res;
+}
+
+
+big_int *big_int_rnd_odd(int byte_count)
+{
+    big_int *res = calloc(1, sizeof(big_int));
+    res->number = calloc(byte_count, sizeof(unsigned char));
+    res->length = byte_count;
+    res->sign = '+';
+    srand(time(NULL) + rand());
+    for (int i = 1; i < byte_count - 1; ++i)
+    {
+        res->number[i] = rand()%256;
+    }
+    int last = rand()%256;
+    res->number[byte_count - 1] = last + !last;
+    res->number[0] = res->number[0] | 1;
+    return res;
+}

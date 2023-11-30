@@ -26,7 +26,7 @@ void big_int_print(big_int *number);//
 int big_int_to10(big_int *number);
 
 //! \brief Удаляет лидирующие нули
-void big_int_dlz(big_int *n);//------------------------------------------------------------------
+void big_int_dlz(big_int *n);//
 
 //! \brief Сравнивает big_int
 char big_int_equal(big_int *n1, big_int *n2);//
@@ -91,3 +91,7 @@ big_int *big_int_pow(big_int *n1, big_int *n2);//
 big_int *big_int_divided(big_int *a, big_int *b);//
 
 big_int *big_int_mod(big_int *a, big_int *b);//
+
+big_int *big_int_rnd(int byte_count);
+
+big_int *big_int_rnd_odd(int byte_count);
