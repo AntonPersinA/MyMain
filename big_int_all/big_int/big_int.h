@@ -13,12 +13,12 @@ typedef struct big_int{
 //! \brief Получение big_int через строку
 big_int* big_int_get(char *bin_number);//
 
-big_int *big_int_getloop(char *bin_number, int loop);
+big_int *big_int_getloop(char *bin_number, int loop);//
 
 //! \brief Переопределение big_int через строку
 big_int *big_int_reget(big_int *n1, char *bin_number);
 
-big_int *big_int_get10(long long int n1);
+big_int *big_int_get10(long long int n1);//
 
 //! \brief Вывод big_int
 void big_int_print(big_int *number);//
@@ -94,4 +94,8 @@ big_int *big_int_mod(big_int *a, big_int *b);//
 
 big_int *big_int_rnd(int byte_count);
 
-big_int *big_int_rnd_odd(int byte_count);
+big_int *big_int_rnd_odd(int byte_count);////////////////////////////////////////////////////
+
+big_int *big_int_pow_mod(big_int *a, big_int *pow, big_int *modulus);
+
+big_int *big_int_pow_mod_fast(big_int *a, big_int *pow, big_int *modulus);

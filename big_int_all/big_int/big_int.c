@@ -102,7 +102,6 @@ big_int *big_int_getloop(char *bin_number, int loop)
 {
     long long bit_len = strlen(bin_number);
     loop = loop <= 0 ? 1 : loop;
-    long long  bit_len_loop = strlen(bin_number) * loop;
     char sign_bin = 0;
     big_int *res = (big_int *) calloc(1, sizeof(big_int));
     if (res == NULL)
@@ -119,16 +118,32 @@ big_int *big_int_getloop(char *bin_number, int loop)
     if (*bin_number == '+') {
         sign_bin = 1;
     }
+    long long  bit_len_loop = (strlen(bin_number) - sign_bin) * loop;
 
-    res->length = (bit_len_loop + 7 - sign_bin) >> 3;
+    res->length = (bit_len_loop + 7) >> 3;
     res->number = calloc(res->length, sizeof(res->number[0]));
     if (res->number == NULL)
     {
         printf("memory error in big_int_get\n");
         return NULL;
     }
+    if (bin_number[0] == '-' || bin_number[0] == '+')
+    {
+        for (int i = 0; i < bit_len_loop; ++i)
+        {
+//            printf("%c\n", bin_number[i]);
+//            printf("ddd = %c\n", bin_number[bit_len - i%(bit_len - 1) - 1]);
+            res->number[i / 8] += (bin_number[bit_len - i%(bit_len - 1) - 1] - '0') << (i % 8);
+        }
+        big_int_dlz(res);
 
-    for (int i = 0; i < (bit_len_loop - sign_bin); ++i)
+        if (res->number[0] == 0 && res->length == 1)
+        {
+            res->sign = '+';
+        }
+        return res;
+    }
+    for (int i = 0; i < (bit_len_loop); ++i)
     {
         res->number[i / 8] += (bin_number[bit_len - i%bit_len - 1] - '0') << (i % 8);
     }
@@ -1328,5 +1343,232 @@ big_int *big_int_rnd_odd(int byte_count)
     int last = rand()%256;
     res->number[byte_count - 1] = last + !last;
     res->number[0] = res->number[0] | 1;
+    return res;
+}
+
+
+big_int *big_int_pow_mod(big_int *a, big_int *pow, big_int *modulus)
+{
+    big_int *res = big_int_get("1");
+    big_int *one = big_int_get("1");
+    big_int *one_static = big_int_get("1");
+
+    for (; bit_int_leq(one, pow); big_int_add2(one, one_static))
+    {
+        big_int *mult = big_int_karatsuba_mult2(res, a);
+        big_int_free(&res);
+        res = big_int_mod(mult, modulus);
+        big_int_free(&mult);
+    }
+    big_int_free2(2, &one, &one_static);
+    return res;
+}
+
+
+big_int *big_int_pow_mod_fast(big_int *a, big_int *pow, big_int *modulus)
+{
+    big_int_dlz(a);
+    big_int_dlz(pow);
+    big_int_dlz(modulus);
+    big_int *res = big_int_get("1");
+//    big_int_print(pow);
+
+    unsigned char pow_2 = 128;
+
+    if (pow->length == 1)
+    {
+        for (int k = 7; k >= 0; --k)
+        {
+            if (MAS_POW2[k] <= pow->number[0])
+            {
+                pow_2 = MAS_POW2[k];
+                break;
+            }
+        }
+        for (; pow_2 >= 2; pow_2 >>= 1)
+        {
+            if (pow_2 != 128)
+            {
+                big_int *new_res = big_int_karatsuba_mult2(res, res);
+                big_int_swap2(new_res, res);
+                big_int_free(&new_res);
+                new_res = big_int_mod(res, modulus);
+                big_int_swap2(new_res, res);
+                big_int_free(&new_res);
+            }
+
+            if (pow->number[0] & pow_2)
+            {
+                big_int *new_res = big_int_karatsuba_mult2(res, a);
+                big_int_swap2(new_res, res);
+                big_int_free(&new_res);
+                new_res = big_int_mod(res, modulus);
+                big_int_swap2(new_res, res);
+                big_int_free(&new_res);
+            }
+            else
+            {
+                big_int *new_res = big_int_karatsuba_mult2(res, res);
+                big_int_swap2(new_res, res);
+                big_int_free(&new_res);
+                new_res = big_int_mod(res, modulus);
+                big_int_swap2(new_res, res);
+                big_int_free(&new_res);
+            }
+        }
+        if (pow->number[0] & 1)
+        {
+            big_int *new_res = big_int_karatsuba_mult2(res, a);
+            big_int_swap2(new_res, res);
+            big_int_free(&new_res);
+            new_res = big_int_mod(res, modulus);
+            big_int_swap2(new_res, res);
+            big_int_free(&new_res);
+        }
+        else
+        {
+            big_int *new_res = big_int_karatsuba_mult2(res, res);
+            big_int_swap2(new_res, res);
+            big_int_free(&new_res);
+            new_res = big_int_mod(res, modulus);
+            big_int_swap2(new_res, res);
+            big_int_free(&new_res);
+        }
+        return res;
+    }
+
+    for (int k = 7; k >= 0; --k)
+    {
+        if (MAS_POW2[k] <= pow->number[pow->length - 1])
+        {
+            pow_2 = MAS_POW2[k];
+            break;
+        }
+    }
+
+    for (; pow_2 >= 1; pow_2 >>= 1)
+    {
+        if (pow->number[pow->length - 1] & pow_2)
+        {
+            big_int *new_res = big_int_karatsuba_mult2(res, a);
+            big_int_swap2(new_res, res);
+            big_int_free(&new_res);
+            new_res = big_int_mod(res, modulus);
+            big_int_swap2(new_res, res);
+            big_int_free(&new_res);
+
+            new_res = big_int_karatsuba_mult2(res, res);
+            big_int_swap2(new_res, res);
+            big_int_free(&new_res);
+            new_res = big_int_mod(res, modulus);
+            big_int_swap2(new_res, res);
+            big_int_free(&new_res);
+        }
+        else
+        {
+            big_int *new_res = big_int_karatsuba_mult2(res, res);
+            big_int_swap2(new_res, res);
+            big_int_free(&new_res);
+            new_res = big_int_mod(res, modulus);
+            big_int_swap2(new_res, res);
+            big_int_free(&new_res);
+        }
+    }
+
+    for (int byte = pow->length - 2; byte >= 1; --byte)
+    {
+//        printf("len = %d\n", pow->length);
+
+        pow_2 = 128;
+        for (; pow_2 >= 1; pow_2 >>= 1)
+        {
+            if (pow->number[byte] & pow_2)
+            {
+                big_int *new_res = big_int_karatsuba_mult2(res, a);
+                big_int_swap2(new_res, res);
+                big_int_free(&new_res);
+                new_res = big_int_mod(res, modulus);
+                big_int_swap2(new_res, res);
+                big_int_free(&new_res);
+
+                new_res = big_int_karatsuba_mult2(res, res);
+                big_int_swap2(new_res, res);
+                big_int_free(&new_res);
+                new_res = big_int_mod(res, modulus);
+                big_int_swap2(new_res, res);
+                big_int_free(&new_res);
+            }
+            else
+            {
+                big_int *new_res = big_int_karatsuba_mult2(res, res);
+                big_int_swap2(new_res, res);
+                big_int_free(&new_res);
+                new_res = big_int_mod(res, modulus);
+                big_int_swap2(new_res, res);
+                big_int_free(&new_res);
+            }
+        }
+    }
+
+
+//    printf("pow2 = %d\n", pow_2);
+
+//    for (int k = 7; k >= 0; --k)
+//    {
+//        if (MAS_POW2[k] <= pow->number[0])
+//        {
+//            pow_2 = MAS_POW2[k];
+//            break;
+//        }
+//    }
+//    printf("res = ");
+//    big_int_to10(res);
+    pow_2 = 128;
+    for (; pow_2 >= 2; pow_2 >>= 1)
+    {
+        if (pow->number[0] & pow_2)
+        {
+            big_int *new_res = big_int_karatsuba_mult2(res, a);
+            big_int_swap2(new_res, res);
+            big_int_free(&new_res);
+            new_res = big_int_mod(res, modulus);
+            big_int_swap2(new_res, res);
+            big_int_free(&new_res);
+
+            new_res = big_int_karatsuba_mult2(res, res);
+            big_int_swap2(new_res, res);
+            big_int_free(&new_res);
+            new_res = big_int_mod(res, modulus);
+            big_int_swap2(new_res, res);
+            big_int_free(&new_res);
+        }
+        else
+        {
+            big_int *new_res = big_int_karatsuba_mult2(res, res);
+            big_int_swap2(new_res, res);
+            big_int_free(&new_res);
+            new_res = big_int_mod(res, modulus);
+            big_int_swap2(new_res, res);
+            big_int_free(&new_res);
+        }
+    }
+    if (pow->number[0] & 1)
+    {
+        big_int *new_res = big_int_karatsuba_mult2(res, a);
+        big_int_swap2(new_res, res);
+        big_int_free(&new_res);
+        new_res = big_int_mod(res, modulus);
+        big_int_swap2(new_res, res);
+        big_int_free(&new_res);
+    }
+//    else
+//    {
+//        big_int *new_res = big_int_karatsuba_mult2(res, res);
+//        big_int_swap2(new_res, res);
+//        big_int_free(&new_res);
+//        new_res = big_int_mod(res, modulus);
+//        big_int_swap2(new_res, res);
+//        big_int_free(&new_res);
+//    }
     return res;
 }
