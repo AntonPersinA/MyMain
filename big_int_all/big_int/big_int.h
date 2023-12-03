@@ -65,10 +65,10 @@ void big_int_shft_l2(big_int *n1, int cnt);//
 void big_int_shft_r2(big_int *n1, int cnt);//
 
 //n1 <= n2                                 ???????????????????????????????????????????
-int bit_int_leq(big_int *n1, big_int *n2);//
+int big_int_leq(big_int *n1, big_int *n2);//
 
 //! \brief Сравнение n1 >= n2
-int bit_int_meq(big_int *n1, big_int *n2);//
+int big_int_meq(big_int *n1, big_int *n2);//
 
 //! \brief Вычитание a = b + c
 big_int *big_int_sub1(big_int *n1, big_int *n2);//
@@ -96,6 +96,22 @@ big_int *big_int_rnd(int byte_count);
 
 big_int *big_int_rnd_odd(int byte_count);////////////////////////////////////////////////////
 
-big_int *big_int_pow_mod(big_int *a, big_int *pow, big_int *modulus);
+//big_int *big_int_pow_mod(big_int *a, big_int *pow, big_int *modulus);
 
 big_int *big_int_pow_mod_fast(big_int *a, big_int *pow, big_int *modulus);
+
+//big_int *fast_powmod2(big_int *a, big_int *pow, big_int *modulus);
+
+
+
+
+
+
+
+
+
+
+
+
+
+big_int *big_int_rl_mod_pow2(big_int *x, big_int *n, big_int *m);

@@ -48,56 +48,70 @@ int f()
 
 int test()
 {
-    for (int x = 0; x < 10; ++x)
+    for (int d = 0; d < 18; ++d)
     {
-        for (int y = 0; y < 10; ++y)
+        for (int x = 0; x < 18; ++x)
         {
-            for (int z = 1; z < 10; ++z)
+            for (int y = 0; y < 18; ++y)
             {
-                big_int *n1 = big_int_get10(53); //53
-                big_int *pow = big_int_get10(256*256*256*x + 256*256*y + z); //7523558
-                big_int *modul = big_int_get10(1617); //161
-
-                big_int *res1 = big_int_pow_mod(n1, pow, modul);
-                big_int *res2 = big_int_pow_mod_fast(n1, pow, modul);
-                big_int_to10(res1);
-                big_int_to10(res2);
-
-                if (!big_int_equal_sgn(res1, res2))
+                for (int z = 1; z < 257; ++z)
                 {
-                    return 0;
+                    big_int *n1 = big_int_get10(53); //53
+                    big_int *pow = big_int_get10(256*256*256*x + 256*256*y + d*255 + z); //7523558
+                    big_int *modul = big_int_get10(1617); //161
+
+                    big_int *res1 = big_int_rl_mod_pow2(n1, pow, modul);
+                    big_int *res2 = big_int_pow_mod_fast(n1, pow, modul);
+//                    big_int_to10(res1);
+//                    big_int_to10(res2);
+
+                    if (!big_int_equal_sgn(res1, res2))
+                    {
+                        return 0;
+                    }
+//                    printf("||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n");
+                    big_int_free2(5, &n1, &pow, &modul, &res1, &res2);
                 }
-                printf("||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n");
-                big_int_free2(5, &n1, &pow, &modul, &res1, &res2);
             }
         }
     }
+
+    printf("\n\n\n\n\n\nYYYYYYYYYYYYYYYYYYYYYRRRRRRRRRRRRRRRRRRAAAAAAAAAAAAAAAAAAAAAAAAA\n");
 }
-int main()
+
+
+int pow_mod_func()
 {
+    time_t start, end;
 
-    test();
+    big_int *n1 = big_int_get10((long long int)234); //53
+    big_int *pow = big_int_getloop("1001", 22222); //7523558
+    big_int *modul = big_int_get10(65537); //161
 
-    big_int *n1 = big_int_get10(3); //53
-    big_int *pow = big_int_get10(3); //7523558
-    big_int *modul = big_int_get10(1617); //161
+    start = clock();
+    big_int *res1 = big_int_rl_mod_pow2(n1, pow, modul);
+    end = clock();
+    printf("powmod slava = %f\n", (float)(end - start)/(float)(CLOCKS_PER_SEC));
 
-    big_int *res1 = big_int_pow_mod(n1, pow, modul);
+    start = clock();
     big_int *res2 = big_int_pow_mod_fast(n1, pow, modul);
+    end = clock();
+    printf("pow_mod_fast = %f\n", (float)(end - start)/(float)(CLOCKS_PER_SEC));
+
     big_int_to10(res1);
     big_int_to10(res2);
 
 
-
-//    big_int *test = big_int_get10(81);
-//    big_int *test15 = big_int_get10(15);
-//    big_int *otv = big_int_mod(test, test15);
-//
-//    big_int_to10(otv);
+    big_int_free2(4, &n1, &pow, &modul, &res2);
+    big_int_free(&res1);
+    return 0;
+}
 
 
-//    big_int_free2(5, &n1, &pow, &modul, &res1, &res2);
-    big_int_free2(5, &n1, &pow, &modul, &res1, &res2);
+
+
+int main()
+{
     return 0;
 }
 
