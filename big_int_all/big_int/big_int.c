@@ -1387,19 +1387,16 @@ big_int *big_int_pow_mod_fast(big_int *a, big_int *pow, big_int *modulus)
         }
         for (; pow_2 >= 2; pow_2 >>= 1)
         {
-            if (pow_2 != 128)
+            if (pow->number[0] & pow_2)
             {
-                big_int *new_res = big_int_karatsuba_mult2(res, res);
+                big_int *new_res = big_int_karatsuba_mult2(res, a);
                 big_int_swap2(new_res, res);
                 big_int_free(&new_res);
                 new_res = big_int_mod(res, modulus);
                 big_int_swap2(new_res, res);
                 big_int_free(&new_res);
-            }
 
-            if (pow->number[0] & pow_2)
-            {
-                big_int *new_res = big_int_karatsuba_mult2(res, a);
+                new_res = big_int_karatsuba_mult2(res, res);
                 big_int_swap2(new_res, res);
                 big_int_free(&new_res);
                 new_res = big_int_mod(res, modulus);
@@ -1419,15 +1416,6 @@ big_int *big_int_pow_mod_fast(big_int *a, big_int *pow, big_int *modulus)
         if (pow->number[0] & 1)
         {
             big_int *new_res = big_int_karatsuba_mult2(res, a);
-            big_int_swap2(new_res, res);
-            big_int_free(&new_res);
-            new_res = big_int_mod(res, modulus);
-            big_int_swap2(new_res, res);
-            big_int_free(&new_res);
-        }
-        else
-        {
-            big_int *new_res = big_int_karatsuba_mult2(res, res);
             big_int_swap2(new_res, res);
             big_int_free(&new_res);
             new_res = big_int_mod(res, modulus);
