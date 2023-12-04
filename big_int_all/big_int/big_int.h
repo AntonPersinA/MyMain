@@ -94,24 +94,10 @@ big_int *big_int_mod(big_int *a, big_int *b);//
 
 big_int *big_int_rnd(int byte_count);
 
-big_int *big_int_rnd_odd(int byte_count);////////////////////////////////////////////////////
+big_int *big_int_rnd_odd(int byte_count);//
 
-//big_int *big_int_pow_mod(big_int *a, big_int *pow, big_int *modulus);
+big_int *big_int_pow_mod(big_int *a, big_int *pow, big_int *modulus);//
 
-big_int *big_int_pow_mod_fast(big_int *a, big_int *pow, big_int *modulus);
+int big_int_miller_rabin(big_int *n, int count_of_check);
 
-//big_int *fast_powmod2(big_int *a, big_int *pow, big_int *modulus);
-
-
-
-
-
-
-
-
-
-
-
-
-
-big_int *big_int_rl_mod_pow2(big_int *x, big_int *n, big_int *m);
+big_int *big_int_mod_help(big_int *a, big_int *b);

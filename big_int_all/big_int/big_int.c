@@ -148,6 +148,7 @@ big_int *big_int_getloop(char *bin_number, int loop)
     }
     big_int_dlz(res);
 
+
     if (res->number[0] == 0 && res->length == 1)
     {
         res->sign = '+';
@@ -354,7 +355,7 @@ big_int *big_int_copy(big_int *x)
     return n;
 }
 
-
+//Сложение когда оба числа +
 static big_int *big_int_add1_help(big_int *n1, big_int *n2)
 {
     char sign = '+';
@@ -666,7 +667,7 @@ int big_int_meq(big_int *n1, big_int *n2) //n1>=n2
 }
 
 
-
+//Вычитаем когда оба числа +
 static big_int *big_int_sub1_help(big_int *n1, big_int *n2)
 {
     big_int *n3;
@@ -763,7 +764,7 @@ big_int *big_int_sub1(big_int *n1, big_int *n2)
     return big_int_sub1_help(n1, n2);
 }
 
-
+//Складываем когда первое число больше чем второе
 static void big_int_add2_help_n1moren2(big_int *n1, big_int *n2)
 {
     n1->length += 1;
@@ -796,7 +797,7 @@ static void big_int_add2_help_n1moren2(big_int *n1, big_int *n2)
     return;
 }
 
-
+//Складываем когда первое число <= второго
 static void big_int_add2_help_n1leq2(big_int *n1, big_int *n2)
 {
     short flag1 = 0, flag2 = 0;
@@ -842,7 +843,7 @@ static void big_int_add2_help_n1leq2(big_int *n1, big_int *n2)
     return;
 }
 
-
+//Складываем когда оба числа положительные, разбиваемся на два случая -> две доп функции
 static void big_int_add2_help(big_int *n1, big_int *n2)
 {
     if (n1->sign == n2->sign && n1->sign == '+')
@@ -901,7 +902,7 @@ void big_int_add2(big_int *n1, big_int *n2)
     big_int_add2_help(n1, n2);
 }
 
-
+//Вычитаем когда оба числа положительные
 static void big_int_sub2_help(big_int *n1, big_int *n2)
 {
 
@@ -1096,9 +1097,7 @@ static big_int *big_int_pow_help(big_int *n1_cpy, big_int *n2_cpy, big_int *res)
         if ((n2_cpy->number)[0] & 1)
         {
             big_int *res2 = big_int_karatsuba_mult2(n1_cpy, res);
-            big_int *digit1 = big_int_get("1");
-            big_int_sub2(n2_cpy, digit1);
-            big_int_free(&digit1);
+            (n2_cpy->number)[0] -= 1;
             big_int_swap2(res, res2);
             big_int_free(&res2);
             big_int_pow_help(n1_cpy, n2_cpy, res);
@@ -1110,7 +1109,6 @@ static big_int *big_int_pow_help(big_int *n1_cpy, big_int *n2_cpy, big_int *res)
             big_int_free(&n1_cpy_cpy);
             big_int_pow_help(n3, n2_cpy, res);
             big_int_free(&n3);
-
         }
     }
     else
@@ -1139,11 +1137,17 @@ big_int *big_int_pow(big_int *n1, big_int *n2)
     return res;
 }
 
-
+//Просто делим одно на другое нацело, не учитывая знак, но учитвая что не делим на ноль
 static big_int *big_int_divided_help(big_int *a, big_int *b)
 {
     big_int *Q = calloc(1, sizeof(big_int));
-    Q->length = a->length - b->length + 1;
+    if (((signed int)a->length - (signed int)b->length + 1) > 0)
+    {
+        Q->length = a->length - b->length + 1;
+    }
+    else{
+        Q->length = 1; //b->length - a->length + 1
+    }
     unsigned char *mas_q = calloc(Q->length, sizeof(unsigned char));
     Q->number = mas_q;
     Q->sign = '+';
@@ -1227,25 +1231,24 @@ big_int *big_int_divided(big_int *a, big_int *b)
 
 const short MAS_POW2[] = { 1, 2, 4, 8, 16, 32, 64, 128, 256};
 
-static big_int *big_int_mod_help(big_int *a, big_int *b)
+//Просто ищем число по модулю одно, не учитывая знак, но учитвая что не делим на ноль
+big_int *big_int_mod_help(big_int *a, big_int *b)
 {
     big_int *Q = calloc(1, sizeof(big_int));
-    Q->length = a->length - b->length + 1;
+    if (((signed int)a->length - (signed int)b->length + 1) > 0)
+    {
+        Q->length = a->length - b->length + 1;
+    }
+
+    else{
+        Q->length = 2; //b->length - a->length + 1
+    }
+
     unsigned char *mas_q = calloc(Q->length, sizeof(unsigned char));
     Q->number = mas_q;
     Q->sign = '+';
 
     big_int *R = big_int_get("0");
-
-//    unsigned short char_digit = 1;
-//    for (; char_digit < a->number[a->length - 1];)
-//    {
-//        char_digit <<= 1;
-//    }
-//    if (char_digit > a->number[a->length - 1])
-//    {
-//        char_digit >>= 1;
-//    }
 
     unsigned short char_digit = 256;
     for (int ii = 8; ii >= 0; --ii)
@@ -1352,25 +1355,7 @@ big_int *big_int_rnd_odd(int byte_count)
 }
 
 
-//big_int *big_int_pow_mod(big_int *a, big_int *pow, big_int *modulus)
-//{
-//    big_int *res = big_int_get("1");
-//    big_int *one = big_int_get("1");
-//    big_int *one_static = big_int_get("1");
-//
-//    for (; big_int_leq(one, pow); big_int_add2(one, one_static))
-//    {
-//        big_int *mult = big_int_karatsuba_mult2(res, a);
-//        big_int_free(&res);
-//        res = big_int_mod(mult, modulus);
-//        big_int_free(&mult);
-//    }
-//    big_int_free2(2, &one, &one_static);
-//    return res;
-//}
-
-
-big_int *big_int_pow_mod_fast(big_int *a, big_int *pow, big_int *modulus)
+big_int *big_int_pow_mod(big_int *a, big_int *pow, big_int *modulus)
 {
     big_int_dlz(a);
     big_int_dlz(pow);
@@ -1378,256 +1363,149 @@ big_int *big_int_pow_mod_fast(big_int *a, big_int *pow, big_int *modulus)
     big_int *res = big_int_get("1");
 
     unsigned char pow_2 = 128;
-
-    if (pow->length == 1)
+    long long int s = 0;
+    char exit = 0;
+    for (int i = 0; i < pow->length; ++i)
     {
-        for (int k = 7; k >= 0; --k)
+        if (exit)
         {
-            if (MAS_POW2[k] <= pow->number[0])
-            {
-                pow_2 = MAS_POW2[k];
-                break;
-            }
-        }
-        for (; pow_2 >= 2; pow_2 >>= 1)
-        {
-            if (pow->number[0] & pow_2)
-            {
-                big_int *new_res = big_int_karatsuba_mult2(res, a);
-                big_int_swap2(new_res, res);
-                big_int_free(&new_res);
-                new_res = big_int_mod(res, modulus);
-                big_int_swap2(new_res, res);
-                big_int_free(&new_res);
-
-                new_res = big_int_karatsuba_mult2(res, res);
-                big_int_swap2(new_res, res);
-                big_int_free(&new_res);
-                new_res = big_int_mod(res, modulus);
-                big_int_swap2(new_res, res);
-                big_int_free(&new_res);
-            }
-            else
-            {
-                big_int *new_res = big_int_karatsuba_mult2(res, res);
-                big_int_swap2(new_res, res);
-                big_int_free(&new_res);
-                new_res = big_int_mod(res, modulus);
-                big_int_swap2(new_res, res);
-                big_int_free(&new_res);
-            }
-        }
-        if (pow->number[0] & 1)
-        {
-            big_int *new_res = big_int_karatsuba_mult2(res, a);
-            big_int_swap2(new_res, res);
-            big_int_free(&new_res);
-            new_res = big_int_mod(res, modulus);
-            big_int_swap2(new_res, res);
-            big_int_free(&new_res);
-        }
-        return res;
-    }
-
-    for (int k = 7; k >= 0; --k)
-    {
-        if (MAS_POW2[k] <= pow->number[pow->length - 1])
-        {
-            pow_2 = MAS_POW2[k];
             break;
         }
-    }
-
-    for (; pow_2 >= 1; pow_2 >>= 1)
-    {
-        if (pow->number[pow->length - 1] & pow_2)
+        unsigned short pow2= 1;
+        for (; pow2 < 255; pow2 <<= 1)
         {
-            big_int *new_res = big_int_karatsuba_mult2(res, a);
-            big_int_swap2(new_res, res);
-            big_int_free(&new_res);
-            new_res = big_int_mod(res, modulus);
-            big_int_swap2(new_res, res);
-            big_int_free(&new_res);
-
-            new_res = big_int_karatsuba_mult2(res, res);
-            big_int_swap2(new_res, res);
-            big_int_free(&new_res);
-            new_res = big_int_mod(res, modulus);
-            big_int_swap2(new_res, res);
-            big_int_free(&new_res);
-        }
-        else
-        {
-            big_int *new_res = big_int_karatsuba_mult2(res, res);
-            big_int_swap2(new_res, res);
-            big_int_free(&new_res);
-            new_res = big_int_mod(res, modulus);
-            big_int_swap2(new_res, res);
-            big_int_free(&new_res);
-        }
-    }
-
-    for (int byte = pow->length - 2; byte >= 1; --byte)
-    {
-        pow_2 = 128;
-        for (; pow_2 >= 1; pow_2 >>= 1)
-        {
-            if (pow->number[byte] & pow_2)
+            if ((pow->number[i] & pow2))
             {
-                big_int *new_res = big_int_karatsuba_mult2(res, a);
+                exit = 1;
+                break;
+            }
+            else
+            {
+                s += 1;
+            }
+        }
+    } //Теперь мы знаем сколько степеней двойки содержится в числе = s, ну или количество нулей в конце
+
+    char first_one = 0;
+    for (int i = pow->length - 1; i >= 0; --i) //(s  + 7)/8
+    {
+        short pow2 = 128;
+        char bit = 7;
+        for (; pow2 >= 1; pow2 >>= 1)
+        {
+            if (pow->number[i] & pow2)
+            {
+                first_one = 1;
+                big_int *new_res = big_int_karatsuba_mult2(res, res);
                 big_int_swap2(new_res, res);
                 big_int_free(&new_res);
+
                 new_res = big_int_mod(res, modulus);
                 big_int_swap2(new_res, res);
                 big_int_free(&new_res);
 
-                new_res = big_int_karatsuba_mult2(res, res);
+                new_res = big_int_karatsuba_mult2(res, a);
                 big_int_swap2(new_res, res);
                 big_int_free(&new_res);
+
                 new_res = big_int_mod(res, modulus);
                 big_int_swap2(new_res, res);
                 big_int_free(&new_res);
             }
             else
             {
-                big_int *new_res = big_int_karatsuba_mult2(res, res);
-                big_int_swap2(new_res, res);
-                big_int_free(&new_res);
-                new_res = big_int_mod(res, modulus);
-                big_int_swap2(new_res, res);
-                big_int_free(&new_res);
+                if (first_one)
+                {
+                    big_int *new_res = big_int_karatsuba_mult2(res, res);
+                    big_int_swap2(new_res, res);
+                    big_int_free(&new_res);
+
+                    new_res = big_int_mod(res, modulus);
+                    big_int_swap2(new_res, res);
+                    big_int_free(&new_res);
+                }
             }
         }
     }
-
-    pow_2 = 128;
-    for (; pow_2 >= 2; pow_2 >>= 1)
-    {
-        if (pow->number[0] & pow_2)
-        {
-            big_int *new_res = big_int_karatsuba_mult2(res, a);
-            big_int_swap2(new_res, res);
-            big_int_free(&new_res);
-            new_res = big_int_mod(res, modulus);
-            big_int_swap2(new_res, res);
-            big_int_free(&new_res);
-
-            new_res = big_int_karatsuba_mult2(res, res);
-            big_int_swap2(new_res, res);
-            big_int_free(&new_res);
-            new_res = big_int_mod(res, modulus);
-            big_int_swap2(new_res, res);
-            big_int_free(&new_res);
-        }
-        else
-        {
-            big_int *new_res = big_int_karatsuba_mult2(res, res);
-            big_int_swap2(new_res, res);
-            big_int_free(&new_res);
-            new_res = big_int_mod(res, modulus);
-            big_int_swap2(new_res, res);
-            big_int_free(&new_res);
-        }
-    }
-    if (pow->number[0] & 1)
-    {
-        big_int *new_res = big_int_karatsuba_mult2(res, a);
-        big_int_swap2(new_res, res);
-        big_int_free(&new_res);
-        new_res = big_int_mod(res, modulus);
-        big_int_swap2(new_res, res);
-        big_int_free(&new_res);
-    }
+    big_int_dlz(res);
     return res;
 }
 
 
+int big_int_svidetel_prostoti(big_int *n, big_int *d, big_int *a, long long int s)
+{
+    big_int *one = big_int_get("1"); //Создаем единицу чтобы ее потом вычитать
+    big_int *negative_one = big_int_sub1(n, one); //Минус 1 в кольце вычетов по основанию n
+    long long int count = 1; //Для контроля степени 2 в числе д
 
-//big_int *fast_powmod2(big_int *a, big_int *pow, big_int *modulus)
-//{
-//    big_int *zero = big_int_get("0");
-////    big_int *two = big_int_get("10");
-//    big_int *res = big_int_get("1");
-//    big_int *copy_pow = big_int_copy(pow);
-//    big_int *copy_a = big_int_copy(a);
-//
-//    while (copy_pow->length != 1 || copy_pow->number[0] != 0)
-//    {
-//        if (copy_pow->number[0] & 1)
-//        {
-//            big_int *mult = big_int_karatsuba_mult2(res, copy_a);
-//            big_int_swap2(mult, res);
-//            big_int_free(&mult);
-//
-//            big_int *mods = big_int_mod(res, modulus);
-//            big_int_swap2(mods, res);
-//            big_int_free(&mods);
-//        }
-//        big_int_shft_r(copy_pow);
-//
-//
-//        big_int *mult1 = big_int_karatsuba_mult2(copy_a, copy_a);
-//        big_int_swap2(mult1, copy_a);
-//        big_int_free(&mult1);
-//
-//        big_int *mods2 = big_int_mod(copy_a, modulus);
-//        big_int_swap2(mods2, copy_a);
-//        big_int_free(&mods2);
-//    }
-//    big_int_free2(3, &zero, &copy_pow, &copy_a);
-//    return res;
-//}
-//
-//
-//
-//
-//
-void big_int_div2_for_pow(const big_int *n1, big_int *n2, big_int *rmdr) {
-    big_int *r = big_int_get("0");
-    for (int i = (n1->length) - 1; i >= 0; i--) {
-        for (int bit = 7; bit >= 0; bit--) {
-            big_int_shft_l(r);
-            r->number[0] |= ((n1->number[i]) & (1 << bit)) != 0;
-            if (big_int_leq(n2, r)) {
-                r->sign = '+';
-                big_int_sub2(r, n2);
+    big_int *a_powd_modn = big_int_pow_mod(a, d, n);
+    big_int *d_second = big_int_copy(d);
+
+    if (!big_int_equal(a_powd_modn, one))
+    {
+        if (!big_int_equal(negative_one, a_powd_modn))
+        {
+            for (; count < s; ++count)
+            {
+                big_int_shft_l(d_second);
+                big_int_free(&a_powd_modn);
+                a_powd_modn = big_int_pow_mod(a, d_second, n);
+
+                if (big_int_equal(negative_one, a_powd_modn))
+                {
+                    big_int_free2(4, &one, &negative_one, &a_powd_modn, &d_second);
+                    return 1;
+                }
             }
         }
+        big_int_free2(4, &one, &negative_one, &a_powd_modn, &d_second);
+        return 0;
     }
-    rmdr->sign = '+';
-    rmdr->length = r->length;
-
-    rmdr->number = (unsigned char *) realloc(rmdr->number, rmdr->length);
-    memmove(rmdr->number, r->number, r->length);
-    big_int_free(&r);
+    big_int_free2(4, &one, &negative_one, &a_powd_modn, &d_second);
+    return 1;
 }
 
-
-big_int *big_int_rl_mod_pow2(big_int *x, big_int *n, big_int *m)
+int big_int_miller_rabin(big_int *n, int count_of_check)
 {
-    big_int *ans = big_int_get("1");
-    big_int *zero = big_int_get("0");
-    big_int *x0 = big_int_copy(x);
-    big_int *n0 = big_int_copy(n);
-    big_int *m0 = big_int_copy(m);
-    big_int *n4;
-    big_int *xmodm;
-    big_int *sq;
-    while (!big_int_leq(n0, zero)) {
-        if ((n0->number[0]) & 1) {
-            xmodm = big_int_get("0");
-            big_int_div2_for_pow(x0, m0, xmodm);
-            n4 = big_int_karatsuba_mult2(ans, xmodm);
-            big_int_swap2(ans, n4);
-            big_int_free(&n4);
-            big_int_free(&xmodm);
+    long long int s = 0;
+    char exit = 0;
+    big_int *d = big_int_copy(n);
+    big_int *one = big_int_get("1");
+
+    big_int_sub2(d, one); //вычитаем из числа d единцу
+
+    for (int i = 0; i < n->length; ++i)
+    {
+        if (exit)
+        {
+            break;
         }
-        sq = big_int_karatsuba_mult2(x0, x0);
-        big_int_div2_for_pow(sq, m0, x0);
-        big_int_shft_r(n0);//n>>=1
-        big_int_free(&sq);
+        unsigned short pow2= 1;
+        for (; pow2 < 255; pow2 <<= 1)
+        {
+            if ((d->number[i] & pow2))
+            {
+                exit = 1;
+                break;
+            }
+            else
+            {
+                s += 1;
+            }
+        }
+    } //Теперь мы знаем сколько степеней двойки содержится в числе = s
+
+    big_int_shft_r2(d, s); //Выносим из под д степень 2
+    for (int check = 0; check < count_of_check; ++check)
+    {
+        big_int *a = big_int_rnd(1); //Выбираем свидетеля простоты
+        if (!big_int_svidetel_prostoti(n, d, a, s))
+        {
+            big_int_free2(3, &a, &d, &one);
+            return 0;
+        }
+        big_int_free(&a);
     }
-    big_int_div2_for_pow(ans, m0, ans);
-    big_int_free2(4,& zero, &x0, &m0,&n0);
-    return ans;
+    big_int_free2(2, &d, &one);
+    return 1;
 }

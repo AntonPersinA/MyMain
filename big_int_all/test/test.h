@@ -4,6 +4,12 @@ int test_all(int a);
 
 int test_get();
 
+int test_get10();
+
+int test_get10loop(int a);
+
+int test_get_loop();
+
 int test_equal(int a);
 
 int test_equal_sgn(int a);
@@ -39,3 +45,7 @@ int test_mod(int a);
 int test_divided_loop(int a);
 
 int test_dlz();
+
+int test_rnd_odd(int limit);
+
+int test_pow_mod(int limit);
