@@ -1832,3 +1832,54 @@ int test_miller_rabin(int limit) //Следует выставлять хотя 
     }
     return 1;
 }
+
+
+
+int test_get_prime(int limit)
+{
+    for (int i = 0; i < limit; ++i)
+    {
+//        printf("fefefef = %d\n", i%4 + !(i%4));
+        big_int *n1 = big_int_get_prime(1, 10);
+        if (n1->number[0] <= 1 && n1->length == 1)
+        {
+            printf("test_get_prime error1\n");
+            big_int_free(&n1);
+            return 0;
+        }
+        char pr_test = 1;
+        big_int *zero = big_int_get("0");
+        big_int *one = big_int_get("1");
+        big_int *square = big_int_get("10");
+        for (;;)
+        {
+            if (big_int_meq(square, n1))
+            {
+                pr_test = 1;
+                break;
+            }
+            big_int *mod = big_int_mod(n1, square);
+            if (!big_int_equal_sgn(mod, zero))
+            {
+                big_int_free(&mod);
+                big_int_add2(square, one);
+            }
+            else
+            {
+                big_int_to10(n1);
+                big_int_to10(square);
+                pr_test = 0;
+                big_int_free(&mod);
+                break;
+            }
+        }
+        if (pr_test != 1)
+        {
+            printf("test_get_prime error2\n");
+            big_int_free2(4, &one, &zero, &square, &n1);
+            return 0;
+        }
+        big_int_free2(4, &one, &zero, &square, &n1);
+    }
+    return 1;
+}

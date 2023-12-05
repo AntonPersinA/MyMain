@@ -51,3 +51,5 @@ int test_rnd_odd(int limit);
 int test_pow_mod(int limit);
 
 int test_miller_rabin(int limit);
+
+int test_get_prime(int limit);

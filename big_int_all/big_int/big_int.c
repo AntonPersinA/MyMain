@@ -1360,6 +1360,7 @@ big_int *big_int_rnd_odd(int byte_count)
     {
         res->number[i] = rand()%256;
     }
+    res->number[0] = rand()%256;
     res->number[res->length - 1] += !(res->number[res->length - 1]);
     res->number[0] += !(res->number[0] & 1);
     return res;

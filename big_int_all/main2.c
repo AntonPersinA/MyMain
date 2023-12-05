@@ -63,6 +63,7 @@ int g()
 
 int main()
 {
+    test_all(2);
     return 0;
 }
 

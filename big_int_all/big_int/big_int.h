@@ -15,7 +15,7 @@ big_int* big_int_get(char *bin_number);//
 
 big_int *big_int_getloop(char *bin_number, int loop);//
 
-//! \brief Переопределение big_int через строку
+//! \brief Переопределение big_int через строку bin_number
 big_int *big_int_reget(big_int *n1, char *bin_number);
 
 big_int *big_int_get10(long long int n1);//
@@ -110,6 +110,6 @@ big_int *big_int_pow_mod(big_int *a, big_int *pow, big_int *modulus);//
 
 //! \brief Тест числа на простоту за О(klogn), где n длина,
 //! а k количество тестов, вероятность сгенерировать не простое = 0.25^k
-int big_int_miller_rabin(big_int *n, int count_of_check);
+int big_int_miller_rabin(big_int *n, int count_of_check);//
 
 big_int *big_int_get_prime(int byte_len, int tst_count);
