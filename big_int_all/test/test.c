@@ -120,6 +120,17 @@ int test_all(int limit)
     {
         return 0;
     }
+
+    if (!test_pow_mod(limit))
+    {
+        return 0;
+    }
+
+    if (!test_miller_rabin(limit))
+    {
+        return 0;
+    }
+
     return 1;
 }
 
@@ -1769,6 +1780,55 @@ int test_pow_mod(int limit)
 
             }
         }
+    }
+    return 1;
+}
+
+int test_miller_rabin(int limit) //Следует выставлять хотя бы 20
+{
+    for (int i = 0; i < limit; ++i)
+    {
+        big_int *n1 = big_int_rnd(i%3 + !(i%3));
+        if (n1->number[0] == 1 && n1->length == 1)
+        {
+            big_int_free(&n1);
+            continue;
+        }
+
+        char pr_test = 1;
+        char pr_miller = big_int_miller_rabin(n1, 10 + limit);
+        big_int *zero = big_int_get("0");
+        big_int *one = big_int_get("1");
+        big_int *two = big_int_get("10");
+        for (;;)
+        {
+            if (big_int_meq(two, n1))
+            {
+                pr_test = 1;
+                break;
+            }
+            big_int *mod = big_int_mod(n1, two);
+            if (!big_int_equal_sgn(mod, zero))
+            {
+                big_int_free(&mod);
+                big_int_add2(two, one);
+            }
+            else
+            {
+                pr_test = 0;
+                big_int_free(&mod);
+                break;
+            }
+        }
+        if (pr_test != pr_miller)
+        {
+            big_int_to10(n1);
+            printf("miller = %d\n", pr_miller);
+            printf("test = %d\n", pr_test);
+            big_int_free2(4, &one, &zero, &two, &n1);
+            return 0;
+        }
+        big_int_free2(4, &one, &zero, &two, &n1);
     }
     return 1;
 }

@@ -5,7 +5,7 @@
 //#include <limits.h>
 //#include <math.h>
 //#include <stdarg.h>
-#include <stdlib.h>
+//#include <stdlib.h>
     #include <stdio.h>
 //#include <string.h>
 #include <time.h>
@@ -60,30 +60,32 @@ int g()
     return 0;
 }
 
+
 int main()
 {
-    int len = 30;
-    clock_t start, end;
-//    start = clock();
-//    big_int *n1 = big_int_prime_digit(len);
-//    end = clock();
-//    printf("time prime = %f\n\n", (double)(end - start) / CLOCKS_PER_SEC);
-
-    start = clock();
-//    big_int_miller_rabin(n1, 10);
-    big_int *n1 = big_int_prime_digit(len);
-    end = clock();
-    printf("time my = %f\n", (double)(end - start) / CLOCKS_PER_SEC);
-
-    start = clock();
-//    printf("test = %d\n", big_int_primality_test(n1, 10));
-    big_int *n2 = big_int_get_prime(len, 10);
-    end = clock();
-    printf("time slava = %f\n", (double)(end - start) / CLOCKS_PER_SEC);
-
-    big_int_free(&n1);
-    big_int_free(&n2);
-//    big_int_free(&n3);
-//    big_int_free(&n4);
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

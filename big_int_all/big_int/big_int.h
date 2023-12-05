@@ -23,6 +23,8 @@ big_int *big_int_get10(long long int n1);//
 //! \brief Вывод big_int
 void big_int_print(big_int *number);//
 
+int big_int_print10(big_int *number);
+
 int big_int_to10(big_int *number);
 
 //! \brief Удаляет лидирующие нули
@@ -110,14 +112,4 @@ big_int *big_int_pow_mod(big_int *a, big_int *pow, big_int *modulus);//
 //! а k количество тестов, вероятность сгенерировать не простое = 0.25^k
 int big_int_miller_rabin(big_int *n, int count_of_check);
 
-big_int *big_int_prime_digit(int byte_len);
-
-
-
-
-
-int big_int_primality_test(big_int *n, unsigned int tst_cnt);
-
-big_int *big_int_get_prime(unsigned int len, unsigned int tst_cnt);
-
-void big_int_div2_for_pow(const big_int *n1, big_int *n2, big_int *rmdr);
+big_int *big_int_get_prime(int byte_len, int tst_count);
