@@ -82,22 +82,42 @@ void big_int_add2(big_int *n1, big_int *n2);//
 //! \brief Вычитание a -= b
 void big_int_sub2(big_int *n1, big_int *n2);//
 
+//! \brief Умножение за О(n^2)
 big_int *big_int_mult1(big_int *n1, big_int *n2);//
 
+//! \brief Умножение за О(n^1.5)
 big_int *big_int_karatsuba_mult2(big_int *n1, big_int *n2);//
 
+//! \brief Возведение в степень за О(logn)
 big_int *big_int_pow(big_int *n1, big_int *n2);//
 
+//! \brief Деление за О(n^2)
 big_int *big_int_divided(big_int *a, big_int *b);//
 
+//! \brief Взятие модуля за О(n^2)
 big_int *big_int_mod(big_int *a, big_int *b);//
 
+//! \brief Генерирует рандомное число заданной длины
 big_int *big_int_rnd(int byte_count);
 
+//! \brief Генерирует рандомное нечетное число заданной длины
 big_int *big_int_rnd_odd(int byte_count);//
 
+//! \brief Возведение в степень по модулю за О(logn)
 big_int *big_int_pow_mod(big_int *a, big_int *pow, big_int *modulus);//
 
+//! \brief Тест числа на простоту за О(klogn), где n длина,
+//! а k количество тестов, вероятность сгенерировать не простое = 0.25^k
 int big_int_miller_rabin(big_int *n, int count_of_check);
 
-big_int *big_int_mod_help(big_int *a, big_int *b);
+big_int *big_int_prime_digit(int byte_len);
+
+
+
+
+
+int big_int_primality_test(big_int *n, unsigned int tst_cnt);
+
+big_int *big_int_get_prime(unsigned int len, unsigned int tst_cnt);
+
+void big_int_div2_for_pow(const big_int *n1, big_int *n2, big_int *rmdr);
