@@ -64,6 +64,10 @@ int g()
 int main()
 {
     test_all(2);
+    big_int *n1 = big_int_get_prime(1, 10);
+    big_int *n2 = big_int_get_prime(1, 10);
+
+    big_int_free2(2, &n1, &n2);
     return 0;
 }
 

@@ -28,19 +28,19 @@ int big_int_print10(big_int *number);
 int big_int_to10(big_int *number);
 
 //! \brief Удаляет лидирующие нули
-void big_int_dlz(big_int *n);//
+void big_int_dlz(big_int *number);//
 
 //! \brief Сравнивает big_int
-char big_int_equal(big_int *n1, big_int *n2);//
+int big_int_equal(big_int *num_1, big_int *num_2);//
 
 //! \brief Сравнивает учитывая знак
-char big_int_equal_sgn(big_int *n1, big_int *n2);//
+int big_int_equal_sgn(big_int *num_1, big_int *num_2);//
 
 //! \brief Освобождает память выделенную под big_int
-void big_int_free(big_int **n);//
+void big_int_free(big_int **number);//
 
 //! \brief Освобождает выделенную память под несколько big_int
-void big_int_free2(const unsigned int n0, ...);//
+void big_int_free2(const unsigned int cnt_free, ...);//
 
 //! \brief Меняет местами два big_int, работает за O(n)
 void big_int_swap(big_int *n1, big_int *n2);//
@@ -69,7 +69,7 @@ void big_int_shft_r2(big_int *n1, int cnt);//
 //n1 <= n2                                 ???????????????????????????????????????????
 int big_int_leq(big_int *n1, big_int *n2);//
 
-//! \brief Сравнение n1 >= n2
+//! \brief Сравнение n1 \<= n2
 int big_int_meq(big_int *n1, big_int *n2);//
 
 //! \brief Вычитание a = b + c
@@ -112,4 +112,5 @@ big_int *big_int_pow_mod(big_int *a, big_int *pow, big_int *modulus);//
 //! а k количество тестов, вероятность сгенерировать не простое = 0.25^k
 int big_int_miller_rabin(big_int *n, int count_of_check);//
 
+//! \brief Генерирует простое число, шанс что число не простое = 0.25^k
 big_int *big_int_get_prime(int byte_len, int tst_count);

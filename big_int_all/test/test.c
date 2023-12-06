@@ -1839,7 +1839,6 @@ int test_get_prime(int limit)
 {
     for (int i = 0; i < limit; ++i)
     {
-//        printf("fefefef = %d\n", i%4 + !(i%4));
         big_int *n1 = big_int_get_prime(1, 10);
         if (n1->number[0] <= 1 && n1->length == 1)
         {

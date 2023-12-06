@@ -54,9 +54,9 @@ big_int *big_int_get(char *bin_number)
 }
 
 
-big_int *big_int_reget(big_int *n1, char *bin_number)
+big_int *big_int_reget(big_int *number, char *bin_number)
 {
-    free(n1->number);
+    free(number->number);
 
     int bit_len = strlen(bin_number);
     char sign_bin = 0;
@@ -64,19 +64,18 @@ big_int *big_int_reget(big_int *n1, char *bin_number)
     if (*bin_number == '-')
     {
         sign_bin = 1;
-        n1->sign = '-';
-    } else
-    {
-        n1->sign = '+';
+        number->sign = '-';
+    } else{
+        number->sign = '+';
     }
     if (*bin_number == '+')
     {
         sign_bin = 1;
     }
 
-    n1->length = (bit_len + 7 - sign_bin) >> 3;
-    n1->number = calloc(n1->length, sizeof(n1->number[0]));
-    if (n1->number == NULL)
+    number->length = (bit_len + 7 - sign_bin) >> 3;
+    number->number = calloc(number->length, sizeof(number->number[0]));
+    if (number->number == NULL)
     {
         printf("memory error in big_int_reget\n");
         return NULL;
@@ -84,15 +83,15 @@ big_int *big_int_reget(big_int *n1, char *bin_number)
 
     for (int i = 0; i < bit_len - sign_bin; ++i)
     {
-        n1->number[i / 8] += (bin_number[bit_len - i - 1] - '0') << (i % 8);
+        number->number[i / 8] += (bin_number[bit_len - i - 1] - '0') << (i % 8);
     }
-    big_int_dlz(n1);
+    big_int_dlz(number);
 
-    if (n1->number[0] == 0 && n1->length == 1)
+    if (number->number[0] == 0 && number->length == 1)
     {
-        n1->sign = '+';
+        number->sign = '+';
     }
-    return n1;
+    return number;
 }
 
 
@@ -157,9 +156,9 @@ big_int *big_int_getloop(char *bin_number, int loop)
 big_int *big_int_get10(long long int n1)
 {
     char *n1_str = bin_str(n1);
-    big_int *n1_BI = big_int_get(n1_str);
+    big_int *res = big_int_get(n1_str);
     free(n1_str);
-    return n1_BI;
+    return res;
 }
 
 
@@ -205,19 +204,19 @@ int big_int_to10(big_int *number)
 }
 
 
-void big_int_dlz(big_int *n)
+void big_int_dlz(big_int *number)
 {
-    unsigned int i = n->length - 1;
-    while ((i > 0) && (n->number[i] == 0)) //Ищем на каком моменте закочились ненужные нули
+    unsigned int i = number->length - 1;
+    while ((i > 0) && (number->number[i] == 0)) //Ищем на каком моменте закочились ненужные нули
     {
         --i;
     }
 
-    if (i != n->length - 1)
+    if (i != number->length - 1)
     {
-        n->length = i + 1;
-        n->number = realloc(n->number, n->length);
-        if (n->number == NULL)
+        number->length = i + 1;
+        number->number = realloc(number->number, number->length);
+        if (number->number == NULL)
         {
             printf("memory error in big_int_dlz\n");
             return;
@@ -226,15 +225,15 @@ void big_int_dlz(big_int *n)
 }
 
 
-char big_int_equal(big_int *n1, big_int *n2)
+int big_int_equal(big_int *num_1, big_int *num_2)
 {
-    if (n1->length != n2->length)
+    if (num_1->length != num_2->length)
     {
         return 0;
     }
-    for (int i = 0; i < n1->length; ++i)
+    for (int i = 0; i < num_1->length; ++i)
     {
-        if (n1->number[i] != n2->number[i])
+        if (num_1->number[i] != num_2->number[i])
         {
             return 0;
         }
@@ -243,16 +242,16 @@ char big_int_equal(big_int *n1, big_int *n2)
 }
 
 
-char big_int_equal_sgn(big_int *n1, big_int *n2)
+int big_int_equal_sgn(big_int *num_1, big_int *num_2)
 {
-    if (n1->length != n2->length || n1->sign != n2->sign)
+    if (num_1->length != num_2->length || num_1->sign != num_2->sign)
     {
         return 0;
     }
 
-    for (int i = 0; i < n1->length; ++i)
+    for (int i = 0; i < num_1->length; ++i)
     {
-        if (n1->number[i] != n2->number[i])
+        if (num_1->number[i] != num_2->number[i])
         {
             return 0;
         }
@@ -261,22 +260,22 @@ char big_int_equal_sgn(big_int *n1, big_int *n2)
 }
 
 
-void big_int_free(big_int **n)
+void big_int_free(big_int **number)
 {
-    free((*n)->number);
-    free(*n);
-    *n=NULL;
+    free((*number)->number);
+    free(*number);
+    *number=NULL;
 }
 
 
-void big_int_free2(const unsigned int n0, ...)
+void big_int_free2(const unsigned int cnt_free, ...)
 {
     va_list ptr;
-    va_start(ptr, n0);
-    for (int j = 0; j < n0; j++) {
-        big_int **n = va_arg(ptr, big_int ** );
-        if((*n)){
-            big_int_free(n);}
+    va_start(ptr, cnt_free);
+    for (int j = 0; j < cnt_free; j++) {
+        big_int **num = va_arg(ptr, big_int ** );
+        if((*num)){
+            big_int_free(num);}
     }
     va_end(ptr);
 }
@@ -1408,19 +1407,19 @@ big_int *big_int_pow_mod(big_int *a, big_int *pow, big_int *modulus)
             if (pow->number[i] & pow2)
             {
                 first_one = 1;
-                big_int *new_res = big_int_karatsuba_mult2(res, res);
+                big_int *new_res = big_int_karatsuba_mult2(res, res); //Возводим в квадрат
                 big_int_swap2(new_res, res);
                 big_int_free(&new_res);
 
-                new_res = big_int_mod(res, modulus);
+                new_res = big_int_mod(res, modulus); // Берем модуль
                 big_int_swap2(new_res, res);
                 big_int_free(&new_res);
 
-                new_res = big_int_karatsuba_mult2(res, a);
+                new_res = big_int_karatsuba_mult2(res, a); //Домнажаем на изначальное число так как щас 1(нечетное число)
                 big_int_swap2(new_res, res);
                 big_int_free(&new_res);
 
-                new_res = big_int_mod(res, modulus);
+                new_res = big_int_mod(res, modulus); //Снова модуль
                 big_int_swap2(new_res, res);
                 big_int_free(&new_res);
             }
@@ -1428,7 +1427,7 @@ big_int *big_int_pow_mod(big_int *a, big_int *pow, big_int *modulus)
             {
                 if (first_one)
                 {
-                    big_int *new_res = big_int_karatsuba_mult2(res, res);
+                    big_int *new_res = big_int_karatsuba_mult2(res, res); //Здесь просто возводим в квадрат, так как четное(0)
                     big_int_swap2(new_res, res);
                     big_int_free(&new_res);
 
@@ -1443,8 +1442,8 @@ big_int *big_int_pow_mod(big_int *a, big_int *pow, big_int *modulus)
     return res;
 }
 
-
-int big_int_svidetel_prostoti(big_int *n, big_int *d, big_int *a, long long int s)
+//big_int_witness_to_prime
+int big_int_witness_to_prime(big_int *n, big_int *d, big_int *a, long long int s)
 {
     big_int *one = big_int_get("1"); //Создаем единицу чтобы ее потом вычитать
     big_int *negative_one = big_int_sub1(n, one); //Минус 1 в кольце вычетов по основанию n
@@ -1534,7 +1533,7 @@ int big_int_miller_rabin(big_int *n, int count_of_check)
             int pr = (int)(rand()) % n->number[0];
             a = big_int_get10(pr + !pr);
         }
-        if (!big_int_svidetel_prostoti(n, d, a, s)) // n - само число;    d - число без степени 2;     a - свидетель простоты;      s - количество 2 в разложении n;
+        if (!big_int_witness_to_prime(n, d, a, s)) // n - само число;    d - число без степени 2;     a - свидетель простоты;      s - количество 2 в разложении n;
         {
             big_int_free2(3, &a, &d, &one);
             return 0;
