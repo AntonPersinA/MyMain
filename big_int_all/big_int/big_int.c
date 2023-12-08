@@ -32,7 +32,8 @@ big_int *big_int_get(char *bin_number)
         sign_bin = 1;
     }
 
-    res->length = (bit_len + 7 - sign_bin) >> 3; //Учитываем начальные нулевые биты числа
+    res->length = (bit_len + 7 - sign_bin) >> 3; //Учитываем начальные
+    // нулевые биты числа
     res->number = calloc(res->length, sizeof(res->number[0]));
     if (res->number == NULL)
     {
@@ -153,11 +154,11 @@ big_int *big_int_getloop(char *bin_number, int loop)
 }
 
 
-big_int *big_int_get10(long long int n1)
+big_int *big_int_get10(long long int num_1)
 {
-    char *n1_str = bin_str(n1);
-    big_int *res = big_int_get(n1_str);
-    free(n1_str);
+    char *num_1_str = bin_str(num_1);
+    big_int *res = big_int_get(num_1_str);
+    free(num_1_str);
     return res;
 }
 
@@ -179,10 +180,10 @@ void big_int_print(big_int *number)
 }
 
 
-int big_int_to10(big_int *number)
+void big_int_print10(big_int *number)
 {
-    unsigned long long int res = 0;
-    unsigned long long int pow2_long = 1;
+    signed long long int res = 0;
+    unsigned long long int pow2_long_long = 1;
     for (int i = 0; i < (number->length > 8 ? 8 : number->length) ; ++i)
     {
         char pow2 = 1;
@@ -190,9 +191,9 @@ int big_int_to10(big_int *number)
         {
             if (number->number[i] & pow2)
             {
-                res += pow2_long;
+                res += pow2_long_long;
             }
-            pow2_long <<= 1;
+            pow2_long_long <<= 1;
             pow2 <<= 1;
         }
     }
@@ -201,6 +202,31 @@ int big_int_to10(big_int *number)
         res *= -1;
     }
     printf("%lld\n", res);
+}
+
+
+signed long long int big_int_to10(big_int *number)
+{
+    signed long long int res = 0;
+    unsigned long long int pow2_long_long = 1;
+    for (int i = 0; i < (number->length > 8 ? 8 : number->length) ; ++i)
+    {
+        char pow2 = 1;
+        for (int j = 0; j < 8; ++j)
+        {
+            if (number->number[i] & pow2)
+            {
+                res += pow2_long_long;
+            }
+            pow2_long_long <<= 1;
+            pow2 <<= 1;
+        }
+    }
+    if(number->sign == '-')
+    {
+        res *= -1;
+    }
+    return res;
 }
 
 
@@ -281,123 +307,123 @@ void big_int_free2(const unsigned int cnt_free, ...)
 }
 
 
-void big_int_swap(big_int *n1, big_int *n2)
+void big_int_swap(big_int *num_1, big_int *num_2)
 {
-    unsigned int len = n1->length;
-    char sign = n1->sign;
+    unsigned int len = num_1->length;
+    char sign = num_1->sign;
     unsigned char *num = calloc(len, sizeof(unsigned char));
     if (num == NULL)
     {
         printf("memory error in big_int_swap\n");
         return;
     }
-    memmove(num, n1->number, len);
+    memmove(num, num_1->number, len);
 
-    n1->number = realloc(n1->number, n2->length);
-    if (n1->number == NULL)
+    num_1->number = realloc(num_1->number, num_2->length);
+    if (num_1->number == NULL)
     {
         printf("memory error in big_int_swap\n");
         return;
     }
-    memmove(n1->number, n2->number, n2->length);
+    memmove(num_1->number, num_2->number, num_2->length);
 
-    n2->number = realloc(n2->number, n1->length);
-    if (n2->number == NULL)
+    num_2->number = realloc(num_2->number, num_1->length);
+    if (num_2->number == NULL)
     {
         printf("memory error in big_int_swap\n");
         return;
     }
-    memmove(n2->number, num, n1->length);
+    memmove(num_2->number, num, num_1->length);
 
-    n1->length = n2->length;
-    n2->length = len;
+    num_1->length = num_2->length;
+    num_2->length = len;
 
-    n1->sign = n2->sign;
-    n2->sign = sign;
+    num_1->sign = num_2->sign;
+    num_2->sign = sign;
 
     free(num);
 }
 
 
-void big_int_swap2(big_int *n1, big_int *n2)
+void big_int_swap2(big_int *num_1, big_int *num_2)
 {
-    unsigned int len = n1->length;
-    char sign = n1->sign;
-    unsigned char *num = n1->number;
+    unsigned int len = num_1->length;
+    char sign = num_1->sign;
+    unsigned char *num = num_1->number;
 
-    n1->number = n2->number;
-    n1->sign = n2->sign;
-    n1->length = n2->length;
+    num_1->number = num_2->number;
+    num_1->sign = num_2->sign;
+    num_1->length = num_2->length;
 
-    n2->number = num;
-    n2->sign = sign;
-    n2->length = len;
+    num_2->number = num;
+    num_2->sign = sign;
+    num_2->length = len;
 }
 
 
-big_int *big_int_copy(big_int *x)
+big_int *big_int_copy(big_int *number)
 {
-    big_int *n = calloc(1, sizeof(big_int));
-    if (n == NULL)
+    big_int *res = calloc(1, sizeof(big_int));
+    if (res == NULL)
     {
         printf("memory error in big_int_copy\n");
     }
-    unsigned char *num = calloc(x->length, sizeof(unsigned char));
+    unsigned char *num = calloc(number->length, sizeof(unsigned char));
     if (num == NULL)
     {
         printf("memory error in big_int_copy\n");
     }
-    memmove(num, x->number, x->length);
-    n->number = num;
-    n->length = x->length;
-    n->sign = x->sign;
-    return n;
+    memmove(num, number->number, number->length);
+    res->number = num;
+    res->length = number->length;
+    res->sign = number->sign;
+    return res;
 }
 
 
 //Сложение когда оба числа +
-static big_int *big_int_add1_help(big_int *n1, big_int *n2)
+static big_int *big_int_add1_help(big_int *num_1, big_int *num_2)
 {
     char sign = '+';
-    if (n1->sign == '-' && n2->sign == '-')
+    if (num_1->sign == '-' && num_2->sign == '-')
     {
         sign = '-';
     }
-    big_int *n3 = calloc(1, sizeof(big_int));
-    if (n3 == NULL)
+    big_int *res = calloc(1, sizeof(big_int));
+    if (res == NULL)
     {
         printf("memory error in big_int_add1\n");
         return NULL;
     }
 
-    unsigned int len_max = n1->length > n2->length ? n1->length + 1 : n2->length + 1;
-    unsigned int len_min = n1->length < n2->length ? n1->length : n2->length;
-    n3->length = len_max;
-    n3->number = calloc(n3->length, sizeof(unsigned char));
-    if (n3->number == NULL)
+    unsigned int len_max = num_1->length > num_2->length ? num_1->length + 1 : num_2->length + 1;
+    unsigned int len_min = num_1->length < num_2->length ? num_1->length : num_2->length;
+    res->length = len_max;
+    res->number = calloc(res->length, sizeof(unsigned char));
+    if (res->number == NULL)
     {
         printf("memory error in big_int_add1\n");
         return NULL;
     }
     unsigned int flag = 0;
-    for (unsigned int i = 0; i < n3->length - 1; ++i)
+    for (unsigned int i = 0; i < res->length - 1; ++i)
     {
         if (i < len_min)
         {
-            n3->number[i] += n2->number[i] + n1->number[i] + flag;
-            flag = (256 - (int) n1->number[i] - flag <= (int) n2->number[i]);
+            res->number[i] += num_2->number[i] + num_1->number[i] + flag;
+            flag = (256 - (int) num_1->number[i] - flag <= (int) num_2->number[i]);
         } else{
-            if (n1->length < n2->length)
+            if (num_1->length < num_2->length)
             {
-                n3->number[i] += n2->number[i] + flag;
-                if (n2->number[i] != 255)
+                res->number[i] += num_2->number[i] + flag;
+                if (num_2->number[i] != 255)
                 {
                     flag = 0;
                 }
             } else
             {
-                n3->number[i] += n1->number[i] + flag;
-                if (n1->number[i] != 255)
+                res->number[i] += num_1->number[i] + flag;
+                if (num_1->number[i] != 255)
                 {
                     flag = 0;
                 }
@@ -406,216 +432,216 @@ static big_int *big_int_add1_help(big_int *n1, big_int *n2)
     }
     if (flag)
     {
-        n3->number[n3->length - 1] += flag;
+        res->number[res->length - 1] += flag;
     }
-    n3->sign = sign;
-    big_int_dlz(n3);
-    return n3;
+    res->sign = sign;
+    big_int_dlz(res);
+    return res;
 }
 
 
-big_int *big_int_add1(big_int *n1, big_int *n2)
+big_int *big_int_add1(big_int *num_1, big_int *num_2)
 {
-    big_int *n3;
-    if (n1->number[0] == 0 && n2->number[0] == 0 && (n1->length + n2->length) == 2) // n1 == 0 && n2 == 0
+    big_int *res;
+    if (num_1->number[0] == 0 && num_2->number[0] == 0 && (num_1->length + num_2->length) == 2) // num_1 == 0 && num_2 == 0
     {
-        n3 = big_int_get("0");
-        return n3;
+        res = big_int_get("0");
+        return res;
     }
-    if (n1->sign == '+' && n2->sign == '-')
+    if (num_1->sign == '+' && num_2->sign == '-')
     {
-        n2->sign = '+';
-        n3 = big_int_sub1(n1,n2);
-        n2->sign = '-';
-        return n3;
+        num_2->sign = '+';
+        res = big_int_sub1(num_1,num_2);
+        num_2->sign = '-';
+        return res;
     }
-    if (n1->sign == '-' && n2->sign == '+')
+    if (num_1->sign == '-' && num_2->sign == '+')
     {
-        n1->sign = '+';
-        n3 = big_int_sub1(n2,n1);
-        n1->sign = '-';
-        return n3;
+        num_1->sign = '+';
+        res = big_int_sub1(num_2,num_1);
+        num_1->sign = '-';
+        return res;
     }
-    return big_int_add1_help(n1, n2);
+    return big_int_add1_help(num_1, num_2);
 }
 
 
-void big_int_shft_l(big_int *n1)
+void big_int_shft_l(big_int *num_1)
 {
     int flag = 0;
-    if (n1->number[n1->length - 1] & 128)
+    if (num_1->number[num_1->length - 1] & 128)
     {
-        n1->number = realloc(n1->number, ++n1->length);
-        if (n1->number == NULL)
+        num_1->number = realloc(num_1->number, ++num_1->length);
+        if (num_1->number == NULL)
         {
             printf("memory error in big_int_shft_l\n");
             return;
         }
 
-        n1->number[n1->length - 1] = 1;
-        for (int i = 0; i < n1->length - 1; ++i)
+        num_1->number[num_1->length - 1] = 1;
+        for (int i = 0; i < num_1->length - 1; ++i)
         {
-            if (n1->number[i] & 128)
+            if (num_1->number[i] & 128)
             {
-                n1->number[i] <<= 1;
-                n1->number[i] += flag;
+                num_1->number[i] <<= 1;
+                num_1->number[i] += flag;
                 flag = 1;
             } else {
-                n1->number[i] <<= 1;
-                n1->number[i] += flag;
+                num_1->number[i] <<= 1;
+                num_1->number[i] += flag;
                 flag = 0;
             }
         }
         return;
     }
-    for (int i = 0; i < n1->length; ++i)
+    for (int i = 0; i < num_1->length; ++i)
     {
-        if (n1->number[i] & 128)
+        if (num_1->number[i] & 128)
         {
-            n1->number[i] <<= 1;
-            n1->number[i] += flag;
+            num_1->number[i] <<= 1;
+            num_1->number[i] += flag;
             flag = 1;
         } else {
-            n1->number[i] <<= 1;
-            n1->number[i] += flag;
+            num_1->number[i] <<= 1;
+            num_1->number[i] += flag;
             flag = 0;
         }
     }
 }
 
 
-void big_int_shft_r(big_int *n1)
+void big_int_shft_r(big_int *num_1)
 {
-    n1->number[0] >>= 1;
-    for (int i = 1; i < n1->length; ++i)
+    num_1->number[0] >>= 1;
+    for (int i = 1; i < num_1->length; ++i)
     {
-        if (n1->number[i] & 1)
+        if (num_1->number[i] & 1)
         {
-            n1->number[i - 1] = n1->number[i - 1] | 128;
+            num_1->number[i - 1] = num_1->number[i - 1] | 128;
         }
-        n1->number[i] >>= 1;
+        num_1->number[i] >>= 1;
     }
-    big_int_dlz(n1);
-    if (n1->length == 1 && n1->number[0] == 0)
+    big_int_dlz(num_1);
+    if (num_1->length == 1 && num_1->number[0] == 0)
     {
-        n1->sign = '+';
+        num_1->sign = '+';
     }
 }
 
 
-void big_int_shft_l2(big_int *n1, int cnt)
+void big_int_shft_l2(big_int *num_1, int cnt)
 {
     if (cnt <= 0)
     {
         return;
     }
 
-    big_int_dlz(n1);
+    big_int_dlz(num_1);
     for (int i = 0; i < (cnt & 7); ++i)
     {
-        big_int_shft_l(n1);
+        big_int_shft_l(num_1);
     }
     cnt >>= 3;
     if (!cnt)
     {
         return;
     }
-    n1->length += cnt;//
-    n1->number = realloc(n1->number, n1->length);
-    if (n1->number == NULL)
+    num_1->length += cnt;//
+    num_1->number = realloc(num_1->number, num_1->length);
+    if (num_1->number == NULL)
     {
         printf("memory error in big_int_shft_l2\n");
         return;
     }
 
-    for (int i = n1->length - cnt - 1; i >= 0; --i)
+    for (int i = num_1->length - cnt - 1; i >= 0; --i)
     {
-        n1->number[i + cnt] = n1->number[i];
+        num_1->number[i + cnt] = num_1->number[i];
     }
     for (int i = 0; i < cnt; ++i)
     {
-        n1->number[i] = 0;
+        num_1->number[i] = 0;
     }
 }
 
 
-void big_int_shft_r2(big_int *n1, int cnt)
+void big_int_shft_r2(big_int *num_1, int cnt)
 {
-    big_int_dlz(n1);
+    big_int_dlz(num_1);
     for (int i = 0; i < (cnt & 7); ++i)
     {
-        big_int_shft_r(n1);
+        big_int_shft_r(num_1);
     }
     cnt >>= 3;
     if (!cnt)
     {
         return;
     }
-    if (cnt >= n1->length)
+    if (cnt >= num_1->length)
     {
-        n1->length = 1;
-        n1->number = realloc(n1->number, 1);
-        if (n1->number == NULL)
+        num_1->length = 1;
+        num_1->number = realloc(num_1->number, 1);
+        if (num_1->number == NULL)
         {
-            printf("memory error in big_int_shft_r2\n");
+            printf("memory error in big_int_shift_r2\n");
             return;
         }
-        n1->number[0] = 0;
+        num_1->number[0] = 0;
     } else {
-        for (int i = cnt; i < n1->length; ++i)
+        for (int i = cnt; i < num_1->length; ++i)
         {
-            n1->number[i - cnt] = n1->number[cnt];
+            num_1->number[i - cnt] = num_1->number[cnt];
         }
-        n1->length -= cnt;
-        n1->number = realloc(n1->number, n1->length);
+        num_1->length -= cnt;
+        num_1->number = realloc(num_1->number, num_1->length);
     }
-    big_int_dlz(n1);
-    if (n1->length == 1 && n1->number[0] == 0)
+    big_int_dlz(num_1);
+    if (num_1->length == 1 && num_1->number[0] == 0)
     {
-        n1->sign = '+';
+        num_1->sign = '+';
     }
 }
 
 
-int big_int_leq(big_int *n1, big_int *n2) //n1<=n2
+int big_int_leq(big_int *num_1, big_int *num_2) //num_1<=num_2
 {
-    if (n1->sign == '-' && n2->sign == '+')
+    if (num_1->sign == '-' && num_2->sign == '+')
     {
         return 1;
     }
-    if (n1->sign == '+' && n2->sign == '-')
+    if (num_1->sign == '+' && num_2->sign == '-')
     {
         return 0;
     }
-    big_int_dlz(n1);
-    big_int_dlz(n2);
-    if (n1->length < n2->length)
+    big_int_dlz(num_1);
+    big_int_dlz(num_2);
+    if (num_1->length < num_2->length)
     {
-        if (n1->sign == '-' && n2->sign == '-')
+        if (num_1->sign == '-' && num_2->sign == '-')
         {
             return 0;
         }
         return 1;
     }
-    if (n1->length > n2->length)
+    if (num_1->length > num_2->length)
     {
-        if (n1->sign == '-' && n2->sign == '-')
+        if (num_1->sign == '-' && num_2->sign == '-')
         {
             return 1;
         }
         return 0;
     }
     char ret = 1;
-    if (n1->sign == '-' && n2->sign == '-')
+    if (num_1->sign == '-' && num_2->sign == '-')
     {
         ret = 0;
     }
-    for (int i = n1->length - 1; i >= 0; --i)
+    for (int i = num_1->length - 1; i >= 0; --i)
     {
-        if (n1->number[i] < n2->number[i]){
+        if (num_1->number[i] < num_2->number[i]){
             return ret;
         }
-        if (n1->number[i] > n2->number[i]){
+        if (num_1->number[i] > num_2->number[i]){
             return !ret;
         }
     }
@@ -624,39 +650,39 @@ int big_int_leq(big_int *n1, big_int *n2) //n1<=n2
 
 
 
-int big_int_meq(big_int *n1, big_int *n2) //n1>=n2
+int big_int_meq(big_int *num_1, big_int *num_2) //num_1>=num_2
 {
-    if (n1->sign == '-' && n2->sign == '+')
+    if (num_1->sign == '-' && num_2->sign == '+')
     {
         return 0;
     }
-    if (n1->sign == '+' && n2->sign == '-')
+    if (num_1->sign == '+' && num_2->sign == '-')
     {
         return 1;
     }
-    big_int_dlz(n1);
-    big_int_dlz(n2);
+    big_int_dlz(num_1);
+    big_int_dlz(num_2);
     char ret = 1;
-    if (n1->sign == '-' && n2->sign == '-')
+    if (num_1->sign == '-' && num_2->sign == '-')
     {
         ret = 0;
     }
-    if (n1->length > n2->length)
+    if (num_1->length > num_2->length)
     {
         return ret;
     }
-    if (n1->length < n2->length)
+    if (num_1->length < num_2->length)
     {
         return !ret;
     }
 
-    for (int i = n1->length - 1; i >= 0; --i)
+    for (int i = num_1->length - 1; i >= 0; --i)
     {
-        if (n1->number[i] > n2->number[i])
+        if (num_1->number[i] > num_2->number[i])
         {
             return ret;
         }
-        if (n1->number[i] < n2->number[i])
+        if (num_1->number[i] < num_2->number[i])
         {
             return !ret;
         }
@@ -666,167 +692,167 @@ int big_int_meq(big_int *n1, big_int *n2) //n1>=n2
 
 
 //Вычитаем когда оба числа +
-static big_int *big_int_sub1_help(big_int *n1, big_int *n2)
+static big_int *big_int_sub1_help(big_int *num_1, big_int *num_2)
 {
-    big_int *n3;
-    if (big_int_leq(n1,n2) && !big_int_equal(n1,n2))
+    big_int *res;
+    if (big_int_leq(num_1,num_2) && !big_int_equal(num_1,num_2))
     {
-        n3 = big_int_sub1(n2,n1); //Меняем местами чтобы из большего вычитать меньшее
-        n3->sign = '-';
-        return n3;
+        res = big_int_sub1(num_2,num_1); //Меняем местами чтобы из большего вычитать меньшее
+        res->sign = '-';
+        return res;
     }
     else // Иначе просто вычитаем
     {
-        n3 = calloc(1, sizeof(big_int));
-        if (n3 == NULL)
+        res = calloc(1, sizeof(big_int));
+        if (res == NULL)
         {
             printf("memory error in big_int_sub1\n");
             return NULL;
         }
-        n3->number = calloc(n1->length, sizeof(unsigned char));
-        if (n3->number == NULL)
+        res->number = calloc(num_1->length, sizeof(unsigned char));
+        if (res->number == NULL)
         {
             printf("memory error in big_int_sub1\n");
             return NULL;
         }
 
-        n3->length = n1->length;
-        n3->sign = '+';
+        res->length = num_1->length;
+        res->sign = '+';
         int i = 0;
         int flag = 0;
-        for (; i < n2->length; ++i)
+        for (; i < num_2->length; ++i)
         {
-            n3->number[i] = n1->number[i] - n2->number[i] - flag; //Обычное вычитание Си
-            flag = ((int)n1->number[i] < (int)n2->number[i] + (int)flag) ? 1 : 0; //Учитываем перенос
+            res->number[i] = num_1->number[i] - num_2->number[i] - flag; //Обычное вычитание Си
+            flag = ((int)num_1->number[i] < (int)num_2->number[i] + (int)flag) ? 1 : 0; //Учитываем перенос
 
         }
         if (flag)
         {
-            for (; i < n1->length; ++i)
+            for (; i < num_1->length; ++i)
             {
-                if (n1->number[i] != 0)
+                if (num_1->number[i] != 0)
                 {
-                    n3->number[i] = n1->number[i] - 1;
+                    res->number[i] = num_1->number[i] - 1;
                     break;
                 }
                 else
                 {
-                    n3->number[i] = 255;
+                    res->number[i] = 255;
                 }
             }
         }
         i += flag;
-        for (; i < n1->length; ++i)
+        for (; i < num_1->length; ++i)
         {
-            n3->number[i] = n1->number[i];
+            res->number[i] = num_1->number[i];
         }
     }
-    big_int_dlz(n3);
-    return n3;
+    big_int_dlz(res);
+    return res;
 }
 
 
-big_int *big_int_sub1(big_int *n1, big_int *n2)
+big_int *big_int_sub1(big_int *num_1, big_int *num_2)
 {
-    big_int *n3;
-    big_int_dlz(n1);
-    big_int_dlz(n2);
-    if (n1->number[0] == 0 && n2->number[0] == 0 && (n1->length + n2->length) == 2) // n1 == 0 && n2 == 0
+    big_int *res;
+    big_int_dlz(num_1);
+    big_int_dlz(num_2);
+    if (num_1->number[0] == 0 && num_2->number[0] == 0 && (num_1->length + num_2->length) == 2) // num_1 == 0 && num_2 == 0
     {
-        n3 = big_int_get("0");
-        return n3;
+        res = big_int_get("0");
+        return res;
     }
-    if (n1->sign == '+' && n2->sign == '-') // n1 - (-n2) = n1 + n2
+    if (num_1->sign == '+' && num_2->sign == '-') // num_1 - (-num_2) = num_1 + num_2
     {
-        n2->sign = '+';
-        n3 = big_int_add1(n1,n2);
-        n2->sign = '-';
-        return n3;
+        num_2->sign = '+';
+        res = big_int_add1(num_1,num_2);
+        num_2->sign = '-';
+        return res;
     }
-    if (n1->sign == '-' && n2->sign == '-') // - n1 - (-n2) = - n1 + n2 = n2 - n1
+    if (num_1->sign == '-' && num_2->sign == '-') // - num_1 - (-num_2) = - num_1 + num_2 = num_2 - num_1
     {
-        n1->sign = '+';
-        n2->sign = '+';
-        n3 = big_int_sub1(n2,n1);
-        n1->sign = '-';
-        n2->sign = '-';
-        return n3;
+        num_1->sign = '+';
+        num_2->sign = '+';
+        res = big_int_sub1(num_2,num_1);
+        num_1->sign = '-';
+        num_2->sign = '-';
+        return res;
     }
-    if (n1->sign == '-' && n2->sign == '+') // - n1 - n2 = n2 - n1
+    if (num_1->sign == '-' && num_2->sign == '+') // - num_1 - num_2 = num_2 - num_1
     {
-        n2->sign = '-';
-        n3 = big_int_add1(n1,n2);
-        n2->sign = '+';
-        return n3;
+        num_2->sign = '-';
+        res = big_int_add1(num_1,num_2);
+        num_2->sign = '+';
+        return res;
     }
-    return big_int_sub1_help(n1, n2);
+    return big_int_sub1_help(num_1, num_2);
 }
 
 
 //Складываем когда первое число больше чем второе
-static void big_int_add2_help_n1moren2(big_int *n1, big_int *n2)
+static void big_int_add2_help__num_1morenum_2(big_int *num_1, big_int *num_2)
 {
-    n1->length += 1;
-    n1->number = realloc(n1->number, n1->length);
-    n1->number[n1->length - 1] = 0;
+    num_1->length += 1;
+    num_1->number = realloc(num_1->number, num_1->length);
+    num_1->number[num_1->length - 1] = 0;
     short flag1 = 0, flag2 = 0;
     int i = 0;
-    for (; i < n2->length; ++i)
+    for (; i < num_2->length; ++i)
     {
-        flag1 = (n1->number[i] + n2->number[i] + flag2 >= 256);
-        n1->number[i] += n2->number[i] + flag2;
+        flag1 = (num_1->number[i] + num_2->number[i] + flag2 >= 256);
+        num_1->number[i] += num_2->number[i] + flag2;
         flag2 = flag1;
     }
     if (flag2)
     {
-        for (; i < n1->length; ++i)
+        for (; i < num_1->length; ++i)
         {
-            if (n1->number[i] == 255)
+            if (num_1->number[i] == 255)
             {
-                n1->number[i] = 0;
+                num_1->number[i] = 0;
             }
             else
             {
-                n1->number[i] += 1;
+                num_1->number[i] += 1;
                 break;
             }
         }
     }
-    big_int_dlz(n1);
+    big_int_dlz(num_1);
     return;
 }
 
 
 //Складываем когда первое число <= второго
-static void big_int_add2_help_n1leq2(big_int *n1, big_int *n2)
+static void big_int_add2_help_num_1leq2(big_int *num_1, big_int *num_2)
 {
     short flag1 = 0, flag2 = 0;
-    n1->number = realloc(n1->number, n2->length + 1);
-    if (n1->number == NULL)
+    num_1->number = realloc(num_1->number, num_2->length + 1);
+    if (num_1->number == NULL)
     {
         printf("memory error in big_int_add2\n");
         return;
     }
 
     int i = 0;
-    for (; i < n1->length; ++i)
+    for (; i < num_1->length; ++i)
     {
-        flag1 = (n1->number[i] + n2->number[i] + flag2 >= 256);
-        n1->number[i] += n2->number[i] + flag2;
+        flag1 = (num_1->number[i] + num_2->number[i] + flag2 >= 256);
+        num_1->number[i] += num_2->number[i] + flag2;
         flag2 = flag1;
     }
-    n1->length = n2->length + 1;
+    num_1->length = num_2->length + 1;
     if (flag2)
     {
-        for (; i < n2->length; ++i)
+        for (; i < num_2->length; ++i)
         {
-            if (n2->number[i] == 255)
+            if (num_2->number[i] == 255)
             {
-                n1->number[i] = 0;
+                num_1->number[i] = 0;
             }
             else
             {
-                n1->number[i] = n2->number[i] + 1;
+                num_1->number[i] = num_2->number[i] + 1;
 
                 flag2 = 0;
                 ++i;
@@ -834,247 +860,247 @@ static void big_int_add2_help_n1leq2(big_int *n1, big_int *n2)
             }
         }
     }
-    for (; i < n2->length; ++i)
+    for (; i < num_2->length; ++i)
     {
-        n1->number[i] = n2->number[i];
+        num_1->number[i] = num_2->number[i];
     }
-    n1->number[n2->length] = flag2;
-    big_int_dlz(n1);
+    num_1->number[num_2->length] = flag2;
+    big_int_dlz(num_1);
     return;
 }
 
 
 //Складываем когда оба числа положительные, разбиваемся на два случая -> две доп функции
-static void big_int_add2_help(big_int *n1, big_int *n2)
+static void big_int_add2_help(big_int *num_1, big_int *num_2)
 {
-    if (n1->sign == n2->sign && n1->sign == '+')
+    if (num_1->sign == num_2->sign && num_1->sign == '+')
     {
-        if (n1->length > n2->length)
+        if (num_1->length > num_2->length)
         {
-            big_int_add2_help_n1moren2(n1, n2);
+            big_int_add2_help__num_1morenum_2(num_1, num_2);
         }
 
-        if (n1->length <= n2->length)
+        if (num_1->length <= num_2->length)
         {
-            big_int_add2_help_n1leq2(n1, n2);
+            big_int_add2_help_num_1leq2(num_1, num_2);
         }
     }
 }
 
 
-void big_int_add2(big_int *n1, big_int *n2)
+void big_int_add2(big_int *num_1, big_int *num_2)
 {
-    big_int_dlz(n1);
-    big_int_dlz(n2);
-    if (n1->sign != n2->sign)
+    big_int_dlz(num_1);
+    big_int_dlz(num_2);
+    if (num_1->sign != num_2->sign)
     {
-        if (n2->sign == '-')
+        if (num_2->sign == '-')
         {
-            n2->sign = '+';
-            big_int_sub2(n1,n2);
-            n2->sign = '-';
+            num_2->sign = '+';
+            big_int_sub2(num_1,num_2);
+            num_2->sign = '-';
             return;
         }
-        n1->sign = '+';
-        big_int_sub2(n1,n2);
-        if (n1->length == 1 && n1->number[0] == 0)
+        num_1->sign = '+';
+        big_int_sub2(num_1,num_2);
+        if (num_1->length == 1 && num_1->number[0] == 0)
         {
-            n1->sign = '+';
+            num_1->sign = '+';
             return;
         }
-        if (n1->sign == '+')
+        if (num_1->sign == '+')
         {
-            n1->sign = '-';
+            num_1->sign = '-';
             return;
         }
-        n1->sign = '+';
+        num_1->sign = '+';
         return;
     }
 
-    if (n1->sign == n2->sign && n1->sign == '-')
+    if (num_1->sign == num_2->sign && num_1->sign == '-')
     {
-        n1->sign = '+';
-        n2->sign = '+';
-        big_int_add2(n1,n2);
-        n1->sign = '-';
-        n2->sign = '-';
+        num_1->sign = '+';
+        num_2->sign = '+';
+        big_int_add2(num_1,num_2);
+        num_1->sign = '-';
+        num_2->sign = '-';
         return;
     }
-    big_int_add2_help(n1, n2);
+    big_int_add2_help(num_1, num_2);
 }
 
 
 //Вычитаем когда оба числа положительные
-static void big_int_sub2_help(big_int *n1, big_int *n2)
+static void big_int_sub2_help(big_int *num_1, big_int *num_2)
 {
 
-    if (n1->sign == n2->sign && n1->sign == '+')
+    if (num_1->sign == num_2->sign && num_1->sign == '+')
     {
-        if (n1->length > n2->length)
+        if (num_1->length > num_2->length)
         {
             short flag1 = 0, flag2 = 0;
             int i = 0;
-            for (; i < n2->length; ++i)
+            for (; i < num_2->length; ++i)
             {
-                flag1 = (n2->number[i] - n1->number[i] + flag2 > 0);
-                n1->number[i] -= n2->number[i] + flag2;
+                flag1 = (num_2->number[i] - num_1->number[i] + flag2 > 0);
+                num_1->number[i] -= num_2->number[i] + flag2;
                 flag2 = flag1;
             }
 
             if (flag2)
             {
-                for (; i < n1->length; ++i)
+                for (; i < num_1->length; ++i)
                 {
-                    if (n1->number[i] == 0)
+                    if (num_1->number[i] == 0)
                     {
-                        n1->number[i] = 255;
+                        num_1->number[i] = 255;
                     }
                     else
                     {
-                        n1->number[i] -= 1;
+                        num_1->number[i] -= 1;
                         break;
                     }
                 }
             }
 
-            big_int_dlz(n1);
+            big_int_dlz(num_1);
             return;
         }
 
-        if (n1->length <= n2->length)
+        if (num_1->length <= num_2->length)
         {
-            big_int *n3 = big_int_sub1(n1,n2);
-            free(n1->number);
-            n1->number = n3->number;
-            n1->length = n3->length;
-            n1->sign = n3->sign;
-            free(n3);
-            big_int_dlz(n1);
+            big_int *res = big_int_sub1(num_1,num_2);
+            free(num_1->number);
+            num_1->number = res->number;
+            num_1->length = res->length;
+            num_1->sign = res->sign;
+            free(res);
+            big_int_dlz(num_1);
             return;
         }
     }
 }
 
 
-void big_int_sub2(big_int *n1, big_int *n2)
+void big_int_sub2(big_int *num_1, big_int *num_2)
 {
-    big_int_dlz(n1);
-    big_int_dlz(n2);
+    big_int_dlz(num_1);
+    big_int_dlz(num_2);
 
-    if (n1->sign != n2->sign)
+    if (num_1->sign != num_2->sign)
     {
-        if (n1->sign == '+')
+        if (num_1->sign == '+')
         {
-            n2->sign = '+';
-            big_int_add2(n1,n2);
-            n2->sign = '-';
+            num_2->sign = '+';
+            big_int_add2(num_1,num_2);
+            num_2->sign = '-';
             return;
         }
-        n2->sign = '-';
-        big_int_add2(n1,n2);
-        n2->sign = '+';
+        num_2->sign = '-';
+        big_int_add2(num_1,num_2);
+        num_2->sign = '+';
         return;
     }
 
-    if (n1->sign == n2->sign && n1->sign == '-')
+    if (num_1->sign == num_2->sign && num_1->sign == '-')
     {
-        n2->sign = '+';
-        big_int_add2(n1, n2);
-        n2->sign = '-';
+        num_2->sign = '+';
+        big_int_add2(num_1, num_2);
+        num_2->sign = '-';
         return;
     }
-    big_int_sub2_help(n1, n2);
+    big_int_sub2_help(num_1, num_2);
 }
 
 
-big_int *big_int_mult1(big_int *n1, big_int *n2)
+big_int *big_int_mult1(big_int *num_1, big_int *num_2)
 {
-    big_int *n3 = calloc(1, sizeof(big_int));
-    if (n3 == NULL)
+    big_int *res = calloc(1, sizeof(big_int));
+    if (res == NULL)
     {
         printf("memory error in big_int_mult1\n");
         return NULL;
     }
-    n3->sign = '+';
-    if (n1->sign != n2->sign)
+    res->sign = '+';
+    if (num_1->sign != num_2->sign)
     {
-        if (n1->number[0] == 0 && n1->length == 1 || n2->number[0] == 0 && n2->length  == 1)
+        if (num_1->number[0] == 0 && num_1->length == 1 || num_2->number[0] == 0 && num_2->length  == 1)
         {
-            n3->number = calloc(1, sizeof(unsigned char));
-            n3->length = 1;
-            return n3;
+            res->number = calloc(1, sizeof(unsigned char));
+            res->length = 1;
+            return res;
         }
-        n3->sign = '-';
+        res->sign = '-';
     }
-    n3->length = n1->length + n2->length;
-    n3->number = calloc(n3->length, sizeof(n3->number[0]));
-    if (n3->number == NULL)
+    res->length = num_1->length + num_2->length;
+    res->number = calloc(res->length, sizeof(res->number[0]));
+    if (res->number == NULL)
     {
         printf("memory error in big_int_mult1\n");
         return NULL;
     }
     unsigned int mul_res, flag, k;
-    for (size_t i = 0; i < n1->length; ++i)
+    for (size_t i = 0; i < num_1->length; ++i)
     {
-        for (size_t j = 0; j < n2->length; ++j)
+        for (size_t j = 0; j < num_2->length; ++j)
         {
-            mul_res = n1->number[i] * n2->number[j];
-            flag = (n3->number[i + j] + mul_res) >> 8;
-            n3->number[i + j] += mul_res & 255;
+            mul_res = num_1->number[i] * num_2->number[j];
+            flag = (res->number[i + j] + mul_res) >> 8;
+            res->number[i + j] += mul_res & 255;
             k = 1;
             while (flag)
             {
-                unsigned int flag2 = (n3->number[i + j + k] + (flag)) >> 8;
-                n3->number[i + j + k] += (flag & 255);
+                unsigned int flag2 = (res->number[i + j + k] + (flag)) >> 8;
+                res->number[i + j + k] += (flag & 255);
                 flag = flag2;
                 k++;
             }
         }
     }
-    big_int_dlz(n3);
-    return n3;
+    big_int_dlz(res);
+    return res;
 }
 
 
 
 
-big_int *big_int_slice(const big_int *n1, long l1, long l2)
+big_int *big_int_slice(const big_int *num_1, long int left_bound, long int right_bound)
 {
-    big_int *n = (big_int *) malloc(sizeof(big_int));
-    n->sign = n1->sign;
-    n->length = (unsigned int) (l2 - l1 + 1);
-    if (l2 >= n1->length)
+    big_int *res = (big_int *) malloc(sizeof(big_int));
+    res->sign = num_1->sign;
+    res->length = (unsigned int) (right_bound - left_bound + 1);
+    if (right_bound >= num_1->length)
     {
-        n->length = (unsigned int) (n1->length - l1);
+        res->length = (unsigned int) (num_1->length - left_bound);
     }
-    if (l1 >= n1->length)
+    if (left_bound >= num_1->length)
     {
-        n->length = 1;
-        n->number = (unsigned char *) calloc(1, sizeof(n1->number[0]));
-        return n;
+        res->length = 1;
+        res->number = (unsigned char *) calloc(1, sizeof(num_1->number[0]));
+        return res;
     }
-    n->number = (unsigned char *) calloc(n->length, sizeof(n1->number[0]));
-    memcpy(n->number, n1->number + l1, n->length);
-    big_int_dlz(n);
-    return n;
+    res->number = (unsigned char *) calloc(res->length, sizeof(num_1->number[0]));
+    memcpy(res->number, num_1->number + left_bound, res->length);
+    big_int_dlz(res);
+    return res;
 }
 
 
-big_int *big_int_karatsuba_mult2(big_int *n1, big_int *n2)
+big_int *big_int_karatsuba_mult2(big_int *num_1, big_int *num_2)
 {
-    if (n1->length + n2->length <= 4)
+    if (num_1->length + num_2->length <= 4)
     {
-        return big_int_mult1(n1, n2);
+        return big_int_mult1(num_1, num_2);
     }
     else
     {
-        unsigned int mx = (n1->length >= n2->length) ? n1->length : n2->length;
+        unsigned int mx = (num_1->length >= num_2->length) ? num_1->length : num_2->length;
         mx += (mx & 1);
 
-        big_int *q = big_int_slice(n1, 0, mx / 2 - 1);
-        big_int *p = big_int_slice(n1, mx / 2, mx - 1);
-        big_int *s = big_int_slice(n2, 0, mx / 2 - 1);
-        big_int *r = big_int_slice(n2, mx / 2, mx - 1);
+        big_int *q = big_int_slice(num_1, 0, mx / 2 - 1); //Берем срез первой половины включительно
+        big_int *p = big_int_slice(num_1, mx / 2, mx - 1); //Берем срез второй половины
+        big_int *s = big_int_slice(num_2, 0, mx / 2 - 1); //... также
+        big_int *r = big_int_slice(num_2, mx / 2, mx - 1); //... также
 
         big_int *pr = big_int_karatsuba_mult2(p, r);//A1
         big_int *qs = big_int_karatsuba_mult2(q, s);//A2
@@ -1101,34 +1127,34 @@ big_int *big_int_karatsuba_mult2(big_int *n1, big_int *n2)
 
 //Не более чем вспомогательная функция для обычного возведения, для того,
 //чтобы не было проблем с скопированными значениями, так проще реализовать, ведь я могу с копиями делать что угодно
-static big_int *big_int_pow_help(big_int *n1_cpy, big_int *n2_cpy, big_int *res)
+static big_int *big_int_pow_help(big_int *num_1_cpy, big_int *num_2_cpy, big_int *res)
 {
-    if((n2_cpy->number)[0] > 1 || n2_cpy->length > 1) //Если число больше 1
+    if((num_2_cpy->number)[0] > 1 || num_2_cpy->length > 1) //Если число больше 1
     {
-        if ((n2_cpy->number)[0] & 1)
+        if ((num_2_cpy->number)[0] & 1)
         {
-            big_int *res2 = big_int_karatsuba_mult2(n1_cpy, res);
-            (n2_cpy->number)[0] -= 1;
+            big_int *res2 = big_int_karatsuba_mult2(num_1_cpy, res);
+            (num_2_cpy->number)[0] -= 1;
             big_int_swap2(res, res2);
             big_int_free(&res2);
-            big_int_pow_help(n1_cpy, n2_cpy, res);
+            big_int_pow_help(num_1_cpy, num_2_cpy, res);
         } else
         {
-            big_int_shft_r(n2_cpy);
-            big_int *n1_cpy_cpy = big_int_copy(n1_cpy);
-            big_int *n3 = big_int_karatsuba_mult2(n1_cpy, n1_cpy_cpy);
-            big_int_free(&n1_cpy_cpy);
-            big_int_pow_help(n3, n2_cpy, res);
+            big_int_shft_r(num_2_cpy);
+            big_int *num_1_cpy_cpy = big_int_copy(num_1_cpy);
+            big_int *n3 = big_int_karatsuba_mult2(num_1_cpy, num_1_cpy_cpy);
+            big_int_free(&num_1_cpy_cpy);
+            big_int_pow_help(n3, num_2_cpy, res);
             big_int_free(&n3);
         }
     }
     else
     {
-        if ((n2_cpy->number)[0] > 0) //Если число = 1
+        if ((num_2_cpy->number)[0] > 0) //Если число = 1
         {
-            big_int *res2 = big_int_karatsuba_mult2(n1_cpy, res);
+            big_int *res2 = big_int_karatsuba_mult2(num_1_cpy, res);
             big_int *digit1 = big_int_get("1");
-            big_int_sub2(n2_cpy, digit1);
+            big_int_sub2(num_2_cpy, digit1);
             big_int_free(&digit1);
             big_int_swap2(res, res2);
             big_int_free(&res2);
@@ -1137,99 +1163,100 @@ static big_int *big_int_pow_help(big_int *n1_cpy, big_int *n2_cpy, big_int *res)
 }
 
 
-big_int *big_int_pow(big_int *n1, big_int *n2)
+big_int *big_int_pow(big_int *num_1, big_int *num_2)
 {
     big_int *res = big_int_get("1");
-    big_int *n1_cpy = big_int_copy(n1);
-    big_int *n2_cpy = big_int_copy(n2);
-    big_int_pow_help(n1_cpy, n2_cpy, res);
-    big_int_free(&n1_cpy);
-    big_int_free(&n2_cpy);
+    big_int *num_1_cpy = big_int_copy(num_1);
+    big_int *num_2_cpy = big_int_copy(num_2);
+    big_int_pow_help(num_1_cpy, num_2_cpy, res);
+    big_int_free(&num_1_cpy);
+    big_int_free(&num_2_cpy);
     return res;
 }
 
 //Просто делим одно на другое нацело, не учитывая знак, но учитвая что не делим на ноль
-static big_int *big_int_divided_help(big_int *a, big_int *b)
+static big_int *big_int_divide_help(big_int *dividend, big_int *denominator)
 {
-    big_int *Q = calloc(1, sizeof(big_int));
-    if (((signed int)a->length - (signed int)b->length + 1) > 0)
+    big_int *Q = calloc(1, sizeof(big_int)); //Частное, результат, обозначается за Q
+    if (((signed long int)dividend->length - (signed long int)denominator->length + 1) > 0)
     {
-        Q->length = a->length - b->length + 1;
+        Q->length = dividend->length - denominator->length + 1;
     }
     else{
-        Q->length = 1; //b->length - a->length + 1
+        Q->length = 1; //denominator->length - dividend->length + 1
     }
-    unsigned char *mas_q = calloc(Q->length, sizeof(unsigned char));
-    Q->number = mas_q;
+    unsigned char *Q_array = calloc(Q->length, sizeof(unsigned char));
+    Q->number = Q_array;
     Q->sign = '+';
 
-    big_int *R = big_int_get("0");
+    big_int *R = big_int_get("0"); //Остаток, обозначается за R
 
-    unsigned short char_digit = 1;
-    for (; char_digit < a->number[a->length - 1];)
+    unsigned short no_meaning_zero = 1; //0000000123
+    for (; no_meaning_zero < dividend->number[dividend->length - 1];)
     {
-        char_digit <<= 1;
+        no_meaning_zero <<= 1;
     }
 
-    if (char_digit > a->number[a->length - 1])
+    if (no_meaning_zero > dividend->number[dividend->length - 1])
     {
-        char_digit >>= 1;
+        no_meaning_zero >>= 1;
     }
     {
-        for (int t = char_digit; t >=1; t >>= 1)
+        for (int index = no_meaning_zero; index >=1; index >>= 1)
         {
             big_int_shft_l(R);
-            R->number[0] = (R->number[0]) | ((t & a->number[(a->length - 1)]) && 1);
-            if (big_int_meq(R, b))
+            R->number[0] = (R->number[0]) | ((index & dividend->number[(dividend->length - 1)]) && 1);
+            if (big_int_meq(R, denominator))
             {
-                big_int_sub2(R, b);
-                Q->number[(a->length - 1)] = Q->number[(a->length - 1)] | t;
+                big_int_sub2(R, denominator);
+                Q->number[(dividend->length - 1)] = Q->number[(dividend->length - 1)] | index;
             }
         }
     }
-    for (int j = (a->length - 2); j >= 0; --j)
+    for (int j = (dividend->length - 2); j >= 0; --j)
     {
-        for (int t = 128; t >=1; t >>= 1)
+        for (int i = 128; i >=1; i >>= 1)
         {
             big_int_shft_l(R);
-            R->number[0] = (R->number[0]) | ((t & a->number[j]) && 1);
-            if (big_int_meq(R, b))
+            R->number[0] = (R->number[0]) | ((i & dividend->number[j]) && 1);
+            if (big_int_meq(R, denominator))
             {
-                big_int_sub2(R, b);
-                Q->number[j] = Q->number[j] | t;
+                big_int_sub2(R, denominator);
+                Q->number[j] = Q->number[j] | i;
             }
         }
     }
     big_int_free(&R);
+    big_int_dlz(Q);
     return Q;
 }
 
-big_int *big_int_divided(big_int *a, big_int *b)
+big_int *big_int_divide(big_int *dividend, big_int *denominator)
 {
-    big_int_dlz(a);
-    big_int_dlz(b);
-    if ((b->length == 1 && b->number[0] == 0) || b->length > a->length)
+    big_int_dlz(dividend);
+    big_int_dlz(denominator);
+    if ((denominator->length == 1 && denominator->number[0] == 0) || denominator->length > dividend->length)
     {
         big_int *res = big_int_get("0");
-        return res;
+        return res; // x / 0 = 0
     }
 
-    char sign_a = a->sign;
-    char sign_b = b->sign;
-    a->sign = '+';
-    b->sign = '+';
-    big_int *ret = big_int_divided_help(a, b);
-    a->sign = sign_a;
-    b->sign = sign_b;
-    if (a->sign != b->sign)
+    char sign_dividend = dividend->sign;
+    char sign_denominator = denominator->sign;
+    dividend->sign = '+';
+    denominator->sign = '+';
+    big_int *res = big_int_divide_help(dividend, denominator);
+    dividend->sign = sign_dividend;
+    denominator->sign = sign_denominator;
+    if (dividend->sign != denominator->sign)
     {
-        if (ret->length > 1 || ret->number[0] != 0)
+        if (res->length > 1 || res->number[0] != 0)
         {
-            ret->sign = '-';
+            res->sign = '-';
         }
     }
-    big_int_dlz(ret);
-    return ret;
+    big_int_dlz(res);
+    return res;
 }
 
 
@@ -1243,57 +1270,56 @@ big_int *big_int_divided(big_int *a, big_int *b)
 const short MAS_POW2[] = { 1, 2, 4, 8, 16, 32, 64, 128, 256};
 
 //Просто ищем число по модулю одно, не учитывая знак, но учитвая что не делим на ноль
-static big_int *big_int_mod_help(big_int *a, big_int *b)
+static big_int *big_int_mod_help(big_int *dividend, big_int *denominator)
 {
-    big_int *Q = calloc(1, sizeof(big_int));
-    if (((signed int)a->length - (signed int)b->length + 1) > 0)
+    big_int *Q = calloc(1, sizeof(big_int)); //Частное, обозначается за Q
+    if (((signed long int)dividend->length - (signed long int)denominator->length + 1) > 0)
     {
-        Q->length = a->length - b->length + 1;
+        Q->length = dividend->length - denominator->length + 1;
     }
-
     else{
-        Q->length = 2; //b->length - a->length + 1
+        Q->length = 2; //denominator->length - dividend->length + 1
     }
 
-    unsigned char *mas_q = calloc(Q->length, sizeof(unsigned char));
-    Q->number = mas_q;
+    unsigned char *Q_array = calloc(Q->length, sizeof(unsigned char));
+    Q->number = Q_array;
     Q->sign = '+';
 
-    big_int *R = big_int_get("0");
+    big_int *R = big_int_get("0"); //Остаток, результат, обозначается за R
 
-    unsigned short char_digit = 256;
-    for (int ii = 8; ii >= 0; --ii)
+    unsigned short no_meaning_zero = 256; //0000000123
+    for (int index = 8; index >= 0; --index)
     {
-        if (MAS_POW2[ii] <= a->number[a->length - 1])
+        if (MAS_POW2[index] <= dividend->number[dividend->length - 1])
         {
-            char_digit = MAS_POW2[ii];
+            no_meaning_zero = MAS_POW2[index];
             break;
         }
     }
 
     {
-        for (int t = char_digit; t >=1; t >>= 1)
+        for (int index = no_meaning_zero; index >=1; index >>= 1)
         {
             big_int_shft_l(R);
-            R->number[0] = (R->number[0]) | ((t & a->number[(a->length - 1)]) && 1);
-            if (big_int_meq(R, b))
+            R->number[0] = (R->number[0]) | ((index & dividend->number[(dividend->length - 1)]) && 1);
+            if (big_int_meq(R, denominator))
             {
-                big_int_sub2(R, b);
-                Q->number[(a->length - 1)] = Q->number[(a->length - 1)] | t;
+                big_int_sub2(R, denominator);
+                Q->number[(dividend->length - 1)] = Q->number[(dividend->length - 1)] | index;
             }
         }
     }
 
-    for (int j = (a->length - 2); j >= 0; --j)
+    for (int j = (dividend->length - 2); j >= 0; --j)
     {
-        for (int t = 128; t >=1; t >>= 1)
+        for (int i = 128; i >= 1; i >>= 1)
         {
             big_int_shft_l(R);
-            R->number[0] = (R->number[0]) | ((t & a->number[j]) && 1);
-            if (big_int_meq(R, b))
+            R->number[0] = (R->number[0]) | ((i & dividend->number[j]) && 1);
+            if (big_int_meq(R, denominator))
             {
-                big_int_sub2(R, b);
-                Q->number[j] = Q->number[j] | t;
+                big_int_sub2(R, denominator);
+                Q->number[j] = Q->number[j] | i;
             }
         }
     }
@@ -1302,35 +1328,35 @@ static big_int *big_int_mod_help(big_int *a, big_int *b)
 }
 
 
-big_int *big_int_mod(big_int *a, big_int *b)
+big_int *big_int_mod(big_int *number, big_int *modulus)
 {
-    big_int_dlz(a);
-    big_int_dlz(b);
-    if ((b->length == 1 && b->number[0] == 0))
+    big_int_dlz(number);
+    big_int_dlz(modulus);
+    if ((modulus->length == 1 && modulus->number[0] == 0))
     {
         big_int *res = big_int_get("0");
         return res;
     }
-    char sign_a = a->sign;
-    char sign_b = b->sign;
-    a->sign = '+';
-    b->sign = '+';
-    big_int *ret = big_int_mod_help(a, b);
-    a->sign = sign_a;
-    b->sign = sign_b;
-    if (a->sign == '-')
+    char sign_number = number->sign;
+    char sign_modulus = modulus->sign;
+    number->sign = '+';
+    modulus->sign = '+';
+    big_int *res = big_int_mod_help(number, modulus);
+    number->sign = sign_number;
+    modulus->sign = sign_modulus;
+    if (number->sign == '-')
     {
-        if (ret->length > 1 || ret->number[0] != 0)
+        if (res->length > 1 || res->number[0] != 0)
         {
-            ret->sign = '-';
+            res->sign = '-';
         }
     }
-    big_int_dlz(ret);
-    return ret;
+    big_int_dlz(res);
+    return res;
 }
 
 
-big_int *big_int_rnd(int byte_count)
+big_int *big_int_rnd(int byte_count) //
 {
     big_int *res = calloc(1, sizeof(big_int));
     res->number = calloc(byte_count, sizeof(unsigned char));
@@ -1348,7 +1374,7 @@ big_int *big_int_rnd(int byte_count)
 }
 
 
-big_int *big_int_rnd_odd(int byte_count)
+big_int *big_int_rnd_odd(int byte_count) //
 {
     big_int *res = calloc(1, sizeof(big_int));
     res->number = calloc(byte_count, sizeof(unsigned char));
@@ -1366,17 +1392,17 @@ big_int *big_int_rnd_odd(int byte_count)
 }
 
 
-big_int *big_int_pow_mod(big_int *a, big_int *pow, big_int *modulus)
+big_int *big_int_pow_mod(big_int *num, big_int *power, big_int *modulus) //
 {
-    big_int_dlz(a);
-    big_int_dlz(pow);
+    big_int_dlz(num);
+    big_int_dlz(power);
     big_int_dlz(modulus);
     big_int *res = big_int_get("1");
 
     unsigned char pow_2 = 128;
-    long long int s = 0;
+    long long int cnt_power_two = 0;
     char exit = 0;
-    for (int i = 0; i < pow->length; ++i)
+    for (int i = 0; i < power->length; ++i)
     {
         if (exit)
         {
@@ -1385,26 +1411,26 @@ big_int *big_int_pow_mod(big_int *a, big_int *pow, big_int *modulus)
         unsigned short pow2= 1;
         for (; pow2 < 255; pow2 <<= 1)
         {
-            if ((pow->number[i] & pow2))
+            if ((power->number[i] & pow2))
             {
                 exit = 1;
                 break;
             }
             else
             {
-                s += 1;
+                cnt_power_two += 1;
             }
         }
-    } //Теперь мы знаем сколько степеней двойки содержится в числе = s, ну или количество нулей в конце
+    } //Теперь мы знаем сколько степеней двойки содержится в числе = cnt_power_two, ну или количество нулей в конце
 
     char first_one = 0;
-    for (int i = pow->length - 1; i >= 0; --i) //(s  + 7)/8
+    for (int i = power->length - 1; i >= 0; --i) //(cnt_power_two  + 7)/8
     {
         short pow2 = 128;
         char bit = 7;
         for (; pow2 >= 1; pow2 >>= 1)
         {
-            if (pow->number[i] & pow2)
+            if (power->number[i] & pow2)
             {
                 first_one = 1;
                 big_int *new_res = big_int_karatsuba_mult2(res, res); //Возводим в квадрат
@@ -1415,7 +1441,7 @@ big_int *big_int_pow_mod(big_int *a, big_int *pow, big_int *modulus)
                 big_int_swap2(new_res, res);
                 big_int_free(&new_res);
 
-                new_res = big_int_karatsuba_mult2(res, a); //Домнажаем на изначальное число так как щас 1(нечетное число)
+                new_res = big_int_karatsuba_mult2(res, num); //Домнажаем на изначальное число так как щас 1(нечетное число)
                 big_int_swap2(new_res, res);
                 big_int_free(&new_res);
 
@@ -1443,13 +1469,13 @@ big_int *big_int_pow_mod(big_int *a, big_int *pow, big_int *modulus)
 }
 
 //big_int_witness_to_prime
-int big_int_witness_to_prime(big_int *n, big_int *d, big_int *a, long long int s)
+static int big_int_witness_to_prime(big_int *number, big_int *number_without_two_in_pow, big_int *witness_num, long long int cnt_power_two) //
 {
     big_int *one = big_int_get("1"); //Создаем единицу чтобы ее потом вычитать
-    big_int *negative_one = big_int_sub1(n, one); //Минус 1 в кольце вычетов по основанию n
+    big_int *negative_one = big_int_sub1(number, one); //Минус 1 в кольце вычетов по основанию number
     long long int count = 1; //Для контроля степени 2 в числе д
-    big_int *a_powd_modn = big_int_pow_mod(a, d, n);
-    big_int *d_second = big_int_copy(d);
+    big_int *a_powd_modn = big_int_pow_mod(witness_num, number_without_two_in_pow, number);
+    big_int *d_second = big_int_copy(number_without_two_in_pow);
 
     if (!big_int_equal(a_powd_modn, one))
     {
@@ -1458,13 +1484,13 @@ int big_int_witness_to_prime(big_int *n, big_int *d, big_int *a, long long int s
             big_int_free2(4, &one, &negative_one, &a_powd_modn, &d_second);
             return 1;
         }
-        for (; count < s; ++count)
+        for (; count < cnt_power_two; ++count)
         {
             big_int_shft_l(d_second);
-            big_int *kar = big_int_karatsuba_mult2(a_powd_modn, a_powd_modn);
+            big_int *karatsuba = big_int_karatsuba_mult2(a_powd_modn, a_powd_modn);
             big_int_free(&a_powd_modn);
-            a_powd_modn = big_int_mod(kar, n);
-            big_int_free(&kar);
+            a_powd_modn = big_int_mod(karatsuba, number);
+            big_int_free(&karatsuba);
 
 
             if (big_int_equal(negative_one, a_powd_modn))
@@ -1480,27 +1506,28 @@ int big_int_witness_to_prime(big_int *n, big_int *d, big_int *a, long long int s
     return 1;
 }
 
-int big_int_miller_rabin(big_int *n, int count_of_check)
+
+int big_int_miller_rabin(big_int *number, int count_of_check) //
 {
-    if (n->length == 1)
+    if (number->length == 1)
     {
-        if (n->number[0] <= 1)
+        if (number->number[0] <= 1)
         {
             return 0;
         }
-        if (n->number[0] <= 3)
+        if (number->number[0] <= 3)
         {
             return 1;
         }
     }
-    long long int s = 0;
+    long long int cnt_power_two = 0;
     char exit = 0;
-    big_int *d = big_int_copy(n);
+    big_int *number_without_two_in_pow = big_int_copy(number);
     big_int *one = big_int_get("1");
 
-    big_int_sub2(d, one); //вычитаем из числа d единцу
+    big_int_sub2(number_without_two_in_pow, one); //вычитаем из числа number_without_two_in_pow единцу
 
-    for (int i = 0; i < n->length; ++i)
+    for (int i = 0; i < number->length; ++i)
     {
         if (exit)
         {
@@ -1509,38 +1536,38 @@ int big_int_miller_rabin(big_int *n, int count_of_check)
         unsigned short pow2= 1;
         for (; pow2 < 255; pow2 <<= 1)
         {
-            if ((d->number[i] & pow2))
+            if ((number_without_two_in_pow->number[i] & pow2))
             {
                 exit = 1;
                 break;
             }
             else
             {
-                s += 1;
+                cnt_power_two += 1;
             }
         }
-    } //Теперь мы знаем сколько степеней двойки содержится в числе = s
-    big_int_shft_r2(d, s); //Выносим из под д степень 2
+    } //Теперь мы знаем сколько степеней двойки содержится в числе = cnt_power_two
+    big_int_shft_r2(number_without_two_in_pow, cnt_power_two); //Выносим из под д степень 2
 
     for (int check = 0; check < count_of_check; ++check)
     {
         srand(time(NULL) + rand());
-        int pr = rand() % n->length;
-        big_int *a = big_int_rnd(pr + !pr); //Выбираем свидетеля простоты
-        if (n->length == 1)
+        int generate_len = rand() % number->length;
+        big_int *witness_num = big_int_rnd(generate_len + !generate_len); //Выбираем свидетеля простоты
+        if (number->length == 1)
         {
-            big_int_free(&a);
-            int pr = (int)(rand()) % n->number[0];
-            a = big_int_get10(pr + !pr);
+            big_int_free(&witness_num);
+            int generate_len = (int)(rand()) % number->number[0];
+            witness_num = big_int_get10(generate_len + !generate_len);
         }
-        if (!big_int_witness_to_prime(n, d, a, s)) // n - само число;    d - число без степени 2;     a - свидетель простоты;      s - количество 2 в разложении n;
-        {
-            big_int_free2(3, &a, &d, &one);
+        if (!big_int_witness_to_prime(number, number_without_two_in_pow, witness_num, cnt_power_two)) // number - само число;    number_without_two_in_pow - число без степеней 2;
+        {                                                                                             // witness_num - свидетель простоты;      cnt_power_two - количество 2 в разложении number;
+            big_int_free2(3, &witness_num, &number_without_two_in_pow, &one);
             return 0;
         }
-        big_int_free(&a);
+        big_int_free(&witness_num);
     }
-    big_int_free2(2, &d, &one);
+    big_int_free2(2, &number_without_two_in_pow, &one);
     return 1;
 }
 

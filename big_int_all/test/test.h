@@ -38,11 +38,11 @@ int test_karatsuba(int a);
 
 int test_pow(int a);
 
-int test_divided(int a);
+int test_divide(int a);
 
 int test_mod(int a);
 
-int test_divided_loop(int a);
+int test_divide_loop(int a);
 
 int test_dlz();
 

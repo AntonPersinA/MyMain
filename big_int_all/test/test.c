@@ -101,7 +101,7 @@ int test_all(int limit)
         return 0;
     }
 
-    if (!test_divided(limit))
+    if (!test_divide(limit))
     {
         return 0;
     }
@@ -1202,7 +1202,7 @@ int test_pow(int a)
 }
 
 
-int test_divided(int a)
+int test_divide(int a)
 {
     for (int i1 = -a; i1 < a; ++i1)
     {
@@ -1217,10 +1217,10 @@ int test_divided(int a)
             big_int *n2 = big_int_get(str2);
             big_int *n3 = big_int_get(str3);
 
-            big_int *n4 = big_int_divided(n1,n2);
+            big_int *n4 = big_int_divide(n1,n2);
             if (!big_int_equal_sgn(n3, n4))
             {
-                printf("error test_divided\n");
+                printf("error test_divide\n");
                 printf("%lld %lld\n", i, j);
                 big_int_print(n3);
                 big_int_print(n4);
@@ -1278,7 +1278,7 @@ int test_mod(int a)
 }
 
 
-int test_divided_loop(int a)
+int test_divide_loop(int a)
 {
     for (int i1 = -a; i1 < a; ++i1)
     {
@@ -1293,10 +1293,10 @@ int test_divided_loop(int a)
             big_int *n2 = big_int_get(str2);
             big_int *n3 = big_int_get(str3);
 
-            big_int *n4 = big_int_divided(n1,n2);
+            big_int *n4 = big_int_divide(n1,n2);
             if (!big_int_equal_sgn(n3, n4))
             {
-                printf("error test_divided_loop\n");
+                printf("error test_divide_loop\n");
                 printf("%lld %lld\n", i, j);
                 big_int_print(n3);
                 big_int_print(n4);
