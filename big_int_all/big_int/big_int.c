@@ -367,11 +367,13 @@ big_int *big_int_copy(big_int *number)
     if (res == NULL)
     {
         printf("memory error in big_int_copy\n");
+        return NULL;
     }
     unsigned char *num = calloc(number->length, sizeof(unsigned char));
     if (num == NULL)
     {
         printf("memory error in big_int_copy\n");
+        return NULL;
     }
     memmove(num, number->number, number->length);
     res->number = num;
@@ -384,11 +386,7 @@ big_int *big_int_copy(big_int *number)
 //Сложение когда оба числа +
 static big_int *big_int_add1_help(big_int *num_1, big_int *num_2)
 {
-    char sign = '+';
-    if (num_1->sign == '-' && num_2->sign == '-')
-    {
-        sign = '-';
-    }
+//    char sign = '+';
     big_int *res = calloc(1, sizeof(big_int));
     if (res == NULL)
     {
@@ -396,22 +394,21 @@ static big_int *big_int_add1_help(big_int *num_1, big_int *num_2)
         return NULL;
     }
 
-    unsigned int len_max = num_1->length > num_2->length ? num_1->length + 1 : num_2->length + 1;
     unsigned int len_min = num_1->length < num_2->length ? num_1->length : num_2->length;
-    res->length = len_max;
+    res->length = num_1->length > num_2->length ? num_1->length + 1 : num_2->length + 1;
     res->number = calloc(res->length, sizeof(unsigned char));
     if (res->number == NULL)
     {
         printf("memory error in big_int_add1\n");
         return NULL;
     }
-    unsigned int flag = 0;
+    short flag = 0;
     for (unsigned int i = 0; i < res->length - 1; ++i)
     {
         if (i < len_min)
         {
             res->number[i] += num_2->number[i] + num_1->number[i] + flag;
-            flag = (256 - (int) num_1->number[i] - flag <= (int) num_2->number[i]);
+            flag = (256 - (short) num_1->number[i] - flag <= (short) num_2->number[i]);
         } else{
             if (num_1->length < num_2->length)
             {
@@ -434,7 +431,7 @@ static big_int *big_int_add1_help(big_int *num_1, big_int *num_2)
     {
         res->number[res->length - 1] += flag;
     }
-    res->sign = sign;
+    res->sign = '+';
     big_int_dlz(res);
     return res;
 }
@@ -460,6 +457,12 @@ big_int *big_int_add1(big_int *num_1, big_int *num_2)
         num_1->sign = '+';
         res = big_int_sub1(num_2,num_1);
         num_1->sign = '-';
+        return res;
+    }
+    if (num_1->sign == '-' && num_2->sign == '-')
+    {
+        res = big_int_add1_help(num_1, num_2);
+        res->sign = '-';
         return res;
     }
     return big_int_add1_help(num_1, num_2);
@@ -594,6 +597,11 @@ void big_int_shft_r2(big_int *num_1, int cnt)
         }
         num_1->length -= cnt;
         num_1->number = realloc(num_1->number, num_1->length);
+        if (num_1->number == NULL)
+        {
+            printf("memory error in big_int_shift_r2\n");
+            return;
+        }
     }
     big_int_dlz(num_1);
     if (num_1->length == 1 && num_1->number[0] == 0)
@@ -719,11 +727,11 @@ static big_int *big_int_sub1_help(big_int *num_1, big_int *num_2)
         res->length = num_1->length;
         res->sign = '+';
         int i = 0;
-        int flag = 0;
+        short flag = 0;
         for (; i < num_2->length; ++i)
         {
             res->number[i] = num_1->number[i] - num_2->number[i] - flag; //Обычное вычитание Си
-            flag = ((int)num_1->number[i] < (int)num_2->number[i] + (int)flag) ? 1 : 0; //Учитываем перенос
+            flag = ((short)num_1->number[i] < (short)num_2->number[i] + (short)flag) ? 1 : 0; //Учитываем перенос
 
         }
         if (flag)
@@ -794,6 +802,11 @@ static void big_int_add2_help__num_1morenum_2(big_int *num_1, big_int *num_2)
 {
     num_1->length += 1;
     num_1->number = realloc(num_1->number, num_1->length);
+    if (num_1->number == NULL)
+    {
+        printf("memory error in big_int_add2_help__num_1morenum_2\n");
+        return;
+    }
     num_1->number[num_1->length - 1] = 0;
     short flag1 = 0, flag2 = 0;
     int i = 0;
@@ -830,7 +843,7 @@ static void big_int_add2_help_num_1leq2(big_int *num_1, big_int *num_2)
     num_1->number = realloc(num_1->number, num_2->length + 1);
     if (num_1->number == NULL)
     {
-        printf("memory error in big_int_add2\n");
+        printf("memory error in big_int_add2_help_num_1leq2\n");
         return;
     }
 
@@ -933,7 +946,6 @@ void big_int_add2(big_int *num_1, big_int *num_2)
 //Вычитаем когда оба числа положительные
 static void big_int_sub2_help(big_int *num_1, big_int *num_2)
 {
-
     if (num_1->sign == num_2->sign && num_1->sign == '+')
     {
         if (num_1->length > num_2->length)
@@ -946,7 +958,6 @@ static void big_int_sub2_help(big_int *num_1, big_int *num_2)
                 num_1->number[i] -= num_2->number[i] + flag2;
                 flag2 = flag1;
             }
-
             if (flag2)
             {
                 for (; i < num_1->length; ++i)
@@ -962,7 +973,6 @@ static void big_int_sub2_help(big_int *num_1, big_int *num_2)
                     }
                 }
             }
-
             big_int_dlz(num_1);
             return;
         }
@@ -1024,9 +1034,14 @@ big_int *big_int_mult1(big_int *num_1, big_int *num_2)
     res->sign = '+';
     if (num_1->sign != num_2->sign)
     {
-        if (num_1->number[0] == 0 && num_1->length == 1 || num_2->number[0] == 0 && num_2->length  == 1)
+        if (num_1->number[0] == 0 && num_1->length == 1 || num_2->number[0] == 0 && num_2->length == 1)
         {
             res->number = calloc(1, sizeof(unsigned char));
+            if (res->number == NULL)
+            {
+                printf("memory error in big_int_mult1\n");
+                return NULL;
+            }
             res->length = 1;
             return res;
         }
@@ -1067,6 +1082,11 @@ big_int *big_int_mult1(big_int *num_1, big_int *num_2)
 big_int *big_int_slice(const big_int *num_1, long int left_bound, long int right_bound)
 {
     big_int *res = (big_int *) malloc(sizeof(big_int));
+    if (res == NULL)
+    {
+        printf("memory error in big_int_slice\n");
+        return NULL;
+    }
     res->sign = num_1->sign;
     res->length = (unsigned int) (right_bound - left_bound + 1);
     if (right_bound >= num_1->length)
@@ -1077,9 +1097,19 @@ big_int *big_int_slice(const big_int *num_1, long int left_bound, long int right
     {
         res->length = 1;
         res->number = (unsigned char *) calloc(1, sizeof(num_1->number[0]));
+        if (res->number == NULL)
+        {
+            printf("memory error in big_int_slice\n");
+            return NULL;
+        }
         return res;
     }
     res->number = (unsigned char *) calloc(res->length, sizeof(num_1->number[0]));
+    if (res->number == NULL)
+    {
+        printf("memory error in big_int_slice\n");
+        return NULL;
+    }
     memcpy(res->number, num_1->number + left_bound, res->length);
     big_int_dlz(res);
     return res;
@@ -1178,6 +1208,11 @@ big_int *big_int_pow(big_int *num_1, big_int *num_2)
 static big_int *big_int_divide_help(big_int *dividend, big_int *denominator)
 {
     big_int *Q = calloc(1, sizeof(big_int)); //Частное, результат, обозначается за Q
+    if (Q == NULL)
+    {
+        printf("memory error in big_int_divide_help\n");
+        return NULL;
+    }
     if (((signed long int)dividend->length - (signed long int)denominator->length + 1) > 0)
     {
         Q->length = dividend->length - denominator->length + 1;
@@ -1186,6 +1221,12 @@ static big_int *big_int_divide_help(big_int *dividend, big_int *denominator)
         Q->length = 1; //denominator->length - dividend->length + 1
     }
     unsigned char *Q_array = calloc(Q->length, sizeof(unsigned char));
+    if (Q_array == NULL)
+    {
+        printf("memory error in big_int_divide_help\n");
+        free(Q);
+        return NULL;
+    }
     Q->number = Q_array;
     Q->sign = '+';
 
@@ -1273,6 +1314,11 @@ const short MAS_POW2[] = { 1, 2, 4, 8, 16, 32, 64, 128, 256};
 static big_int *big_int_mod_help(big_int *dividend, big_int *denominator)
 {
     big_int *Q = calloc(1, sizeof(big_int)); //Частное, обозначается за Q
+    if (Q == NULL)
+    {
+        printf("memory error in big_int_mod_help\n");
+        return NULL;
+    }
     if (((signed long int)dividend->length - (signed long int)denominator->length + 1) > 0)
     {
         Q->length = dividend->length - denominator->length + 1;
@@ -1282,6 +1328,12 @@ static big_int *big_int_mod_help(big_int *dividend, big_int *denominator)
     }
 
     unsigned char *Q_array = calloc(Q->length, sizeof(unsigned char));
+    if (Q_array == NULL)
+    {
+        printf("memory error in big_int_mod_help\n");
+        free(Q);
+        return NULL;
+    }
     Q->number = Q_array;
     Q->sign = '+';
 
@@ -1344,12 +1396,13 @@ big_int *big_int_mod(big_int *number, big_int *modulus)
     big_int *res = big_int_mod_help(number, modulus);
     number->sign = sign_number;
     modulus->sign = sign_modulus;
-    if (number->sign == '-')
+    if (number->sign == '-' && !(res->length == 1 && res->number[0] ==0))
     {
-        if (res->length > 1 || res->number[0] != 0)
-        {
-            res->sign = '-';
-        }
+        char sgn = modulus->sign;
+        modulus->sign = '+';
+        big_int_sub2(res, modulus);
+        res->sign = '+';
+        modulus->sign = sgn;
     }
     big_int_dlz(res);
     return res;
@@ -1359,7 +1412,18 @@ big_int *big_int_mod(big_int *number, big_int *modulus)
 big_int *big_int_rnd(int byte_count) //
 {
     big_int *res = calloc(1, sizeof(big_int));
+    if (res == NULL)
+    {
+        printf("memory error in big_int_rnd\n");
+        return NULL;
+    }
     res->number = calloc(byte_count, sizeof(unsigned char));
+    if (res->number == NULL)
+    {
+        printf("memory error in big_int_rnd\n");
+        free(res);
+        return NULL;
+    }
     res->length = byte_count;
     res->sign = '+';
     srand(time(NULL) + rand());
@@ -1377,7 +1441,18 @@ big_int *big_int_rnd(int byte_count) //
 big_int *big_int_rnd_odd(int byte_count) //
 {
     big_int *res = calloc(1, sizeof(big_int));
+    if (res == NULL)
+    {
+        printf("memory error in big_int_rnd_odd\n");
+        return NULL;
+    }
     res->number = calloc(byte_count, sizeof(unsigned char));
+    if (res->number == NULL)
+    {
+        printf("memory error in big_int_rnd_odd\n");
+        free(res);
+        return NULL;
+    }
     res->length = byte_count;
     res->sign = '+';
     srand(time(NULL) + rand());
@@ -1399,35 +1474,11 @@ big_int *big_int_pow_mod(big_int *num, big_int *power, big_int *modulus) //
     big_int_dlz(modulus);
     big_int *res = big_int_get("1");
 
-    unsigned char pow_2 = 128;
-    long long int cnt_power_two = 0;
-    char exit = 0;
-    for (int i = 0; i < power->length; ++i)
+    unsigned char pow2;
+    char first_one = 0; //Смотрим когда в первый раз появился значащий ноль
+    for (int i = power->length - 1; i >= 0; --i)
     {
-        if (exit)
-        {
-            break;
-        }
-        unsigned short pow2= 1;
-        for (; pow2 < 255; pow2 <<= 1)
-        {
-            if ((power->number[i] & pow2))
-            {
-                exit = 1;
-                break;
-            }
-            else
-            {
-                cnt_power_two += 1;
-            }
-        }
-    } //Теперь мы знаем сколько степеней двойки содержится в числе = cnt_power_two, ну или количество нулей в конце
-
-    char first_one = 0;
-    for (int i = power->length - 1; i >= 0; --i) //(cnt_power_two  + 7)/8
-    {
-        short pow2 = 128;
-        char bit = 7;
+        pow2 = 128;
         for (; pow2 >= 1; pow2 >>= 1)
         {
             if (power->number[i] & pow2)
@@ -1468,7 +1519,7 @@ big_int *big_int_pow_mod(big_int *num, big_int *power, big_int *modulus) //
     return res;
 }
 
-//big_int_witness_to_prime
+
 static int big_int_witness_to_prime(big_int *number, big_int *number_without_two_in_pow, big_int *witness_num, long long int cnt_power_two) //
 {
     big_int *one = big_int_get("1"); //Создаем единицу чтобы ее потом вычитать

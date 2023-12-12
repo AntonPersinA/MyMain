@@ -131,6 +131,10 @@ int test_all(int limit)
         return 0;
     }
 
+    if (!test_get_prime(limit))
+    {
+        return 0;
+    }
     return 1;
 }
 
@@ -1251,6 +1255,16 @@ int test_mod(int a)
             char *str1 = bin_str(i);
             char *str2 = bin_str(j);
             char *str3 = bin_str((long long int)(i%j));
+            if (i < 0 && i%j != 0 && j > 0)
+            {
+                free(str3);
+                str3 = bin_str((long long int)(i%j) + (long long int)j);
+            }
+            if (i < 0 && i%j != 0 && j < 0)
+            {
+                free(str3);
+                str3 = bin_str((long long int)(i%j) - (long long int)j);
+            }
             big_int *n1 = big_int_get(str1);
             big_int *n2 = big_int_get(str2);
             big_int *n3 = big_int_get(str3);
