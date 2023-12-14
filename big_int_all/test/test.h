@@ -18,9 +18,7 @@ int test_leq();
 
 int test_meq();
 
-int test_swap1(int a); //swap
-
-int test_swap2(int a); //swap2
+int test_swap(int a);
 
 int test_copy();
 

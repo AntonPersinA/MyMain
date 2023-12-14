@@ -49,12 +49,7 @@ int test_all(int limit)
         return 0;
     }
 
-    if (!test_swap1(limit))
-    {
-        return 0;
-    }
-
-    if (!test_swap2(limit))
+    if (!test_swap(limit))
     {
         return 0;
     }
@@ -699,11 +694,11 @@ int test_equal_sgn(int limit)
 }
 
 
-int test_swap1(int limit)
+int test_swap(int limit)
 {
-    for (int a = -limit; a <= limit; ++a)
+    for (int a = -limit; a < limit; ++a)
     {
-        for (int b = -limit; b <= limit; ++b)
+        for (int b = -limit; b < limit; ++b)
         {
             char *str1 = bin_str(a);
             char *str111 = bin_str(a);
@@ -742,58 +737,7 @@ int test_swap1(int limit)
             big_int_free(&n2);
             big_int_free(&n222);
 
-            printf("error test_swap1 big_int\n");
-            return 0;
-        }
-    }
-    return 1;
-}
-
-
-int test_swap2(int limit)
-{
-    for (int a = -limit; a < limit; ++a)
-    {
-        for (int b = -limit; b < limit; ++b)
-        {
-            char *str1 = bin_str(a);
-            char *str111 = bin_str(a);
-            char *str2 = bin_str(b);
-            char *str222 = bin_str(b);
-
-            big_int *n1 = big_int_get(str1);
-            big_int *n111 = big_int_get(str111);
-            big_int *n2 = big_int_get(str2);
-            big_int *n222 = big_int_get(str222);
-
-            big_int_swap2(n1,n2);
-
-            if (big_int_equal_sgn(n1,n222) && big_int_equal_sgn(n2,n111))
-            {
-                free(str1);
-                free(str111);
-                free(str2);
-                free(str222);
-
-                big_int_free(&n1);
-                big_int_free(&n111);
-                big_int_free(&n2);
-                big_int_free(&n222);
-
-                continue;
-            }
-
-            free(str1);
-            free(str111);
-            free(str2);
-            free(str222);
-
-            big_int_free(&n1);
-            big_int_free(&n111);
-            big_int_free(&n2);
-            big_int_free(&n222);
-
-            printf("error test_swap2 big_int\n");
+            printf("error test_swap big_int\n");
             return 0;
         }
     }

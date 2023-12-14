@@ -51,15 +51,19 @@ int time_test()
     big_int_free2(2, &num1, &num2);
 }
 
+
+enum sgn{
+    plus = '+',
+    minus = '-'
+};
+
+
 int main()
 {
-//    big_int *num = big_int_get10(-12);
-//    big_int *mod = big_int_get10(-5);
-//    big_int *res = big_int_mod(num, mod);
-//    big_int_print10(res);
-//    while_true_func();
-//    time_test();
-//    test_all(3);
+    enum sgn s = plus;
+    printf("size = %ld\n", sizeof(s));
+    printf("s = %c\n", s);
+
     return 0;
 }
 
