@@ -9,9 +9,13 @@
 #include "../lib/lib.h"
 
 
-static big_int* big_int_get_func_res(big_int *res, int *bit_len, char *sign_bin, char *bin_number) //Вернет результирующий для функции get big_int
+#define _ALMOST_BYTE_ 7
+#define _BYTE_ 8
+#define _MAX_CHAR_ 8
+
+static big_int* big_int_get_func_res(big_int *res, int *bit_len, char *sign_bin, char *bin_number) //Return the result for the function get big_int
 {
-    res->length = (*bit_len + 7 - *sign_bin) >> 3; //Учитываем начальные, нулевые биты числа
+    res->length = (*bit_len + _ALMOST_BYTE_ - *sign_bin) >> 3; //We take into account the initial, zero bits of the number
     res->number = calloc(res->length, sizeof(res->number[0]));
     if (res->number == NULL)
     {
@@ -21,11 +25,11 @@ static big_int* big_int_get_func_res(big_int *res, int *bit_len, char *sign_bin,
 
     for (int i = 0; i < *bit_len - *sign_bin; ++i)
     {
-        res->number[i / 8] += (bin_number[*bit_len - i - 1] - '0') << (i % 8); //переворачиваем биг_инт, так проще с ним работать
+        res->number[i / _BYTE_] += (bin_number[*bit_len - i - 1] - '0') << (i % _BYTE_); //we flip big_int, it’s easier to work with it this way
     }
     big_int_dlz(res);
 
-    if (res->number[0] == 0 && res->length == 1) //Смотрим чтобы не было отрицательного нуля
+    if (res->number[0] == 0 && res->length == 1) //Make sure there is no negative zero
     {
         res->sign = '+';
     }
@@ -44,13 +48,16 @@ big_int *big_int_get(char *bin_number)
         return NULL;
     }
 
-    //Если впереди строки был какой то лишний знак, то мы его учитывем
-    if (*bin_number == '-')
+    //If there was some extra sign ahead of the line, then we take it into account
+    if (bin_number[0] == '-')
     {
         sign_bin = 1;
         res->sign = '-';
-    } else { res->sign = '+'; }
-    if (*bin_number == '+') {
+    } else {
+        res->sign = '+';
+    }
+    if (bin_number[0] == '+')
+    {
         sign_bin = 1;
     }
 
@@ -58,13 +65,13 @@ big_int *big_int_get(char *bin_number)
 }
 
 
-static big_int *big_int_getloop_func(char *bin_number, long long int bit_len_loop, long long int bit_len, big_int *res) //Вернет результирующий для функции getloop big_int
+static big_int *big_int_getloop_func(char *bin_number, long long int bit_len_loop, long long int bit_len, big_int *res) //Returns the resultant for the getloop big_int function
 {
     if (bin_number[0] == '-' || bin_number[0] == '+')
     {
         for (int i = 0; i < bit_len_loop; ++i)
         {
-            res->number[i / 8] += (bin_number[bit_len - i%(bit_len - 1) - 1] - '0') << (i % 8);
+            res->number[i / _BYTE_] += (bin_number[bit_len - i%(bit_len - 1) - 1] - '0') << (i % _BYTE_);
         }
         big_int_dlz(res);
 
@@ -76,7 +83,7 @@ static big_int *big_int_getloop_func(char *bin_number, long long int bit_len_loo
     }
     for (int i = 0; i < (bit_len_loop); ++i)
     {
-        res->number[i / 8] += (bin_number[bit_len - i%bit_len - 1] - '0') << (i % 8);
+        res->number[i / _BYTE_] += (bin_number[bit_len - i%bit_len - 1] - '0') << (i % _BYTE_);
     }
     big_int_dlz(res);
 
@@ -111,7 +118,7 @@ big_int *big_int_getloop(char *bin_number, int loop)
     }
     long long int bit_len_loop = (strlen(bin_number) - sign_bin) * loop;
 
-    res->length = (bit_len_loop + 7) >> 3;
+    res->length = (bit_len_loop + _ALMOST_BYTE_) >> 3;
     res->number = calloc(res->length, sizeof(res->number[0]));
     if (res->number == NULL)
     {
@@ -154,15 +161,15 @@ void big_int_print10(big_int *number)
     unsigned long long int pow2_long_long = 1;
     for (int i = 0; i < (number->length > 8 ? 8 : number->length) ; ++i)
     {
-        char pow2 = 1;
+        char pow2_char = 1;
         for (int j = 0; j < 8; ++j)
         {
-            if (number->number[i] & pow2)
+            if (number->number[i] & pow2_char)
             {
                 res += pow2_long_long;
             }
             pow2_long_long <<= 1;
-            pow2 <<= 1;
+            pow2_char <<= 1;
         }
     }
     if(number->sign == '-')
@@ -201,7 +208,7 @@ signed long long int big_int_to10(big_int *number)
 void big_int_dlz(big_int *number)
 {
     unsigned int i = number->length - 1;
-    while ((i > 0) && (number->number[i] == 0)) //Ищем на каком моменте закочились ненужные нули
+    while ((i > 0) && (number->number[i] == 0)) //We are looking for the moment at which unnecessary zeros ended
     {
         --i;
     }
@@ -232,7 +239,7 @@ int big_int_equal(big_int *num_1, big_int *num_2)
             return 0;
         }
     }
-    return 1; //Если до этого все норм то они =
+    return 1; //If everything was fine before then they =
 }
 
 
@@ -312,7 +319,7 @@ big_int *big_int_copy(big_int *number)
     return res;
 }
 
-// Вычисление res
+// Calculation res
 static void big_int_add1_calculate(big_int *res, big_int *num_1, big_int *num_2, unsigned int len_min, short *flag)
 {
     for (unsigned int i = 0; i < res->length - 1; ++i)
@@ -325,14 +332,14 @@ static void big_int_add1_calculate(big_int *res, big_int *num_1, big_int *num_2,
             if (num_1->length < num_2->length)
             {
                 res->number[i] += num_2->number[i] + *flag;
-                if (num_2->number[i] != 255)
+                if (num_2->number[i] != _MAX_CHAR_)
                 {
                     *flag = 0;
                 }
             } else
             {
                 res->number[i] += num_1->number[i] + *flag;
-                if (num_1->number[i] != 255)
+                if (num_1->number[i] != _MAX_CHAR_)
                 {
                     *flag = 0;
                 }
@@ -342,7 +349,7 @@ static void big_int_add1_calculate(big_int *res, big_int *num_1, big_int *num_2,
 }
 
 
-//Сложение когда оба числа +
+//Addition when both numbers are +
 static big_int *big_int_add1_helper(big_int *num_1, big_int *num_2)
 {
     big_int *res = calloc(1, sizeof(big_int));
@@ -404,7 +411,9 @@ big_int *big_int_add1(big_int *num_1, big_int *num_2)
 }
 
 
-static void big_int_shft_l_helper_less128(big_int *num_1, int flag) //Если самый значимый байт числа меньше 128, то создания нового байта не нужно, просто каждый байт увеличивается на 2
+//If the most significant byte of a number is less than 128,
+//then there is no need to create a new byte, just increase each byte by 2
+static void big_int_shft_l_helper_less128(big_int *num_1, int flag)
 {
     for (int i = 0; i < num_1->length; ++i)
     {
@@ -508,7 +517,7 @@ void big_int_shft_l2(big_int *num_1, int cnt)
 }
 
 
-static char big_int_shft_r2_helper_do(big_int *num_1, int cnt) //Реализация самого сдвига
+static char big_int_shft_r2_helper_do(big_int *num_1, int cnt) //Implementation of the shift itself
 {
     if (cnt >= num_1->length)
     {
@@ -549,7 +558,7 @@ void big_int_shft_r2(big_int *num_1, int cnt)
     {
         return;
     }
-    if (!big_int_shft_r2_helper_do(num_1, cnt)) //Если произошла ошибка выделеня памяти
+    if (!big_int_shft_r2_helper_do(num_1, cnt)) //If a memory allocation error occurs
     {
         return;
     }
@@ -561,7 +570,8 @@ void big_int_shft_r2(big_int *num_1, int cnt)
 }
 
 
-static int big_int_leq_helper_if(big_int *num_1, big_int *num_2) //Функция смотрит на знаки и на длину, ничего более
+#define _SMTH_CONST_NOT1OR0_ 123
+static int big_int_leq_helper_if(big_int *num_1, big_int *num_2) //The function looks at signs and length, nothing more
 {
     if (num_1->sign == '-' && num_2->sign == '+')
     {
@@ -587,7 +597,7 @@ static int big_int_leq_helper_if(big_int *num_1, big_int *num_2) //Функци�
         }
         return 0;
     }
-    return 123; //Любое число главное не 0 и 1
+    return _SMTH_CONST_NOT1OR0_; //Any number is important not 0 and 1
 }
 
 
@@ -596,7 +606,7 @@ int big_int_leq(big_int *num_1, big_int *num_2) //num_1<=num_2
     big_int_dlz(num_1);
     big_int_dlz(num_2);
     int exit = big_int_leq_helper_if(num_1, num_2);
-    if (exit != 123)
+    if (exit != _SMTH_CONST_NOT1OR0_)
     {
         return exit;
     }
@@ -618,7 +628,7 @@ int big_int_leq(big_int *num_1, big_int *num_2) //num_1<=num_2
 }
 
 
-static int big_int_meq_helper_ret(big_int *num_1, big_int *num_2, int ret) // Функция будет возвращать нужное значение
+static int big_int_meq_helper_ret(big_int *num_1, big_int *num_2, int ret) // The function will return the desired value
 {
     if (num_1->length > num_2->length)
     {
@@ -640,7 +650,7 @@ static int big_int_meq_helper_ret(big_int *num_1, big_int *num_2, int ret) // Ф
             return !ret;
         }
     }
-    return 1; // Значит в точности равны
+    return 1; // So they are exactly equal
 }
 
 int big_int_meq(big_int *num_1, big_int *num_2) //num_1>=num_2
@@ -665,15 +675,15 @@ int big_int_meq(big_int *num_1, big_int *num_2) //num_1>=num_2
 }
 
 
-// Уже напрямую вычитаем
+// Let's subtract directly
 static void big_int_sub1_helper_sub(big_int *res, big_int *num_1, big_int *num_2)
 {
     int i = 0;
     short flag = 0;
     for (; i < num_2->length; ++i)
     {
-        res->number[i] = num_1->number[i] - num_2->number[i] - flag; //Обычное вычитание Си
-        flag = ((short)num_1->number[i] < (short)num_2->number[i] + flag) ? 1 : 0; //Учитываем перенос
+        res->number[i] = num_1->number[i] - num_2->number[i] - flag; //Common subtraction in C
+        flag = ((short)num_1->number[i] < (short)num_2->number[i] + flag) ? 1 : 0; //Taking into account the transfer
 
     }
     if (flag)
@@ -687,7 +697,7 @@ static void big_int_sub1_helper_sub(big_int *res, big_int *num_1, big_int *num_2
             }
             else
             {
-                res->number[i] = 255;
+                res->number[i] = _MAX_CHAR_;
             }
         }
     }
@@ -699,17 +709,17 @@ static void big_int_sub1_helper_sub(big_int *res, big_int *num_1, big_int *num_2
 }
 
 
-//Вычитаем когда оба числа +
+//Subtract when both numbers are +
 static big_int *big_int_sub1_helper(big_int *num_1, big_int *num_2)
 {
     big_int *res;
     if (big_int_leq(num_1,num_2) && !big_int_equal(num_1,num_2))
     {
-        res = big_int_sub1(num_2,num_1); //Меняем местами чтобы из большего вычитать меньшее
+        res = big_int_sub1(num_2,num_1); //We change places to subtract the smaller from the larger
         res->sign = '-';
         return res;
     }
-    else // Иначе просто вычитаем
+    else // Otherwise we just subtract
     {
         res = calloc(1, sizeof(big_int));
         if (res == NULL)
@@ -770,7 +780,7 @@ big_int *big_int_sub1(big_int *num_1, big_int *num_2)
 }
 
 
-//Складываем когда первое число больше чем второе
+//Add when the first number is greater than the second
 static void big_int_add2_helper__num_1morenum_2(big_int *num_1, big_int *num_2)
 {
     num_1->length += 1;
@@ -793,7 +803,7 @@ static void big_int_add2_helper__num_1morenum_2(big_int *num_1, big_int *num_2)
     {
         for (; i < num_1->length; ++i)
         {
-            if (num_1->number[i] == 255)
+            if (num_1->number[i] == _MAX_CHAR_)
             {
                 num_1->number[i] = 0;
             }
@@ -808,14 +818,14 @@ static void big_int_add2_helper__num_1morenum_2(big_int *num_1, big_int *num_2)
     return;
 }
 
-// Учитываем перенос
+// Taking into account the transfer
 static void big_int_add2_num_1leq2__helper_transfer_up(big_int *num_1, big_int *num_2, short flag2, unsigned int i)
 {
     if (flag2)
     {
         for (; i < num_2->length; ++i)
         {
-            if (num_2->number[i] == 255)
+            if (num_2->number[i] == _MAX_CHAR_)
             {
                 num_1->number[i] = 0;
             }
@@ -837,7 +847,7 @@ static void big_int_add2_num_1leq2__helper_transfer_up(big_int *num_1, big_int *
 }
 
 
-//Складываем когда первое число <= второго
+//Addition when first number <= second
 static void big_int_add2_helper_num_1leq2(big_int *num_1, big_int *num_2)
 {
     num_1->number = realloc(num_1->number, num_2->length + 1);
@@ -863,7 +873,7 @@ static void big_int_add2_helper_num_1leq2(big_int *num_1, big_int *num_2)
 }
 
 
-//Складываем когда оба числа положительные, разбиваемся на два случая -> две доп функции
+//We add when both numbers are positive, split into two cases -> two additional functions
 static void big_int_add2_helper(big_int *num_1, big_int *num_2)
 {
     if (num_1->sign == num_2->sign && num_1->sign == '+')
@@ -928,7 +938,7 @@ void big_int_add2(big_int *num_1, big_int *num_2)
 }
 
 
-static void big_int_sub2_helper_len1_les_len2(big_int *num_1, big_int *num_2) // Вычисляем разность если длина num_1 < num_2
+static void big_int_sub2_helper_len1_les_len2(big_int *num_1, big_int *num_2) // Calculate the difference if length num_1 < num_2
 {
     short flag1 = 0;
     short flag2 = 0;
@@ -945,7 +955,7 @@ static void big_int_sub2_helper_len1_les_len2(big_int *num_1, big_int *num_2) //
         {
             if (num_1->number[i] == 0)
             {
-                num_1->number[i] = 255;
+                num_1->number[i] = _MAX_CHAR_;
             }
             else
             {
@@ -958,7 +968,7 @@ static void big_int_sub2_helper_len1_les_len2(big_int *num_1, big_int *num_2) //
 }
 
 
-//Вычитаем когда оба числа положительные
+//Subtract when both numbers are positive
 static void big_int_sub2_helper_plus(big_int *num_1, big_int *num_2)
 {
     if (num_1->sign == num_2->sign && num_1->sign == '+')
@@ -1015,7 +1025,7 @@ void big_int_sub2(big_int *num_1, big_int *num_2)
 }
 
 
-static void big_int_mult1_helper_calculate(big_int *res, big_int *num_1, big_int *num_2) // Вычислительная часть умножения
+static void big_int_mult1_helper_calculate(big_int *res, big_int *num_1, big_int *num_2) // Computational part of multiplication
 {
     unsigned int mul_res = 0;
     unsigned int flag = 0;
@@ -1025,12 +1035,12 @@ static void big_int_mult1_helper_calculate(big_int *res, big_int *num_1, big_int
         for (size_t j = 0; j < num_2->length; ++j)
         {
             mul_res = num_1->number[i] * num_2->number[j];
-            flag = (res->number[i + j] + mul_res) >> 8;
+            flag = (res->number[i + j] + mul_res) >> _BYTE_;
             res->number[i + j] += mul_res & 255;
             k = 1;
             while (flag)
             {
-                unsigned int flag2 = (res->number[i + j + k] + (flag)) >> 8;
+                unsigned int flag2 = (res->number[i + j + k] + (flag)) >> _BYTE_;
                 res->number[i + j + k] += (flag & 255);
                 flag = flag2;
                 k++;
@@ -1118,7 +1128,7 @@ big_int *big_int_slice(const big_int *num_1, long int left_bound, long int right
 
 big_int *big_int_karatsuba_mult2(big_int *num_1, big_int *num_2)
 {
-    if (num_1->length + num_2->length <= 4)
+    if (num_1->length + num_2->length < 100) // 100
     {
         return big_int_mult1(num_1, num_2);
     }
@@ -1127,10 +1137,10 @@ big_int *big_int_karatsuba_mult2(big_int *num_1, big_int *num_2)
         unsigned int mx = (num_1->length >= num_2->length) ? num_1->length : num_2->length;
         mx += (mx & 1);
 
-        big_int *q = big_int_slice(num_1, 0, mx / 2 - 1); //Берем срез первой половины включительно
-        big_int *p = big_int_slice(num_1, mx / 2, mx - 1); //Берем срез второй половины
-        big_int *s = big_int_slice(num_2, 0, mx / 2 - 1); //... также
-        big_int *r = big_int_slice(num_2, mx / 2, mx - 1); //... также
+        big_int *q = big_int_slice(num_1, 0, mx / 2 - 1); //We take a slice of the first half inclusive
+        big_int *p = big_int_slice(num_1, mx / 2, mx - 1); //We take a slice of the number of the second half
+        big_int *s = big_int_slice(num_2, 0, mx / 2 - 1); //... Also
+        big_int *r = big_int_slice(num_2, mx / 2, mx - 1); //... Also
 
         big_int *pr = big_int_karatsuba_mult2(p, r);//A1
         big_int *qs = big_int_karatsuba_mult2(q, s);//A2
@@ -1155,11 +1165,12 @@ big_int *big_int_karatsuba_mult2(big_int *num_1, big_int *num_2)
     }
 }
 
-//Не более чем вспомогательная функция для обычного возведения, для того,
-//чтобы не было проблем с скопированными значениями, так проще реализовать, ведь я могу с копиями делать что угодно
+//Nothing more than an auxiliary function for normal exponentiation,
+//so that there are no problems with copied values,
+//it’s easier to implement, because I can do whatever I want with the copies
 static big_int *big_int_pow_helper(big_int *num_1_cpy, big_int *num_2_cpy, big_int *res)
 {
-    if((num_2_cpy->number)[0] > 1 || num_2_cpy->length > 1) //Если число больше 1
+    if((num_2_cpy->number)[0] > 1 || num_2_cpy->length > 1) //If the number is greater than 1
     {
         if ((num_2_cpy->number)[0] & 1)
         {
@@ -1179,7 +1190,7 @@ static big_int *big_int_pow_helper(big_int *num_1_cpy, big_int *num_2_cpy, big_i
         }
     } else
     {
-        if ((num_2_cpy->number)[0] > 0) //Если число = 1
+        if ((num_2_cpy->number)[0] > 0) //If number = 1
         {
             big_int *res2 = big_int_karatsuba_mult2(num_1_cpy, res);
             big_int *digit1 = big_int_get("1");
@@ -1204,7 +1215,7 @@ big_int *big_int_pow(big_int *num_1, big_int *num_2)
 }
 
 
-static big_int *big_int_divide_helper_get_Q(big_int *Q, big_int *dividend, big_int *denominator) // Работаем над Q
+static big_int *big_int_divide_helper_get_Q(big_int *Q, big_int *dividend, big_int *denominator) // Working on Q
 {
     if (Q == NULL)
     {
@@ -1230,8 +1241,8 @@ static big_int *big_int_divide_helper_get_Q(big_int *Q, big_int *dividend, big_i
     return Q;
 }
 
-
-static void big_int_divide_helper_do(big_int *Q, big_int *R, big_int *dividend, big_int *denominator) // Наиболее серьезные работы над ответом
+// The most important calculations in this function
+static void big_int_divide_helper_do(big_int *Q, big_int *R, big_int *dividend, big_int *denominator)
 {
     for (int j = (dividend->length - 2); j >= 0; --j)
     {
@@ -1251,17 +1262,17 @@ static void big_int_divide_helper_do(big_int *Q, big_int *R, big_int *dividend, 
 }
 
 
-//Просто делим одно на другое нацело, не учитывая знак, но учитвая что не делим на ноль
+//We simply divide one by the other completely, without taking into account the sign
 static big_int *big_int_divide_helper(big_int *dividend, big_int *denominator)
 {
-    big_int *Q = calloc(1, sizeof(big_int)); //Частное, результат, обозначается за Q
+    big_int *Q = calloc(1, sizeof(big_int)); //The quotient, the result, is denoted by Q
     if (big_int_divide_helper_get_Q(Q, dividend, denominator) == NULL)
     {
         return NULL;
     }
-    big_int *R = big_int_get("0"); //Остаток, обозначается за R
+    big_int *R = big_int_get("0"); //Remainder, denoted by R
 
-    unsigned short no_meaning_zero = 1; //0000000123
+    unsigned short no_meaning_zero = 1; //00 00000101, in this case we have two no meaning zero
     for (; no_meaning_zero < dividend->number[dividend->length - 1];)
     {
         no_meaning_zero <<= 1;
@@ -1314,7 +1325,7 @@ big_int *big_int_divide(big_int *dividend, big_int *denominator)
 }
 
 
-static big_int *big_int_mod_helper_get_Q(big_int *Q, big_int *dividend, big_int *denominator) // Работаем над Q
+static big_int *big_int_mod_helper_get_Q(big_int *Q, big_int *dividend, big_int *denominator) // Change Q as needed
 {
     if (Q == NULL)
     {
@@ -1341,8 +1352,8 @@ static big_int *big_int_mod_helper_get_Q(big_int *Q, big_int *dividend, big_int 
     return Q;
 }
 
-
-static void big_int_mod_helper_do(big_int *Q, big_int *R, big_int *dividend, big_int *denominator) // Наиболее серьезные работы над ответом
+// The most serious calculations for the result
+static void big_int_mod_helper_do(big_int *Q, big_int *R, big_int *dividend, big_int *denominator)
 {
     for (int j = (dividend->length - 2); j >= 0; --j)
     {
@@ -1363,17 +1374,17 @@ static void big_int_mod_helper_do(big_int *Q, big_int *R, big_int *dividend, big
 
 const short MAS_POW2[] = { 1, 2, 4, 8, 16, 32, 64, 128, 256};
 
-//Просто ищем число по модулю одно, не учитывая знак, но учитвая что не делим на ноль
+//We are simply looking for a number modulo one, not taking into account the sign
 static big_int *big_int_mod_helper(big_int *dividend, big_int *denominator)
 {
-    big_int *Q = calloc(1, sizeof(big_int)); //Частное, обозначается за Q
+    big_int *Q = calloc(1, sizeof(big_int)); //Quotient, denoted by Q
     if (big_int_mod_helper_get_Q(Q, dividend, denominator) == NULL)
     {
         return NULL;
     }
-    big_int *R = big_int_get("0"); //Остаток, результат, обозначается за R
+    big_int *R = big_int_get("0"); //Remainder, result, denoted by R
 
-    unsigned short no_meaning_zero = 256; //00 00000123
+    unsigned short no_meaning_zero = 256; //00 00000101, in this case we have two no meaning zero
     for (int index = 8; index >= 0; --index)
     {
         if (MAS_POW2[index] <= dividend->number[dividend->length - 1])
@@ -1456,7 +1467,7 @@ big_int *big_int_rnd(int byte_count) //
 }
 
 
-big_int *big_int_rnd_odd(int byte_count) //
+big_int *big_int_rnd_odd(int byte_count)
 {
     big_int *res = calloc(1, sizeof(big_int));
     if (res == NULL)
@@ -1493,7 +1504,7 @@ big_int *big_int_pow_mod(big_int *num, big_int *power, big_int *modulus) //
     big_int *res = big_int_get("1");
 
     unsigned char pow2 = 128;
-    char first_one = 0; //Смотрим когда в первый раз появился значащий ноль
+    char first_one = 0; //Let's look at the first time a significant zero appeared
     for (int i = power->length - 1; i >= 0; --i)
     {
         pow2 = 128;
@@ -1502,19 +1513,19 @@ big_int *big_int_pow_mod(big_int *num, big_int *power, big_int *modulus) //
             if (power->number[i] & pow2)
             {
                 first_one = 1;
-                big_int *new_res = big_int_karatsuba_mult2(res, res); //Возводим в квадрат
+                big_int *new_res = big_int_karatsuba_mult2(res, res); //Squaring
                 big_int_swap(new_res, res);
                 big_int_free(&new_res);
 
-                new_res = big_int_mod(res, modulus); // Берем модуль
+                new_res = big_int_mod(res, modulus); // Take the module
                 big_int_swap(new_res, res);
                 big_int_free(&new_res);
 
-                new_res = big_int_karatsuba_mult2(res, num); //Домнажаем на изначальное число так как щас 1(нечетное число)
+                new_res = big_int_karatsuba_mult2(res, num); //We press on the original number since right now it’s 1 (odd number)
                 big_int_swap(new_res, res);
                 big_int_free(&new_res);
 
-                new_res = big_int_mod(res, modulus); //Снова модуль
+                new_res = big_int_mod(res, modulus); //Take the module
                 big_int_swap(new_res, res);
                 big_int_free(&new_res);
             }
@@ -1522,7 +1533,7 @@ big_int *big_int_pow_mod(big_int *num, big_int *power, big_int *modulus) //
             {
                 if (first_one)
                 {
-                    big_int *new_res = big_int_karatsuba_mult2(res, res); //Здесь просто возводим в квадрат, так как четное(0)
+                    big_int *new_res = big_int_karatsuba_mult2(res, res); //Here we simply square it, since even (0)
                     big_int_swap(new_res, res);
                     big_int_free(&new_res);
 
@@ -1540,9 +1551,9 @@ big_int *big_int_pow_mod(big_int *num, big_int *power, big_int *modulus) //
 
 static int big_int_witness_to_prime(big_int *number, big_int *number_without_two_in_pow, big_int *witness_num, long long int cnt_power_two) //Реализация свидетеля простоты
 {
-    big_int *one = big_int_get("1"); //Создаем единицу чтобы ее потом вычитать
-    big_int *negative_one = big_int_sub1(number, one); //Минус 1 в кольце вычетов по основанию number
-    long long int count = 1; //Для контроля степени 2 в числе д
+    big_int *one = big_int_get("1"); //Create a unit to subtract it later
+    big_int *negative_one = big_int_sub1(number, one); //Minus 1 in the ring of residues based on number
+    long long int count = 1; //To control the degree of 2 in a number
     big_int *a_powd_modn = big_int_pow_mod(witness_num, number_without_two_in_pow, number);
     big_int *d_second = big_int_copy(number_without_two_in_pow);
 
@@ -1584,7 +1595,7 @@ static void big_int_helper_cnt_power_two(big_int *number, char *exit, big_int* n
             break;
         }
         unsigned short pow2 = 1;
-        for (; pow2 < 255; pow2 <<= 1)
+        for (; pow2 < _MAX_CHAR_; pow2 <<= 1)
         {
             if ((number_without_two_in_pow->number[i] & pow2))
             {
@@ -1596,17 +1607,11 @@ static void big_int_helper_cnt_power_two(big_int *number, char *exit, big_int* n
                 *cnt_power_two += 1;
             }
         }
-    } //Теперь мы знаем сколько степеней двойки содержится в числе = cnt_power_two
+    } //Now we know how many powers of two are contained in the number = cnt_power_two
 }
 
 
-int big_int_miller_rabin_helper_do(big_int *number, int count_of_check) // Вся смысловая часть миллера рабина
-{
-
-}
-
-
-int big_int_miller_rabin(big_int *number, int count_of_check) //
+int big_int_miller_rabin(big_int *number, int count_of_check)
 {
     if (number->length == 1)
     {
@@ -1624,23 +1629,23 @@ int big_int_miller_rabin(big_int *number, int count_of_check) //
     big_int *number_without_two_in_pow = big_int_copy(number);
     big_int *one = big_int_get("1");
 
-    big_int_sub2(number_without_two_in_pow, one); //вычитаем из числа number_without_two_in_pow единцу
+    big_int_sub2(number_without_two_in_pow, one); //subtract one from number_without_two_in_pow
     big_int_helper_cnt_power_two(number, &exit, number_without_two_in_pow, &cnt_power_two);
-    big_int_shft_r2(number_without_two_in_pow, cnt_power_two); //Выносим из под д степень 2
+    big_int_shft_r2(number_without_two_in_pow, cnt_power_two); //We take it out from under d degree 2
 
     for (int check = 0; check < count_of_check; ++check)
     {
         srand(time(NULL) + rand());
         int generate_len = rand() % number->length;
-        big_int *witness_num = big_int_rnd(generate_len + !generate_len); //Выбираем свидетеля простоты
+        big_int *witness_num = big_int_rnd(generate_len + !generate_len); //Choosing a Witness to Simplicity
         if (number->length == 1)
         {
             big_int_free(&witness_num);
             int generate_len = (int)(rand()) % number->number[0];
             witness_num = big_int_get10(generate_len + !generate_len);
         }
-        if (!big_int_witness_to_prime(number, number_without_two_in_pow, witness_num, cnt_power_two)) // number - само число;  number_without_two_in_pow - число без степеней 2;
-        {                                                                                             // witness_num - свидетель простоты;  cnt_power_two - количество 2 в разложении number;
+        if (!big_int_witness_to_prime(number, number_without_two_in_pow, witness_num, cnt_power_two)) // number - the number itself; number_without_two_in_pow - number without powers 2;
+        {                                                                                             // witness_num - simplicity witness; cnt_power_two - quantity 2 in number expansion;
             big_int_free2(3, &witness_num, &number_without_two_in_pow, &one);
             return 0;
         }
@@ -1650,16 +1655,94 @@ int big_int_miller_rabin(big_int *number, int count_of_check) //
     return 1;
 }
 
+const long long int MAS_BIG_INT_PRIME1000[] = {3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53,
+                                               59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109,
+                                               113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179,
+                                               181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241,
+                                               251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313,
+                                               317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389,
+                                               397, 401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 461,
+                                               463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541, 547,
+                                               557, 563, 569, 571, 577, 587, 593, 599, 601, 607, 613,
+                                               617, 619, 631, 641, 643, 647, 653, 659,661, 673, 677,
+                                               683, 691, 701, 709, 719, 727, 733, 739, 743, 751, 757,
+                                               761, 769, 773, 787, 797, 809, 811, 821, 823, 827, 829,
+                                               839, 853, 857, 859, 863, 877, 881, 883, 887, 907, 911,
+                                               919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991, 997};
+
+int test_mod_knowprime(big_int *number)
+{
+    for (int i = 0; i < 167; ++i)
+    {
+        big_int *tester = big_int_get10(MAS_BIG_INT_PRIME1000[i]);
+        big_int *mod_num = big_int_mod(number, tester);
+        big_int_free(&tester);
+        if (mod_num->length == 1 && mod_num->number[0] == 0)
+        {
+            big_int_free(&mod_num);
+            return 0;
+        }
+        big_int_free(&mod_num);
+    }
+    return 1;
+}
 
 big_int *big_int_get_prime(int byte_len, int tst_count)
 {
+    srand(time(NULL) + rand());
     big_int *rnd_digit = big_int_rnd_odd(byte_len);
-    while (!big_int_miller_rabin(rnd_digit, tst_count))
+    while (1)
     {
+        if (byte_len > 2)
+        {
+            while (test_mod_knowprime(rnd_digit) == 0)
+            {
+                big_int_free(&rnd_digit);
+                rnd_digit = big_int_rnd_odd(byte_len);
+            }
+        }
+
+        if (big_int_miller_rabin(rnd_digit, tst_count) != 0)
+        {
+            return rnd_digit;
+        }
         big_int_free(&rnd_digit);
         rnd_digit = big_int_rnd_odd(byte_len);
     }
-    return rnd_digit;
+}
+
+
+big_int *big_int_get_prime_for(int byte_len, int tst_count)
+{
+    srand(time(NULL) + rand());
+    big_int *two = big_int_get("10");
+    big_int *four = big_int_get("100");
+    big_int *six = big_int_get("110");
+    big_int *rnd_digit = big_int_rnd_odd(byte_len);
+    rnd_digit->number[rnd_digit->length - 1] %= (rand()%70 + 30);
+    rnd_digit->number[rnd_digit->length - 1] += 1;
+    rnd_digit->number[0] += !(rnd_digit->number[0] % 2);
+    big_int *digit_mod6 = big_int_mod(rnd_digit, six);
+    for (int i = big_int_to10(digit_mod6) - 1; i > 0; i -= 2)
+    {
+        big_int_add2(rnd_digit, two);
+    }
+    while(1)
+    {
+        big_int_add2(rnd_digit, four);
+        if (big_int_miller_rabin(rnd_digit, tst_count))
+        {
+            big_int_free2(4, &two, &four, &six, &digit_mod6);
+            return rnd_digit;
+        }
+        big_int_add2(rnd_digit, two);
+        if (big_int_miller_rabin(rnd_digit, tst_count))
+        {
+            big_int_free2(4, &two, &four, &six, &digit_mod6);
+            return rnd_digit;
+        }
+    }
+
 }
 
 

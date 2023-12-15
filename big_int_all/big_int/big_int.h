@@ -119,6 +119,8 @@ int big_int_miller_rabin(big_int *number, int count_of_check);//
 //! \brief Генерирует простое число, шанс что число не простое = 0.25^k
 big_int *big_int_get_prime(int byte_len, int tst_count);//
 
+big_int *big_int_get_prime_for(int byte_len, int tst_count);
+
 big_int *big_int_GCD(big_int *num_1, big_int *num_2);
 
 big_int *big_int_reverse_in_ring(big_int *number_1, big_int *number_2);

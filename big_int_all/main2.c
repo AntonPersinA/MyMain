@@ -5,7 +5,7 @@
 //#include <limits.h>
 //#include <math.h>
 //#include <stdarg.h>
-//#include <stdlib.h>
+#include <stdlib.h>
 #include <stdio.h>
 //#include <string.h>
 #include <time.h>
@@ -26,43 +26,42 @@ int while_true_func()
 
 int time_test()
 {
-    clock_t start, end;
-    big_int *n1 = big_int_getloop("100100001101", 5000);
-    big_int *n2 = big_int_getloop("100100001101", 5000);
-
-    big_int *num1 = big_int_karatsuba_mult2(n1, n2);
-    big_int *num2 = big_int_karatsuba_mult2(n1, n2);
-
-    start = clock();
-
-
-    for (int i = 0; i < 200000; ++i)
+    for (int len = 1; len < 100; ++len)
     {
-        big_int *n3 = big_int_add1(num1, num2);
-
-        big_int_free(&n3);
+        long double cnt = 100;
+        clock_t start, end, start_for, end_for;
+        long double time_max = 0, time_min = 10000000;
+        start = clock();
+        for (int j = 0; j < cnt; ++j)
+        {
+            start_for = clock();
+            big_int *res = big_int_get_prime(len, 10);
+            big_int_free(&res);
+            end_for = clock();
+            if (time_max < ((long double)end_for - (long double)start_for) / CLOCKS_PER_SEC)
+            {
+                time_max = ((long double)end_for - (long double)start_for) / CLOCKS_PER_SEC;
+            }
+            if (time_min > ((long double)end_for - (long double)start_for) / CLOCKS_PER_SEC)
+            {
+                time_min = ((long double)end_for - (long double)start_for) / CLOCKS_PER_SEC;
+            }
+        }
+        end = clock();
+        printf("time(len = %d) = %Lf,    time_max = %Lf,    time_min = %Lf\n", len, ((long double)end - (long double)start) / CLOCKS_PER_SEC / cnt, time_max, time_min);
     }
-
-    end = clock();
-
-    printf("time last = %f\n", (float) (end - start) / CLOCKS_PER_SEC);
-
-    big_int_free2(2, &n1, &n2);
-    big_int_free2(2, &num1, &num2);
 }
-
-
-enum sgn{
-    plus = '+',
-    minus = '-'
-};
 
 
 int main()
 {
-    enum sgn s = plus;
-    printf("size = %ld\n", sizeof(s));
-    printf("s = %c\n", s);
+    clock_t start, end;
+    start = clock();
+    big_int *n1 = big_int_get_prime_for(1, 10);
+    end = clock();
+
+    printf("time = %Lf\n", ((long double)end - (long double)start) / (long double)CLOCKS_PER_SEC);
+
 
     return 0;
 }
